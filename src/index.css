@@ -1,0 +1,167 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@import 'swiper/css';
+@import 'swiper/css/navigation';
+@import 'swiper/css/pagination';
+@import 'swiper/css/effect-fade';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Design Tokens ─────────────────────────────────── */
+:root {
+  /* Brand */
+  --primary:        #1A9E6E;
+  --primary-dark:   #157A56;
+  --primary-light:  #E8F5F0;
+  --secondary:      #F57C44;
+
+  /* Color palette tokens */
+  --color-surface-base:    #000000;
+  --color-surface-muted:   #ffffff;
+  --color-surface-raised:  #f4f3f3;
+  --color-text-tertiary:   #431b01;
+  --color-text-inverse:    #848484;
+  --color-border-muted:    #1c716b;
+  --color-border-default:  #e5e5e5;
+
+  /* Typography */
+  --font-family:      'Inter', sans-serif;
+  --font-size-base:   15px;
+  --font-weight-base: 400;
+  --line-height-base: 24px;
+
+  --font-size-sm:   12px;
+  --font-size-md:   13px;
+  --font-size-lg:   14px;
+  --font-size-xl:   15px;
+  --font-size-2xl:  16px;
+  --font-size-3xl:  18px;
+  --font-size-4xl:  20px;
+
+  /* Spacing */
+  --space-1: 5px;
+  --space-2: 6px;
+  --space-3: 7px;
+  --space-4: 9px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 18px;
+  --space-8: 20px;
+
+  /* Radius */
+  --radius-xs: 10px;
+  --radius-sm: 40px;
+  --radius-md: 50px;
+
+  /* Motion */
+  --motion-instant: 150ms;
+  --motion-fast:    300ms;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.10);
+  --shadow-lg: 0 8px 32px rgba(0,0,0,0.14);
+}
+
+/* ── Base Reset ─────────────────────────────────────── */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-base);
+  line-height: var(--line-height-base);
+  color: #1B1B2F;
+  background: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-family);
+  font-weight: 700;
+}
+
+/* ── Utility: Scrollbar hide ────────────────────────── */
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── Animations ─────────────────────────────────────── */
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.animate-marquee {
+  display: inline-flex;
+  animation: marquee 22s linear infinite;
+  white-space: nowrap;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(var(--rotate, 0deg)); }
+  50%       { transform: translateY(-10px) rotate(var(--rotate, 0deg)); }
+}
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(26,158,110,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(26,158,110,0); }
+}
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeIn { animation: fadeIn var(--motion-instant) ease; }
+
+/* ── Swiper overrides ───────────────────────────────── */
+.swiper-pagination-bullet {
+  width: 8px !important;
+  height: 8px !important;
+  background: #d1d5db !important;
+  opacity: 1 !important;
+  border-radius: 999px !important;
+  transition: all var(--motion-fast) !important;
+}
+.swiper-pagination-bullet-active {
+  width: 24px !important;
+  background: var(--primary) !important;
+}
+.hero-swiper .swiper-pagination {
+  bottom: 20px !important;
+}
+.swiper-button-next,
+.swiper-button-prev {
+  display: none !important;
+}
+
+/* ── Line clamp utilities ───────────────────────────── */
+.line-clamp-1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+}
+.line-clamp-2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* ── Navbar dropdown arrow ──────────────────────────── */
+.nav-link-arrow::after {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-left: 3.5px solid transparent;
+  border-right: 3.5px solid transparent;
+  border-top: 4px solid currentColor;
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.6;
+}
