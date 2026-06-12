@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'Blog',     to: '/blog',     hasDropdown: false },
   { label: 'Medicine', to: '/shop?category=vitamins', hasDropdown: false },
   { label: 'About',    to: '#',         hasDropdown: false },
-  { label: 'Contact',  to: '#',         hasDropdown: false },
+  { label: 'Contact',  to: '/contact',   hasDropdown: false },
 ]
 
 const Navbar = () => {

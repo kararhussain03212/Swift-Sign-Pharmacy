@@ -21,7 +21,7 @@ const ourServices = [
 const usefulLinks = [
   { label: 'About us',                  href: '#',  highlight: false },
   { label: 'Meet The Team',             href: '#',  highlight: false },
-  { label: 'Contact Us',                href: '#',  highlight: false },
+  { label: 'Contact Us',                href: '/contact',  highlight: false },
   { label: 'Delivery & Shipping',       href: '#',  highlight: false },
   { label: 'Sitemap',                   href: '#',  highlight: false },
   { label: 'Our Policies',              href: '#',  highlight: false },
@@ -62,10 +62,11 @@ const LinkList = ({ links }) => (
       <li key={l.label}>
         <a
           href={l.href}
-          className="transition-colors duration-[150ms] hover:text-[#1A9E6E]"
+          className={`inline-block transition-all duration-200 hover:text-[#1A9E6E] hover:translate-x-1 ${
+            l.highlight ? 'text-[#1A9E6E]' : 'text-gray-500'
+          }`}
           style={{
             fontSize: '15px',
-            color: l.highlight ? '#1A9E6E' : '#6b7280',
             lineHeight: '1.5',
           }}
         >
@@ -107,7 +108,7 @@ const Footer = () => {
                 <MapPin size={30} className="text-gray-400 mt-0.5 flex-shrink-0" />
                 <div>
                   <p className="font-bold text-gray-800" style={{ fontSize: '18px' }}>
-                    Dcare Digital Pharmacy
+                    Swift Sign Digital Pharmacy
                   </p>
                   <p className="text-gray-500 mt-0.5" style={{ fontSize: '13px', lineHeight: '1.6' }}>
                     42 Corbridge Crescent, London
@@ -127,7 +128,7 @@ const Footer = () => {
                   <p className="font-bold text-gray-800" style={{ fontSize: '18px' }}>
                     Superint. Pharmacist
                   </p>
-                  <p style={{ fontSize: '13px', color: '#1A9E6E' }}>Dcare Pharmacy</p>
+                  <p style={{ fontSize: '13px', color: '#1A9E6E' }}>Swift Sign Pharmacy</p>
                   <p className="text-gray-500" style={{ fontSize: '13px' }}>
                     GPhC number: 1230976
                   </p>
@@ -141,13 +142,11 @@ const Footer = () => {
                 <button
                   key={i}
                   className="flex items-center justify-center transition-all duration-[150ms]
-                             hover:border-[#1A9E6E] hover:text-[#1A9E6E]"
+                             text-gray-400 border border-gray-300 hover:border-[#1A9E6E] hover:text-[#1A9E6E]"
                   style={{
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    border: '1px solid #d1d5db',
-                    color: '#9ca3af',
                   }}
                 >
                   <Icon size={13} />
@@ -240,7 +239,7 @@ const Footer = () => {
           style={{ paddingTop: '18px', paddingBottom: '18px' }}
         >
           <p className="text-gray-400" style={{ fontSize: '13px' }}>
-            © 2025 dcare. All rights reserved.
+            © 2025 Swift Sign. All rights reserved.
           </p>
           {/* <div className="flex items-center gap-3">
             {['VISA', 'MC', 'PayPal', 'Apple Pay'].map(p => (

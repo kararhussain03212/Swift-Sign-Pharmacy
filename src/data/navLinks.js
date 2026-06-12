@@ -27,7 +27,7 @@ export const footerLinks = {
     { label: 'Careers',      to: '#' },
     { label: 'Press',        to: '#' },
     { label: 'Blog',         to: '/blog' },
-    { label: 'Contact Us',   to: '#' },
+    { label: 'Contact Us',   to: '/contact' },
   ],
   Support: [
     { label: 'Help Center',      to: '#' },

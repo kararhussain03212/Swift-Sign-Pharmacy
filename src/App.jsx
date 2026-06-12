@@ -11,7 +11,9 @@ import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import Wishlist from './pages/Wishlist'
-import Blog from './pages/Blog'
+import Blog       from './pages/Blog'
+import BlogDetail from './pages/BlogDetail'
+import Contact    from './pages/Contact'
 
 function App() {
   return (
@@ -30,6 +32,8 @@ function App() {
             <Route path="/cart"              element={<Cart />}          />
             <Route path="/wishlist"          element={<Wishlist />}      />
             <Route path="/blog"              element={<Blog />}          />
+            <Route path="/blog/:slug"        element={<BlogDetail />}    />
+            <Route path="/contact"           element={<Contact />}       />
             <Route path="*"                  element={<Home />}          />
           </Routes>
         </div>
