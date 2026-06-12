@@ -121,9 +121,9 @@ const Navbar = () => {
             style={{
               backgroundColor: '#1A9E6E',
               borderRadius: '40px',
-              paddingLeft: '40px',
-              paddingRight: '40px',
-              height: '60px',
+              paddingLeft: '35px',
+              paddingRight: '35px',
+              height: '55px',
               fontSize: '15px',
             }}
           >

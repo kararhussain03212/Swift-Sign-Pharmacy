@@ -5,6 +5,7 @@ import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
+import { VscPercentage } from "react-icons/vsc";
 import { categories } from '../../data/categories'
 
 const Header = () => {
@@ -40,14 +41,8 @@ const Header = () => {
           <Link to="/" className="flex items-center gap-1.5 flex-shrink-0 group">
             <span className="font-bold text-gray-900 tracking-tight"
                   style={{ fontSize: '30px', letterSpacing: '-0.5px' }}>
-              Parmacy
+              Logo Here
             </span>
-            <div className="w-7 h-7 rounded-full flex items-center justify-center
-                            text-white font-bold flex-shrink-0 group-hover:scale-110
-                            transition-transform duration-[150ms]"
-                 style={{ backgroundColor: '#1A9E6E', fontSize: '16px' }}>
-              +
-            </div>
           </Link>
 
           {/* ── SEARCH BAR ─────────────────────────────── */}
@@ -106,21 +101,7 @@ const Header = () => {
           <div className="flex items-center gap-5 ml-auto flex-shrink-0">
 
             {/* Delivery location */}
-            <div className="hidden lg:flex items-start gap-2 cursor-pointer group">
-              <MapPin size={30} className="text-gray-400 mt-0.5 flex-shrink-0
-                                          group-hover:text-primary transition-colors duration-[150ms]" />
-              <div>
-                <p style={{ fontSize: '13px', color: '#848484' }} className="leading-none mb-0.5">
-                  Express delivery to
-                </p>
-                <p className="font-semibold text-gray-800 group-hover:text-primary
-                              transition-colors duration-[150ms] flex items-center gap-0.5"
-                   style={{ fontSize: '17px' }}>
-                  Select Address
-                  <ChevronDown size={11} className="opacity-60" />
-                </p>
-              </div>
-            </div>
+            
 
             {/* Divider */}
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />
