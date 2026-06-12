@@ -45,31 +45,53 @@ const ReadingProgress = () => {
 }
 
 /* ─── Article body renderer ─────────────────────────── */
-// Converts the plain-text body into richly styled HTML-like blocks
-const ArticleBody = ({ body }) => {
-  // Split into sentences grouped in paragraphs of ~2 sentences each
-  const sentences = body.split(/(?<=[.!?])\s+/)
-  const paragraphs = []
-  for (let i = 0; i < sentences.length; i += 2) {
-    paragraphs.push(sentences.slice(i, i + 2).join(' '))
+const ArticleBody = ({ blog }) => {
+  const body = blog.body;
+  let blocks = [];
+  
+  // Support both new markdown-style \n\n and old sentence splitting
+  if (body.includes('\n\n')) {
+    blocks = body.split('\n\n');
+  } else {
+    const sentences = body.split(/(?<=[.!?])\s+/);
+    for (let i = 0; i < sentences.length; i += 2) {
+      blocks.push(sentences.slice(i, i + 2).join(' '));
+    }
   }
 
   return (
     <div className="prose-article">
-      {paragraphs.map((para, i) => {
-        // First paragraph gets a large drop-cap style
+      {blocks.map((block, i) => {
+        // If it's a heading
+        if (block.startsWith('## ')) {
+          return (
+            <h2 
+              key={i} 
+              className="text-center font-heading font-bold text-4xl py-20 px-8 rounded-xl my-12 shadow-sm"
+              style={{ 
+                backgroundColor: `${blog.categoryColor}15`, 
+                color: blog.categoryColor 
+              }}
+            >
+              {block.replace('## ', '')}
+            </h2>
+          );
+        }
+
+        // First paragraph gets a slightly larger, darker style
         if (i === 0) {
           return (
             <p key={i} className="text-[16px] leading-[1.85] text-gray-700 mb-6 font-medium">
-              {para}
+              {block}
             </p>
           )
         }
-        // Insert a pull-quote block after paragraph 2
-        if (i === 2) {
+        
+        // Auto pull-quote for old format blocks
+        if (i === 2 && !body.includes('\n\n')) {
           return (
             <div key={`pq-${i}`}>
-              <p className="text-[15px] leading-[1.85] text-gray-600 mb-6">{para}</p>
+              <p className="text-[15px] leading-[1.85] text-gray-600 mb-6">{block}</p>
               <blockquote
                 className="relative border-l-4 border-primary bg-primary-light/60 rounded-r-2xl px-7 py-5 my-8"
               >
@@ -77,15 +99,16 @@ const ArticleBody = ({ body }) => {
                   className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-12 bg-primary-dark rounded-full"
                 />
                 <p className="text-[17px] leading-[1.7] font-semibold text-primary-dark italic">
-                  &ldquo;{para.split('.')[0]}.&rdquo;
+                  &ldquo;{block.split('.')[0]}.&rdquo;
                 </p>
               </blockquote>
             </div>
           )
         }
+        
         return (
           <p key={i} className="text-[15px] leading-[1.85] text-gray-600 mb-6">
-            {para}
+            {block}
           </p>
         )
       })}
@@ -94,37 +117,37 @@ const ArticleBody = ({ body }) => {
 }
 
 /* ─── Key Takeaways ─────────────────────────────────── */
-const KeyTakeaways = ({ blog }) => {
-  const points = blog.body
-    .split(/(?<=[.!?])\s+/)
-    .filter(s => s.length > 30)
-    .slice(0, 4)
+// const KeyTakeaways = ({ blog }) => {
+//   const points = blog.body
+//     .split(/(?<=[.!?])\s+/)
+//     .filter(s => s.length > 30)
+//     .slice(0, 4)
 
-  return (
-    <div
-      className="rounded-2xl border border-primary/20 bg-primary-light/40 p-6 my-8"
-    >
-      <div className="flex items-center gap-2.5 mb-4">
-        <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-          <CheckCircle size={16} className="text-white" />
-        </div>
-        <h3 className="font-heading font-bold text-gray-900 text-[15px]">
-          Key Takeaways
-        </h3>
-      </div>
-      <ul className="space-y-3">
-        {points.map((point, i) => (
-          <li key={i} className="flex items-start gap-3">
-            <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-              <span className="text-white text-[9px] font-bold">{i + 1}</span>
-            </span>
-            <p className="text-[13px] text-gray-700 leading-relaxed">{point.trim()}</p>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
-}
+//   return (
+//     <div
+//       className="rounded-2xl border border-primary/20 bg-primary-light/40 p-6 my-8"
+//     >
+//       <div className="flex items-center gap-2.5 mb-4">
+//         <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
+//           <CheckCircle size={16} className="text-white" />
+//         </div>
+//         <h3 className="font-heading font-bold text-gray-900 text-[15px]">
+//           Key Takeaways
+//         </h3>
+//       </div>
+//       <ul className="space-y-3">
+//         {points.map((point, i) => (
+//           <li key={i} className="flex items-start gap-3">
+//             <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
+//               <span className="text-white text-[9px] font-bold">{i + 1}</span>
+//             </span>
+//             <p className="text-[13px] text-gray-700 leading-relaxed">{point.trim()}</p>
+//           </li>
+//         ))}
+//       </ul>
+//     </div>
+//   )
+// }
 
 /* ─── Share buttons ─────────────────────────────────── */
 const ShareButtons = ({ title, slug }) => {
@@ -194,145 +217,145 @@ const ShareButtons = ({ title, slug }) => {
 }
 
 /* ─── Sidebar widgets ───────────────────────────────── */
-const Sidebar = ({ currentSlug, category, tags }) => {
-  const related = blogs
-    .filter(b => b.slug !== currentSlug && (b.category === category || b.tags.some(t => tags.includes(t))))
-    .slice(0, 4)
+// const Sidebar = ({ currentSlug, category, tags }) => {
+//   const related = blogs
+//     .filter(b => b.slug !== currentSlug && (b.category === category || b.tags.some(t => tags.includes(t))))
+//     .slice(0, 4)
 
-  const popular = blogs.filter(b => b.slug !== currentSlug).slice(0, 5)
+//   const popular = blogs.filter(b => b.slug !== currentSlug).slice(0, 5)
 
-  return (
-    <aside className="space-y-6">
+//   return (
+//     <aside className="space-y-6">
 
-      {/* PHARMACIST CTA */}
-      <div
-        className="relative rounded-2xl overflow-hidden p-6 text-white"
-        style={{ background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)' }}
-      >
-        <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full border-2 border-white/10" />
-        <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full border border-white/10" />
-        <div className="relative z-10">
-          <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center mb-4">
-            <MessageCircle size={22} className="text-white" />
-          </div>
-          <h4 className="font-heading font-bold text-[15px] mb-1.5">
-            Ask Our Pharmacist
-          </h4>
-          <p className="text-white/65 text-[12px] leading-relaxed mb-4">
-            Have questions about medicines or this article? Our licensed pharmacists are here Mon–Sat, 9am–9pm.
-          </p>
-          <Link
-            to="/contact"
-            className="flex items-center justify-center gap-2 bg-white text-primary font-bold text-[13px] rounded-xl py-2.5 hover:bg-gray-50 transition-colors"
-          >
-            Chat with Pharmacist <ArrowRight size={14} />
-          </Link>
-        </div>
-      </div>
+//       {/* PHARMACIST CTA */}
+//       <div
+//         className="relative rounded-2xl overflow-hidden p-6 text-white"
+//         style={{ background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)' }}
+//       >
+//         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full border-2 border-white/10" />
+//         <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full border border-white/10" />
+//         <div className="relative z-10">
+//           <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center mb-4">
+//             <MessageCircle size={22} className="text-white" />
+//           </div>
+//           <h4 className="font-heading font-bold text-[15px] mb-1.5">
+//             Ask Our Pharmacist
+//           </h4>
+//           <p className="text-white/65 text-[12px] leading-relaxed mb-4">
+//             Have questions about medicines or this article? Our licensed pharmacists are here Mon–Sat, 9am–9pm.
+//           </p>
+//           <Link
+//             to="/contact"
+//             className="flex items-center justify-center gap-2 bg-white text-primary font-bold text-[13px] rounded-xl py-2.5 hover:bg-gray-50 transition-colors"
+//           >
+//             Chat with Pharmacist <ArrowRight size={14} />
+//           </Link>
+//         </div>
+//       </div>
 
       {/* RELATED POSTS */}
-      {related.length > 0 && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-          <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
-            <BookOpen size={15} className="text-primary" /> Related Articles
-          </h3>
-          <div className="space-y-4">
-            {related.map(post => (
-              <Link
-                key={post.id}
-                to={`/blog/${post.slug}`}
-                className="flex gap-3 group"
-              >
-                <img
-                  src={post.cover}
-                  alt={post.title}
-                  className="w-16 h-14 rounded-xl object-cover flex-shrink-0"
-                />
-                <div className="flex-1 min-w-0">
-                  <span
-                    className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full text-white"
-                    style={{ backgroundColor: post.categoryColor }}
-                  >
-                    {post.category}
-                  </span>
-                  <p className="text-[12px] font-semibold text-gray-800 line-clamp-2 leading-snug mt-1 group-hover:text-primary transition-colors">
-                    {post.title}
-                  </p>
-                  <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
-                    <Clock size={10} /> {post.readTime}
-                  </p>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      // {related.length > 0 && (
+      //   <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
+      //     <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
+      //       <BookOpen size={15} className="text-primary" /> Related Articles
+      //     </h3>
+      //     <div className="space-y-4">
+      //       {related.map(post => (
+      //         <Link
+      //           key={post.id}
+      //           to={`/blog/${post.slug}`}
+      //           className="flex gap-3 group"
+      //         >
+      //           <img
+      //             src={post.cover}
+      //             alt={post.title}
+      //             className="w-16 h-14 rounded-xl object-cover flex-shrink-0"
+      //           />
+      //           <div className="flex-1 min-w-0">
+      //             <span
+      //               className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full text-white"
+      //               style={{ backgroundColor: post.categoryColor }}
+      //             >
+      //               {post.category}
+      //             </span>
+      //             <p className="text-[12px] font-semibold text-gray-800 line-clamp-2 leading-snug mt-1 group-hover:text-primary transition-colors">
+      //               {post.title}
+      //             </p>
+      //             <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
+      //               <Clock size={10} /> {post.readTime}
+      //             </p>
+      //           </div>
+      //         </Link>
+      //       ))}
+      //     </div>
+      //   </div>
+      // )}
 
       {/* POPULAR POSTS */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-        <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4">
-          Popular This Week
-        </h3>
-        <div className="space-y-3">
-          {popular.map((post, i) => (
-            <Link
-              key={post.id}
-              to={`/blog/${post.slug}`}
-              className="flex items-start gap-3 group"
-            >
-              <span
-                className="w-7 h-7 flex-shrink-0 rounded-lg flex items-center justify-center text-[11px] font-black text-white"
-                style={{ backgroundColor: post.categoryColor }}
-              >
-                {i + 1}
-              </span>
-              <p className="text-[12px] font-medium text-gray-700 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-                {post.title}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
+      // <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
+      //   <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4">
+      //     Popular This Week
+      //   </h3>
+      //   <div className="space-y-3">
+      //     {popular.map((post, i) => (
+      //       <Link
+      //         key={post.id}
+      //         to={`/blog/${post.slug}`}
+      //         className="flex items-start gap-3 group"
+      //       >
+      //         <span
+      //           className="w-7 h-7 flex-shrink-0 rounded-lg flex items-center justify-center text-[11px] font-black text-white"
+      //           style={{ backgroundColor: post.categoryColor }}
+      //         >
+      //           {i + 1}
+      //         </span>
+      //         <p className="text-[12px] font-medium text-gray-700 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
+      //           {post.title}
+      //         </p>
+      //       </Link>
+      //     ))}
+      //   </div>
+      // </div>
 
       {/* NEWSLETTER */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-        <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-1">
-          Health Newsletter
-        </h3>
-        <p className="text-[12px] text-gray-500 mb-4">
-          Weekly tips from certified pharmacists, delivered free.
-        </p>
-        <input
-          type="email"
-          placeholder="your@email.com"
-          className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] outline-none focus:border-primary focus:shadow-glow transition-all mb-2.5"
-        />
-        <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold rounded-xl py-2.5 text-[13px] transition-colors">
-          Subscribe Free
-        </button>
-      </div>
+      // <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
+      //   <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-1">
+      //     Health Newsletter
+      //   </h3>
+      //   <p className="text-[12px] text-gray-500 mb-4">
+      //     Weekly tips from certified pharmacists, delivered free.
+      //   </p>
+      //   <input
+      //     type="email"
+      //     placeholder="your@email.com"
+      //     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] outline-none focus:border-primary focus:shadow-glow transition-all mb-2.5"
+      //   />
+      //   <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold rounded-xl py-2.5 text-[13px] transition-colors">
+      //     Subscribe Free
+      //   </button>
+      // </div>
 
       {/* TAGS */}
-      <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-        <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
-          <Tag size={14} className="text-primary" /> Article Tags
-        </h3>
-        <div className="flex flex-wrap gap-2">
-          {tags.map(tag => (
-            <Link
-              key={tag}
-              to={`/blog?tag=${tag}`}
-              className="text-[12px] border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
-            >
-              #{tag}
-            </Link>
-          ))}
-        </div>
-      </div>
+//       <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
+//         <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
+//           <Tag size={14} className="text-primary" /> Article Tags
+//         </h3>
+//         <div className="flex flex-wrap gap-2">
+//           {tags.map(tag => (
+//             <Link
+//               key={tag}
+//               to={`/blog?tag=${tag}`}
+//               className="text-[12px] border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
+//             >
+//               #{tag}
+//             </Link>
+//           ))}
+//         </div>
+//       </div>
 
-    </aside>
-  )
-}
+//     </aside>
+//   )
+// }
 
 /* ─── Main Page ─────────────────────────────────────── */
 const BlogDetail = () => {
@@ -506,10 +529,10 @@ const BlogDetail = () => {
               </div>
 
               {/* Key Takeaways */}
-              <KeyTakeaways blog={blog} />
+              {/* <KeyTakeaways blog={blog} /> */}
 
               {/* Article Body */}
-              <ArticleBody body={blog.body} />
+              <ArticleBody blog={blog} />
 
         </div>
 
