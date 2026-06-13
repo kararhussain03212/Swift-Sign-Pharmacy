@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import TopBar from './components/layout/TopBar'
 import Header from './components/layout/Header'
-import Navbar from './components/layout/Navbar'
+// import Navbar from './components/layout/Navbar'
 import SecondaryNav from './components/layout/SecondaryNav'
 import Footer from './components/layout/Footer'
 import MobileBottomNav from './components/layout/MobileBottomNav'
@@ -14,6 +14,8 @@ import Wishlist from './pages/Wishlist'
 import Blog       from './pages/Blog'
 import BlogDetail from './pages/BlogDetail'
 import Contact    from './pages/Contact'
+import Diseases     from './pages/Diseases'
+import AsaanOrder   from './pages/AsaanOrder'
 
 function App() {
   return (
@@ -21,7 +23,7 @@ function App() {
       <div className="min-h-screen flex flex-col">
         <TopBar />
         <Header />
-        <Navbar />
+        {/* <Navbar /> */}
         <SecondaryNav />
 
         <div className="flex-1">
@@ -34,6 +36,8 @@ function App() {
             <Route path="/blog"              element={<Blog />}          />
             <Route path="/blog/:slug"        element={<BlogDetail />}    />
             <Route path="/contact"           element={<Contact />}       />
+            <Route path="/diseases"          element={<Diseases />}      />
+            <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="*"                  element={<Home />}          />
           </Routes>
         </div>

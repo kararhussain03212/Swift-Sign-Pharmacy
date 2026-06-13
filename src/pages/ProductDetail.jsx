@@ -157,22 +157,25 @@ const ProductDetail = () => {
               )}
             </div>
 
-            {/* Social Indicators */}
-            <div className="border-t border-b border-gray-100 py-4.5 my-4 flex flex-col gap-2.5">
-              <div className="flex items-center gap-2.5 text-red-600 text-[13px]  tracking-wider">
-                <Flame size={16} className="animate-pulse" />
-                <span>12 PEOPLE ARE VIEWING THIS RIGHT NOW</span>
+            {/* Product Meta Info */}
+            <div className="flex flex-col gap-4 py-5 my-4 border-t border-b border-gray-100 text-[14px]">
+              <div>
+                <span className="font-bold text-gray-900">Manufacturer: </span>
+                <span className="font-bold text-gray-600">{product.manufacturer || 'GSK'}</span>
               </div>
-              <div className="flex items-center gap-2.5 text-emerald-600 text-[13px]  tracking-wider">
-                <Truck size={16} />
-                <span>IN STOCK AND READY TO SHIP</span>
+              <div>
+                <span className="font-bold text-gray-900">Ingredients: </span>
+                <span className="font-bold text-gray-600">{product.ingredients || 'Paracetamol'}</span>
+              </div>
+              <div>
+                <span className="font-bold text-gray-900">Form: </span>
+                <span className="font-medium text-gray-600">{product.form || 'Drops'}</span>
+              </div>
+              <div>
+                <span className="font-bold text-gray-900">SKU#: </span>
+                <span className="font-medium text-gray-600">{product.sku || '258780'}</span>
               </div>
             </div>
-
-            {/* Description Snippet */}
-            <p className="text-gray-600 text-[14px] leading-relaxed mb-6 font-medium">
-              {product.description}
-            </p>
 
             {/* Quantity and Add to Cart Row */}
             <div className="flex flex-col sm:flex-row gap-4 mb-3.5">
@@ -230,10 +233,10 @@ const ProductDetail = () => {
                 <Heart size={25} fill={isWishlisted(product.id) ? '#1A9E6E' : 'none'} className={isWishlisted(product.id) ? 'text-primary' : 'text-gray-400 text-[0px]'} />
                 <span>Add to wishlist</span>
               </button>
-              <button className="flex items-center gap-2 hover:text-[#1c716b] transition-colors">
+              {/* <button className="flex items-center gap-2 hover:text-[#1c716b] transition-colors">
                 <RefreshCw size={25} className="text-gray-400" />
                 <span>Compare</span>
-              </button>
+              </button> */}
               <button className="flex items-center gap-2 hover:text-[#1c716b] transition-colors">
                 <HelpCircle size={25} className="text-gray-400" />
                 <span>Ask Us</span>
@@ -241,7 +244,7 @@ const ProductDetail = () => {
             </div>
 
             {/* Social Shares */}
-            <div className="flex items-center gap-3.5 text-[13px] text-gray-500 font-bold">
+            {/* <div className="flex items-center gap-3.5 text-[13px] text-gray-500 font-bold">
               <span>Share:</span>
               <div className="flex items-center gap-2">
                 <button className="w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center hover:bg-gray-50 hover:text-blue-600 transition-colors text-gray-400">
@@ -263,109 +266,36 @@ const ProductDetail = () => {
                   <Share2 size={13} />
                 </button>
               </div>
-            </div>
+            </div> */}
 
           </div>
 
         </div>
 
-        {/* Tabbed Info Section */}
+        {/* Product Description Section */}
         <div className="mt-16">
-          {/* Tab Headers */}
-          <div className="border-b border-gray-200 flex justify-center gap-8 text-[15px] font-bold">
-            <button
-              onClick={() => setActiveTab('description')}
-              className={`pb-4 border-b-2 transition-all ${
-                activeTab === 'description' ? 'border-[#1c716b] text-black font-extrabold' : 'border-transparent text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              Description
-            </button>
-            <button
-              onClick={() => setActiveTab('specifications')}
-              className={`pb-4 border-b-2 transition-all ${
-                activeTab === 'specifications' ? 'border-[#1c716b] text-black font-extrabold' : 'border-transparent text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              Product Specifications
-            </button>
-            <button
-              onClick={() => setActiveTab('reviews')}
-              className={`pb-4 border-b-2 transition-all ${
-                activeTab === 'reviews' ? 'border-[#1c716b] text-black font-extrabold' : 'border-transparent text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              Reviews (0)
-            </button>
+          <div className="border-b border-gray-200 pb-4 mb-8">
+            <h2 className="text-2xl font-heading font-extrabold text-gray-900">Description</h2>
           </div>
 
-          {/* Tab Content */}
-          <div className="py-8">
-            {activeTab === 'description' && (
-              <div className="max-w-none text-gray-600 text-[14px] leading-relaxed flex flex-col gap-6 font-medium">
-                <p>
-                  {product.description}
-                </p>
-                {product.keyBenefits && (
-                  <div>
-                    <h3 className="text-gray-900 font-extrabold text-base mb-2.5">Key benefits:</h3>
-                    <ul className="list-disc pl-5 flex flex-col gap-2">
-                      {product.keyBenefits.map((b, i) => (
-                        <li key={i}>{b}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {product.ingredients && (
-                  <div>
-                    <h3 className="text-gray-900 font-extrabold text-base mb-1.5">Ingredients:</h3>
-                    <p className="text-gray-500 italic">{product.ingredients}</p>
-                  </div>
-                )}
-                {product.directions && (
-                  <div>
-                    <h3 className="text-gray-900 font-extrabold text-base mb-1.5">Directions for Use:</h3>
-                    <p>{product.directions}</p>
-                  </div>
-                )}
+          <div className="max-w-none text-gray-600 text-[15px] leading-relaxed flex flex-col gap-6 font-medium">
+            <p>
+              {product.description}
+            </p>
+            {product.keyBenefits && (
+              <div>
+                <h3 className="text-gray-900 font-extrabold text-base mb-2.5">Key benefits:</h3>
+                <ul className="list-disc pl-5 flex flex-col gap-2">
+                  {product.keyBenefits.map((b, i) => (
+                    <li key={i}>{b}</li>
+                  ))}
+                </ul>
               </div>
             )}
-
-            {activeTab === 'specifications' && (
-              <div className="overflow-hidden border border-gray-100 rounded-2xl max-w-4xl mx-auto shadow-sm">
-                <table className="w-full text-left border-collapse text-[14px] text-gray-600">
-                  <tbody>
-                    {product.specifications ? (
-                      Object.entries(product.specifications).map(([key, val]) => (
-                        <tr key={key} className="border-b border-gray-100 last:border-b-0 hover:bg-gray-50/50 transition-colors">
-                          <td className="w-1/3 py-3.5 px-5 font-bold text-gray-900 bg-gray-50/50">{key}</td>
-                          <td className="py-3.5 px-5 font-medium">{val}</td>
-                        </tr>
-                      ))
-                    ) : (
-                      <>
-                        <tr className="border-b border-gray-100">
-                          <td className="w-1/3 py-3.5 px-5 font-bold text-gray-900 bg-gray-50/50">Brand</td>
-                          <td className="py-3.5 px-5 font-medium">{product.brand}</td>
-                        </tr>
-                        <tr className="border-b border-gray-100">
-                          <td className="w-1/3 py-3.5 px-5 font-bold text-gray-900 bg-gray-50/50">Category</td>
-                          <td className="py-3.5 px-5 font-medium capitalize">{product.category}</td>
-                        </tr>
-                      </>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            )}
-
-            {activeTab === 'reviews' && (
-              <div className="text-center py-12 text-gray-500 text-[14px] max-w-md mx-auto">
-                <p className="font-bold text-gray-800 text-base mb-2">There are no reviews for this product yet.</p>
-                <p className="text-gray-400 font-medium">Be the first to review "{product.name}"</p>
-                <button className="mt-5 bg-primary hover:bg-primary-dark text-white font-extrabold px-6 py-2.5 rounded-full text-[11px] uppercase tracking-wider transition-colors shadow-glow">
-                  Write a Review
-                </button>
+            {product.directions && (
+              <div>
+                <h3 className="text-gray-900 font-extrabold text-base mb-1.5">Directions for Use:</h3>
+                <p>{product.directions}</p>
               </div>
             )}
           </div>
@@ -403,11 +333,7 @@ const ProductDetail = () => {
 
       </div>
 
-      {/* Newsletter and Trust Badges */}
-      <Newsletter />
-      <div className="border-t border-gray-100">
-        <TrustBadges />
-      </div>
+      
     </main>
   )
 }

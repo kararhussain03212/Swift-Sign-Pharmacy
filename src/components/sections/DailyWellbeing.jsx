@@ -5,7 +5,7 @@ import { products } from '../../data/products'
 import ProductCard from '../ui/ProductCard'
 import SectionHeader from '../ui/SectionHeader'
 
-const ComboDeals = () => {
+const DailyWellbeing = () => {
   const prevRef = useRef(null)
   const nextRef = useRef(null)
   const comboProducts = products.filter(p => p.tags.includes('combo'))
@@ -14,7 +14,7 @@ const ComboDeals = () => {
     <section className="bg-primary-light mt-10 py-10">
       <div className="max-w-[1450px] mx-auto px-5">
         <SectionHeader
-          title="Popular Combo Deals"
+          title="Daily Well-being"
           prevRef={prevRef}
           nextRef={nextRef}
           viewAllLink="/shop"
@@ -49,4 +49,4 @@ const ComboDeals = () => {
   )
 }
 
-export default ComboDeals
+export default DailyWellbeing

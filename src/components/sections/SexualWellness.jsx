@@ -5,7 +5,7 @@ import { products } from '../../data/products'
 import ProductCard from '../ui/ProductCard'
 import SectionHeader from '../ui/SectionHeader'
 
-const TrendingNow = () => {
+const SexualWellness = () => {
   const prevRef = useRef(null)
   const nextRef = useRef(null)
   const trendingProducts = products.filter(p => p.tags.includes('trending'))
@@ -13,7 +13,7 @@ const TrendingNow = () => {
   return (
     <section className="max-w-[1450px] mx-auto px-5 mt-10">
       <SectionHeader
-        title="Trending Now"
+        title="Sexual Wellness"
         prevRef={prevRef}
         nextRef={nextRef}
         viewAllLink="/shop"
@@ -47,4 +47,4 @@ const TrendingNow = () => {
   )
 }
 
-export default TrendingNow
+export default SexualWellness

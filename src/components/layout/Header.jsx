@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, MapPin, User, Heart, ShoppingCart, X, ChevronDown } from 'lucide-react'
+import { Search, MapPin, User, Heart, ShoppingCart, X, ChevronDown, Flame } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
 import { VscPercentage } from "react-icons/vsc";
 import { categories } from '../../data/categories'
+
 
 const Header = () => {
   const navigate = useNavigate()
@@ -46,7 +47,7 @@ const Header = () => {
           </Link>
 
           {/* ── SEARCH BAR ─────────────────────────────── */}
-          <div className="flex-1  relative" style={{ maxWidth: '650px' }}>
+          <div className="flex-1  relative" style={{ maxWidth: '550px' }}>
             <div
               className={`flex items-center transition-all duration-[150ms]
                           ${isSearchFocused
@@ -96,6 +97,15 @@ const Header = () => {
               <SearchDropdown query={searchQuery} />
             )}
           </div>
+          {/* Deals Button */}
+          <Link
+            to="/shop?deals=true"
+            className="flex items-center gap-1.5 px-4 py-3 bg-[#e53935] rounded-full text-white font-semibold hover:opacity-80 transition-opacity whitespace-nowrap ml-4 flex-shrink-0"
+            style={{ fontSize: '13px' }}
+          >
+            <VscPercentage size={20} className="animate-pulse text-white" />
+            Hot Deals
+          </Link>
 
           {/* ── RIGHT SIDE ICONS ────────────────────────── */}
           <div className="flex items-center gap-5 ml-auto flex-shrink-0">
