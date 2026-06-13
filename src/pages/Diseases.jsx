@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { diseasesList } from '../data/diseases'
+import { diseasesList } from '../data/categories'
 import Newsletter from '../components/sections/Newsletter'
 
 const Diseases = () => {
-  // Group by first letter
   const groupedDiseases = useMemo(() => {
     const groups = {}
     diseasesList.forEach(disease => {
-      const firstLetter = disease.charAt(0).toUpperCase()
+      const firstLetter = disease.name.charAt(0).toUpperCase()
       if (!groups[firstLetter]) {
         groups[firstLetter] = []
       }
@@ -16,7 +15,7 @@ const Diseases = () => {
     })
     return Object.keys(groups).sort().map(letter => ({
       letter,
-      diseases: groups[letter].sort()
+      diseases: groups[letter].sort((a, b) => a.name.localeCompare(b.name))
     }))
   }, [])
 
@@ -42,12 +41,12 @@ const Diseases = () => {
               </div>
               <ul className="divide-y divide-gray-50">
                 {group.diseases.map(disease => (
-                  <li key={disease}>
+                  <li key={disease.slug}>
                     <Link 
-                      to={`/shop?category=diseases&sub=${encodeURIComponent(disease)}`} 
+                      to={`/shop?category=diseases&sub=${encodeURIComponent(disease.slug)}`} 
                       className="block px-6 py-3 text-[14px] text-gray-600 hover:bg-primary/5 hover:text-primary hover:font-bold transition-all"
                     >
-                      {disease}
+                      {disease.name}
                     </Link>
                   </li>
                 ))}

@@ -1,45 +1,27 @@
 import { ChevronDown, Upload } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { diseasesList } from '../../data/diseases'
+import { categories, diseasesList } from '../../data/categories'
 
-const navCategories = [
-  {
+// Build nav items from categories.js - diseases go first as a special item
+const buildNavItems = () => {
+  const diseasesItem = {
     name: 'Diseases',
-    subCategories: diseasesList
-  },
-  {
-    name: 'Medicines',
-    // subCategories: ['Prescription Medicines', 'Over the Counter (OTC)', 'Homeopathic', 'Ayurvedic', 'Pain Relief', 'First Aid']
-  },
-  {
-    name: 'Vitamins & Supplements',
-    subCategories: ['Multivitamins', 'Omega 3 & Fish Oil', 'Calcium & Minerals', 'Vitamin D', 'Vitamin C', 'Immunity Boosters']
-  },
-  {
-    name: 'Personal Care',
-    subCategories: ['Oral Hygiene', 'Skin Care', 'Hair & Nail Care', 'Fragrances']
-  },
-  {
-    name: 'Baby Care',
-    subCategories: ['Baby Nutrition', 'Baby Bath', 'Baby Essentials']
-  },
-  {
-    name: 'Lifestyle & Fitness',
-    subCategories: [' Daily Well-being', 'Men’s Health', 'Women’s Health', 'Elder Care']
-  },
-  {
-    name: 'Sexual Wellness',
-    // subCategories: ['Condoms', 'Lubricants', 'Massagers', 'Performance Enhancers', 'Pregnancy Test Kits']
-  },
-  {
-    name: 'Organic',
-    subCategories: ['Homeopathic', 'Organic Health', 'Herbal Care']
-  },
-  {
-    name: 'Healthcare Device',
-    subCategories: ['Medical Equipment', 'Supports & Braces', 'Hospital Supplies']
+    slug: 'diseases',
+    to: '/diseases',
+    subCategories: diseasesList.slice(0, 30) // show first 30 in dropdown
   }
-]
+
+  const catItems = categories.map(cat => ({
+    name: cat.name,
+    slug: cat.slug,
+    to: `/shop?category=${cat.slug}`,
+    subCategories: cat.subCategories || []
+  }))
+
+  return [diseasesItem, ...catItems]
+}
+
+const navItems = buildNavItems()
 
 const SecondaryNav = () => {
   return (
@@ -50,12 +32,12 @@ const SecondaryNav = () => {
           
           {/* Main Links */}
           <div className="flex items-center gap-0 overflow-x-visible">
-            {navCategories.map((category, i) => (
-              <div key={category.name} className="relative group h-full flex items-center">
+            {navItems.map((item, i) => (
+              <div key={item.name} className="relative group h-full flex items-center">
                 <Link
-                  to={category.name === 'Diseases' ? '/diseases' : `/shop?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
+                  to={item.to}
                   className="flex items-center gap-1 text-gray-600 hover:text-[#1A9E6E]
-                             transition-colors duration-[150ms] whitespace-nowrap"
+                             transition-colors duration-[150ms] whitespace-nowrap relative"
                   style={{
                     fontSize: '13px',
                     fontWeight: 400,
@@ -64,8 +46,8 @@ const SecondaryNav = () => {
                     height: '40px',
                   }}
                 >
-                  {category.name}
-                  {category.subCategories && category.subCategories.length > 0 && (
+                  {item.name}
+                  {item.subCategories && item.subCategories.length > 0 && (
                     <ChevronDown size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
                   )}
                   
@@ -76,28 +58,34 @@ const SecondaryNav = () => {
                 </Link>
 
                 {/* Dropdown Menu */}
-                {category.subCategories && category.subCategories.length > 0 && (
+                {item.subCategories && item.subCategories.length > 0 && (
                   <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100 
                                   rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto opacity-0 invisible translate-y-2
                                   group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
                                   transition-all duration-200 z-50">
-                    {category.name === 'Diseases' && (
+                    {/* "View All" link for Diseases */}
+                    {item.slug === 'diseases' && (
                       <Link to="/diseases" className="block px-4 py-2 text-[13px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
                         View A-Z Guide →
                       </Link>
                     )}
-                    {category.subCategories.map(sub => (
-                      <Link
-                        key={sub}
-                        to={category.name === 'Diseases'
-                          ? `/shop?category=diseases&sub=${encodeURIComponent(sub)}`
-                          : `/shop?category=${category.name.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}&sub=${sub.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`
-                        }
-                        className="block px-4 py-2 text-[13px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate"
-                      >
-                        {sub}
-                      </Link>
-                    ))}
+                    {item.subCategories.map(sub => {
+                      // sub is either an object {name, slug} (diseases) or {name, slug} (category sub)
+                      const subName = typeof sub === 'object' ? sub.name : sub
+                      const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                      const subTo = item.slug === 'diseases'
+                        ? `/shop?diseaseCategory=${encodeURIComponent(subSlug)}`
+                        : `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                      return (
+                        <Link
+                          key={subSlug}
+                          to={subTo}
+                          className="block px-4 py-2 text-[13px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate"
+                        >
+                          {subName}
+                        </Link>
+                      )
+                    })}
                   </div>
                 )}
               </div>

@@ -1,20 +1,47 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { products } from '../data/products'
 import { categories } from '../data/categories'
 import ProductCard from '../components/ui/ProductCard'
 import { Search, SlidersHorizontal } from 'lucide-react'
 
 const Shop = () => {
-  const [selectedCategory, setSelectedCategory] = useState('all')
+  const [searchParams] = useSearchParams()
+  const dealsParam = searchParams.get('deals') === 'true'
+  const subCategoryParam = searchParams.get('subCategory')
+  const diseaseCategoryParam = searchParams.get('diseaseCategory')
+  const categoryParam = searchParams.get('category') || 'all'
+
+  const [selectedCategory, setSelectedCategory] = useState(categoryParam)
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('default')
 
+  useEffect(() => {
+    setSelectedCategory(searchParams.get('category') || 'all')
+    setSearchQuery('')
+  }, [searchParams])
+
+  // Build active filter label
+  const activeLabel = dealsParam
+    ? '🔥 Hot Deals'
+    : diseaseCategoryParam
+    ? `Disease: ${decodeURIComponent(diseaseCategoryParam).replace(/-/g, ' ')}`
+    : subCategoryParam
+    ? `Sub-Category: ${decodeURIComponent(subCategoryParam)}`
+    : null
+
   const filtered = products
     .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
+    .filter(p => !dealsParam || p.salePrice)
+    .filter(p => !subCategoryParam || p.subCategory === decodeURIComponent(subCategoryParam))
+    .filter(p => !diseaseCategoryParam || {
+      // match against the slug version of diseaseCategory stored in product
+      test: true
+    }.test && p.diseaseCategory?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === diseaseCategoryParam)
     .filter(p =>
       searchQuery === '' ||
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.brand.toLowerCase().includes(searchQuery.toLowerCase())
+      p.brand?.toLowerCase().includes(searchQuery.toLowerCase())
     )
     .sort((a, b) => {
       if (sortBy === 'price-low') return (a.salePrice ?? a.price) - (b.salePrice ?? b.price)
@@ -23,9 +50,15 @@ const Shop = () => {
       return 0
     })
 
+  const pageTitle = dealsParam ? 'Hot Deals' : 'Shop All Products'
+
   return (
     <main className="max-w-[1450px] mx-auto px-5 py-8">
-      <h1 className="font-heading font-bold text-2xl text-gray-900 mb-6">Shop All Products</h1>
+      <h1 className="font-heading font-bold text-2xl text-gray-900 mb-1">{pageTitle}</h1>
+      {activeLabel && (
+        <p className="text-sm text-primary font-medium mb-4">Filtered by: <span className="font-bold">{activeLabel}</span></p>
+      )}
+
 
       {/* Filters */}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-3 mb-6">

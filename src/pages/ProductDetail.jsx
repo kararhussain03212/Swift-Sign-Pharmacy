@@ -158,19 +158,39 @@ const ProductDetail = () => {
             </div>
 
             {/* Product Meta Info */}
-            <div className="flex flex-col gap-4 py-5 my-4 border-t border-b border-gray-100 text-[14px]">
-              <div>
-                <span className="font-bold text-gray-900">Manufacturer: </span>
-                <span className="font-bold text-gray-600">{product.manufacturer || 'GSK'}</span>
-              </div>
-              <div>
-                <span className="font-bold text-gray-900">Ingredients: </span>
-                <span className="font-bold text-gray-600">{product.ingredients || 'Paracetamol'}</span>
-              </div>
-              <div>
-                <span className="font-bold text-gray-900">Form: </span>
-                <span className="font-medium text-gray-600">{product.form || 'Drops'}</span>
-              </div>
+            <div className="flex flex-col gap-3 py-5 my-4 border-t border-b border-gray-100 text-[14px]">
+              {product.category && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">Category: </span>
+                  <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="font-medium text-primary hover:underline capitalize">
+                    {product.category}
+                  </Link>
+                </div>
+              )}
+              {product.subCategory && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">Sub Category: </span>
+                  <Link to={`/shop?subCategory=${encodeURIComponent(product.subCategory)}`} className="font-medium text-primary hover:underline capitalize">
+                    {product.subCategory}
+                  </Link>
+                </div>
+              )}
+              {product.diseaseCategory && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">Disease Category: </span>
+                  <Link to={`/shop?diseaseCategory=${encodeURIComponent(product.diseaseCategory)}`} className="font-medium text-primary hover:underline capitalize">
+                    {product.diseaseCategory}
+                  </Link>
+                </div>
+              )}
+              {product.salePrice && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">Deals: </span>
+                  <Link to={`/shop?deals=true`} className="font-medium text-red-500 hover:underline capitalize flex items-center gap-1">
+                    <Flame size={14} /> Hot Deals
+                  </Link>
+                </div>
+              )}
               <div>
                 <span className="font-bold text-gray-900">SKU#: </span>
                 <span className="font-medium text-gray-600">{product.sku || '258780'}</span>

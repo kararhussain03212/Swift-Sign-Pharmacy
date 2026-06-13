@@ -1,12 +1,14 @@
 export const navLinks = [
-  { label: 'Home',            to: '/'          },
-  { label: 'Shop',            to: '/shop'       },
-  { label: 'Vitamins',        to: '/shop?category=vitamins'       },
-  { label: 'Skin Care',       to: '/shop?category=skincare'       },
-  { label: 'Sport Nutrition', to: '/shop?category=sportNutrition' },
-  { label: 'Blog',            to: '/blog'      },
-  { label: 'Wishlist',        to: '/wishlist'  },
+  { label: 'Home',               to: '/'                                      },
+  { label: 'Shop',               to: '/shop'                                  },
+  { label: 'Medicines',          to: '/shop?category=medicines'               },
+  { label: 'Vitamins',           to: '/shop?category=vitamins'                },
+  { label: 'Personal Care',      to: '/shop?category=personalCare'            },
+  { label: 'Baby Care',          to: '/shop?category=babyCare'                },
+  { label: 'Lifestyle & Fitness', to: '/shop?category=lifestyle-fitness'      },
+  { label: 'Blog',               to: '/blog'                                  },
 ]
+
 
 export const quickLinks = [
   'Protein Powder',
@@ -37,11 +39,13 @@ export const footerLinks = {
     { label: 'Shipping Policy',  to: '#' },
   ],
   Categories: [
-    { label: 'Vitamins',        to: '/shop?category=vitamins'       },
-    { label: 'Skin Care',       to: '/shop?category=skincare'       },
-    { label: 'Baby Care',       to: '/shop?category=babyCare'       },
-    { label: 'Sport Nutrition', to: '/shop?category=sportNutrition' },
-    { label: 'CBD Range',       to: '/shop?category=cbd'            },
+    { label: 'Medicines',          to: '/shop?category=medicines'           },
+    { label: 'Vitamins',           to: '/shop?category=vitamins'            },
+    { label: 'Personal Care',      to: '/shop?category=personalCare'        },
+    { label: 'Baby Care',          to: '/shop?category=babyCare'            },
+    { label: 'Lifestyle & Fitness', to: '/shop?category=lifestyle-fitness'  },
+    { label: 'Sexual Wellness',    to: '/shop?category=sexual-wellness'     },
+    { label: 'Healthcare Device',  to: '/shop?category=healthcare-device'   },
   ],
   Legal: [
     { label: 'Privacy Policy',    to: '#' },
