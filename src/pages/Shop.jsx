@@ -30,14 +30,14 @@ const Shop = () => {
     ? `Sub-Category: ${decodeURIComponent(subCategoryParam)}`
     : null
 
+  // Helper to convert a display name to a URL slug for comparison
+  const toSlug = str => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || ''
+
   const filtered = products
     .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
     .filter(p => !dealsParam || p.salePrice)
-    .filter(p => !subCategoryParam || p.subCategory === decodeURIComponent(subCategoryParam))
-    .filter(p => !diseaseCategoryParam || {
-      // match against the slug version of diseaseCategory stored in product
-      test: true
-    }.test && p.diseaseCategory?.toLowerCase().replace(/[^a-z0-9]+/g, '-') === diseaseCategoryParam)
+    .filter(p => !subCategoryParam || toSlug(p.subCategory) === decodeURIComponent(subCategoryParam))
+    .filter(p => !diseaseCategoryParam || toSlug(p.diseaseCategory) === diseaseCategoryParam)
     .filter(p =>
       searchQuery === '' ||
       p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -50,7 +50,12 @@ const Shop = () => {
       return 0
     })
 
-  const pageTitle = dealsParam ? 'Hot Deals' : 'Shop All Products'
+  const activeCat = categories.find(c => c.slug === selectedCategory)
+  const pageTitle = dealsParam
+    ? '🔥 Hot Deals'
+    : activeCat
+    ? activeCat.name
+    : 'Shop All Products'
 
   return (
     <main className="max-w-[1450px] mx-auto px-5 py-8">

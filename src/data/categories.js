@@ -6,6 +6,7 @@ export const categories = [
     showInNav: true,
     image: '/jellybee_gummies.png',
     subCategories: [
+      { name: 'All Medicines', slug: 'all-medicines' },
       { name: 'Prescription Medicines', slug: 'prescription-medicines' },
       { name: 'Over the Counter (OTC)', slug: 'otc' },
       { name: 'Homeopathic', slug: 'homeopathic' },

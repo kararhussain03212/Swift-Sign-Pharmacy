@@ -110,8 +110,15 @@ const Header = () => {
           {/* ── RIGHT SIDE ICONS ────────────────────────── */}
           <div className="flex items-center gap-5 ml-auto flex-shrink-0">
 
-            {/* Delivery location */}
-            
+            {/* Country Selector */}
+            <div className="hidden md:flex flex-col items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
+              <img 
+                src="https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg" 
+                alt="Pakistan" 
+                className="w-[28px] h-[18px] object-cover rounded-[2px] shadow-sm mb-1" 
+              />
+              <span className="text-[11px] font-bold text-gray-700 leading-none">Pakistan</span>
+            </div>
 
             {/* Divider */}
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />

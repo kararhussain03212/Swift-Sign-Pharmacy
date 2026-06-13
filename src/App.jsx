@@ -2,10 +2,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import TopBar from './components/layout/TopBar'
 import Header from './components/layout/Header'
-// import Navbar from './components/layout/Navbar'
+import Navbar from './components/layout/Navbar'
 import SecondaryNav from './components/layout/SecondaryNav'
 import Footer from './components/layout/Footer'
 import MobileBottomNav from './components/layout/MobileBottomNav'
+import FloatingChat from './components/ui/FloatingChat'
+import FeedbackWidget from './components/ui/FeedbackWidget'
 import Home from './pages/Home'
 import Shop from './pages/Shop'
 import ProductDetail from './pages/ProductDetail'
@@ -23,7 +25,7 @@ function App() {
       <div className="min-h-screen flex flex-col">
         <TopBar />
         <Header />
-        {/* <Navbar /> */}
+        <Navbar />
         <SecondaryNav />
 
         <div className="flex-1">
@@ -44,6 +46,8 @@ function App() {
 
         <Footer />
         <MobileBottomNav />
+        <FloatingChat />
+        <FeedbackWidget />
 
         <Toaster
           position="top-right"

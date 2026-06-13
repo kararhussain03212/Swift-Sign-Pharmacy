@@ -30,7 +30,7 @@ const SecondaryNav = () => {
     <div className="bg-white hidden md:block relative z-30"
          style={{ borderBottom: '1px solid #e5e5e5' }}>
       <div className="max-w-[1450px] mx-auto px-6">
-        <div className="flex items-center justify-between" style={{ height: '40px' }}>
+        <div className="flex items-center justify-between" style={{ height: '50px' }}>
           
           {/* Main Links */}
           <div className="flex items-center gap-0 overflow-x-visible">
@@ -72,19 +72,27 @@ const SecondaryNav = () => {
                       </Link>
                     )}
                     {item.subCategories.map(sub => {
-                      // sub is either an object {name, slug} (diseases) or {name, slug} (category sub)
                       const subName = typeof sub === 'object' ? sub.name : sub
                       const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-                      const subTo = item.slug === 'diseases'
+                      const isViewAll = subSlug.startsWith('all-')
+                      let subTo = item.slug === 'diseases'
                         ? `/shop?diseaseCategory=${encodeURIComponent(subSlug)}`
                         : `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                      
+                      // If it's an "All ..." button, go to /shop with no filters (show all products)
+                      if (isViewAll) {
+                        subTo = `/shop`
+                      }
                       return (
                         <Link
                           key={subSlug}
                           to={subTo}
-                          className="block px-4 py-2 text-[13px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate"
+                          className={isViewAll
+                            ? 'block px-4 py-2 text-[13px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1 transition-colors'
+                            : 'block px-4 py-2 text-[13px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate'
+                          }
                         >
-                          {subName}
+                          {isViewAll ? `${subName} →` : subName}
                         </Link>
                       )
                     })}
@@ -101,7 +109,7 @@ const SecondaryNav = () => {
               className="flex items-center gap-1.5 bg-[#1A9E6E] hover:bg-[#157A56] text-white text-[12px] font-semibold px-4 py-1.5 rounded-full transition-colors shadow-sm"
             >
               <Upload size={13} />
-              Asaan Order
+              Upload Prescription 
             </Link>
           </div>
           
