@@ -3,6 +3,7 @@ export const categories = [
     id: 1,
     name: 'Medicines',
     slug: 'medicines',
+    showInNav: true,
     image: '/jellybee_gummies.png',
     subCategories: [
       { name: 'Prescription Medicines', slug: 'prescription-medicines' },
@@ -17,6 +18,7 @@ export const categories = [
     id: 2,
     name: 'Vitamins & Supplements',
     slug: 'vitamins',
+    showInNav: true,
     image: '/generic_vitamin_bottle.png',
     subCategories: [
       { name: 'Multivitamins', slug: 'multivitamins' },
@@ -31,6 +33,7 @@ export const categories = [
     id: 3,
     name: 'Personal Care',
     slug: 'personalCare',
+    showInNav: true,
     image: '/generic_serum_dropper.png',
     subCategories: [
       { name: 'Oral Hygiene', slug: 'oral-hygiene' },
@@ -43,6 +46,7 @@ export const categories = [
     id: 4,
     name: 'Baby Care',
     slug: 'babyCare',
+    showInNav: true,
     image: '/generic_baby_care.png',
     subCategories: [
       { name: 'Baby Nutrition', slug: 'baby-nutrition' },
@@ -54,6 +58,7 @@ export const categories = [
     id: 5,
     name: 'Lifestyle & Fitness',
     slug: 'lifestyle-fitness',
+    showInNav: true,
     image: '/generic_supplement_tub.png',
     subCategories: [
       { name: 'Daily Well-being', slug: 'daily-wellbeing' },
@@ -66,6 +71,7 @@ export const categories = [
     id: 6,
     name: 'Sexual Wellness',
     slug: 'sexual-wellness',
+    showInNav: false,
     image: '/la_shield_sunscreen.png',
     subCategories: [
       { name: 'Condoms', slug: 'condoms' },
@@ -79,6 +85,7 @@ export const categories = [
     id: 7,
     name: 'Organic',
     slug: 'organic',
+    showInNav: true,
     image: '/detox_facial_oil.png',
     subCategories: [
       { name: 'Homeopathic', slug: 'homeopathic' },
@@ -90,6 +97,7 @@ export const categories = [
     id: 8,
     name: 'Healthcare Device',
     slug: 'healthcare-device',
+    showInNav: true,
     image: '/jellybee_gummies.png',
     subCategories: [
       { name: 'Medical Equipment', slug: 'medical-equipment' },

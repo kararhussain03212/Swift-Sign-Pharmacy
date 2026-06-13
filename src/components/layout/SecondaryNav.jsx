@@ -11,12 +11,14 @@ const buildNavItems = () => {
     subCategories: diseasesList.slice(0, 30) // show first 30 in dropdown
   }
 
-  const catItems = categories.map(cat => ({
-    name: cat.name,
-    slug: cat.slug,
-    to: `/shop?category=${cat.slug}`,
-    subCategories: cat.subCategories || []
-  }))
+  const catItems = categories
+    .filter(cat => cat.showInNav !== false) // Only map categories where showInNav is not explicitly false
+    .map(cat => ({
+      name: cat.name,
+      slug: cat.slug,
+      to: `/shop?category=${cat.slug}`,
+      subCategories: cat.subCategories || []
+    }))
 
   return [diseasesItem, ...catItems]
 }
