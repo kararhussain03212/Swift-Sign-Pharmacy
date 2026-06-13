@@ -4,7 +4,7 @@ const SectionHeader = ({ title, subtitle, prevRef, nextRef, viewAllLink }) => {
   return (
     <div className="flex items-center justify-between mb-5">
       <div>
-        <h2 className="font-heading font-bold text-gray-900 text-xl md:text-2xl leading-tight">
+        <h2 className="font-heading font-bold text-gray-900 text-xl md:text-3xl leading-tight">
           {title}
         </h2>
         {subtitle && (

@@ -103,10 +103,30 @@ const AsaanOrder = () => {
     if (Object.keys(errs).length) { setErrors(errs); return }
     setErrors({})
     setLoading(true)
-    await new Promise(r => setTimeout(r, 1800))
-    setLoading(false)
-    setSubmitted(true)
-    toast.success('Prescription sent! Our team will call you shortly. 🎉', { duration: 5000 })
+
+    try {
+      const formData = new FormData()
+      formData.append('name',         name.trim())
+      formData.append('phone',        phone.trim())
+      formData.append('prescription', file)
+
+      const res  = await fetch('/api/send-prescription.php', {
+        method: 'POST',
+        body:   formData,
+      })
+      const data = await res.json()
+
+      if (data.success) {
+        setSubmitted(true)
+        toast.success('Prescription sent! Our team will contact you shortly. 🎉', { duration: 5000 })
+      } else {
+        toast.error(data.message || 'Something went wrong. Please try again.')
+      }
+    } catch (err) {
+      toast.error('Network error. Please check your connection and try again.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -234,17 +254,25 @@ const AsaanOrder = () => {
                   style={{ background: '#E8F5F0' }}>
                   <CheckCircle size={40} className="text-primary" />
                 </div>
-                <h3 className="font-bold text-gray-900 text-xl mb-2">Prescription Submitted!</h3>
-                <p className="text-gray-500 text-[14px] max-w-xs">
-                  Our team will review your prescription and call you on{' '}
-                  <span className="font-semibold text-gray-700">{phone}</span> to confirm
-                  your order.
+                <h3 className="font-bold text-gray-900 text-xl mb-2">Order Received! 🎉</h3>
+                <p className="text-gray-500 text-[14px] max-w-sm">
+                  Your prescription has been sent to our pharmacy team. We will review it and call you on{' '}
+                  <span className="font-semibold text-gray-900">{phone}</span> to confirm your order.
                 </p>
+
+                <div className="mt-5 w-full max-w-sm rounded-2xl border border-green-200 bg-green-50 p-4 text-left flex gap-3">
+                  <span className="text-2xl">✅</span>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-800">Prescription sent to pharmacy team</p>
+                    <p className="text-[12px] text-gray-500 mt-0.5">Expect a confirmation call within 30 minutes during working hours.</p>
+                  </div>
+                </div>
+
                 <button
                   onClick={() => { setSubmitted(false); removeFile(); setName(''); setPhone('') }}
                   className="mt-6 text-primary font-semibold text-[13px] border border-primary rounded-full px-6 py-2 hover:bg-primary hover:text-white transition-all"
                 >
-                  Upload Another Prescription
+                  Submit Another Prescription
                 </button>
               </div>
             ) : (
@@ -385,18 +413,16 @@ const AsaanOrder = () => {
                   </div>
                 </div>
 
-                {/* ── Done button ── */}
+                {/* ── Send button ── */}
                 <div className="flex justify-end mt-6">
                   <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="flex items-center gap-2.5 text-white font-bold rounded-xl px-8 py-3 text-[14px] transition-all duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2.5 text-white font-bold rounded-xl px-8 py-3 text-[14px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
                     style={{
                       background: 'linear-gradient(135deg,#1A9E6E,#0D3D2B)',
                       boxShadow: '0 4px 16px rgba(26,158,110,0.35)',
                     }}
-                    onMouseEnter={e => !loading && (e.currentTarget.style.transform = 'translateY(-2px)')}
-                    onMouseLeave={e => (e.currentTarget.style.transform = 'translateY(0)')}
                   >
                     {loading ? (
                       <>
@@ -483,7 +509,7 @@ const AsaanOrder = () => {
                 >
                   {/* Doctor header */}
                   <div className="border-b border-dashed border-gray-300 pb-2 mb-3">
-                    <p className="font-bold text-[11px] text-gray-900">DR. MOHAMMAD ALI, MBBS</p>
+                    <p className="font-bold text-[11px] text-gray-900">DR. Nowruz , MBBS</p>
                     <p className="text-gray-500">Name of Hospital / Clinic</p>
                     <p className="text-gray-500">Address of Hospital / Clinic</p>
                     <p className="text-gray-500">Phone No.</p>
