@@ -109,7 +109,7 @@ const Contact = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)',
+          background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
           padding: '100px 0 80px',
         }}
       >
@@ -183,7 +183,7 @@ const Contact = () => {
             style={{ fontSize: 'clamp(28px, 5vw, 48px)', lineHeight: 1.15 }}
           >
             Let&rsquo;s{' '}
-            <span style={{ color: '#86efac' }}>Talk Health</span>
+            <span style={{ color: '#EAFBFC' }}>Talk Health</span>
           </h1>
 
           {/* Subtext */}
@@ -228,7 +228,7 @@ const Contact = () => {
             {
               icon:    <Mail size={24} />,
               iconBg:  'bg-blue-50',
-              iconClr: 'text-blue-500',
+              iconClr: 'text-primary',
               title:   'Email Us',
               lines:   ['hello@swiftsign.com', 'support@swiftsign.com'],
               sub:     'Reply within 24 hours',
@@ -582,7 +582,7 @@ const Contact = () => {
                    <a
                      key={s.name}
                      href={s.href}
-                     className="w-10 h-10 rounded-xl border border-[#2C4C38] flex items-center justify-center text-[#2C4C38] hover:bg-[#2C4C38] hover:text-white transition-all duration-200"
+                     className="w-10 h-10 rounded-xl border border-[#073B45] flex items-center justify-center text-[#073B45] hover:bg-[#073B45] hover:text-white transition-all duration-200"
                      title={s.name}
                    >
                      {s.icon}
@@ -598,7 +598,7 @@ const Contact = () => {
       {/* ═══════════════════════════════════════
           FAQ SECTION
       ═══════════════════════════════════════ */}
-      <section style={{ backgroundColor: '#F4F8F4', padding: '56px 0' }}>
+      <section style={{ backgroundColor: '#EAFBFC', padding: '56px 0' }}>
         <div className="max-w-[1280px] mx-auto px-5">
 
           {/* FAQ Header */}

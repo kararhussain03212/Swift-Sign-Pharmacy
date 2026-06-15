@@ -49,8 +49,8 @@ const TrustBadges = () => {
                   width: '52px',
                   height: '52px',
                   borderRadius: '50%',
-                  border: '1.5px solid #1A9E6E',
-                  color: '#1A9E6E',
+                  border: '1.5px solid #0FAFB8',
+                  color: '#0FAFB8',
                   backgroundColor: 'transparent',
                 }}
               >

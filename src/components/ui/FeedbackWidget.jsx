@@ -9,7 +9,7 @@ const FeedbackWidget = () => {
       {/* The Feedback Vertical Tab (Always visible, pushed left when panel opens) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-[#1b4e8f] text-white font-medium py-3 px-2 rounded-r-md shadow-md flex items-center justify-center gap-2 hover:bg-[#153e72] transition-colors h-[120px]"
+        className="bg-primary text-white font-medium py-3 px-2 rounded-r-md shadow-md flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors h-[120px]"
         style={{
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
@@ -33,30 +33,30 @@ const FeedbackWidget = () => {
               type="text" 
               placeholder="Name" 
               required
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-[#1A9E6E] text-gray-700"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-primary text-gray-700"
             />
             <input 
               type="email" 
               placeholder="Email" 
               required
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-[#1A9E6E] text-gray-700"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-primary text-gray-700"
             />
             <input 
               type="tel" 
               placeholder="Phone Number" 
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-[#1A9E6E] text-gray-700"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-primary text-gray-700"
             />
             <textarea 
               placeholder="Message here.." 
               required
               rows={4}
-              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-[#1A9E6E] text-gray-700 resize-none"
+              className="w-full border border-gray-300 rounded-md px-3 py-2 text-[14px] outline-none focus:border-primary text-gray-700 resize-none"
             ></textarea>
             
             <div className="flex justify-center mt-2">
               <button 
                 type="submit"
-                className="bg-[#00b289] hover:bg-[#009673] text-white font-bold px-8 py-2 rounded-full text-[14px] transition-colors"
+                className="bg-primary hover:bg-primary-dark text-white font-bold px-8 py-2 rounded-full text-[14px] transition-colors"
               >
                 SUBMIT
               </button>

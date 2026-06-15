@@ -54,7 +54,7 @@ const ProductCard = ({ product, onQuickView }) => {
     >
       {/* Discount badge */}
       {discount > 0 && (
-        <div className="absolute top-2.5 left-2.5 z-10 bg-red-500 text-white
+        <div className="absolute top-2.5 left-2.5 z-10 bg-primary text-white
                         text-[10px] font-bold px-1.5 py-0.5 rounded-full">
           -{discount}%
         </div>
@@ -66,18 +66,18 @@ const ProductCard = ({ product, onQuickView }) => {
         className={`absolute top-2.5 right-2.5 z-10 w-7 h-7 rounded-full
                     flex items-center justify-center transition-all duration-200
                     ${wishlisted
-                      ? 'bg-red-50 text-red-500'
-                      : 'bg-white/80 text-gray-400 hover:bg-red-50 hover:text-red-500 opacity-0 group-hover:opacity-100'
+                      ? 'bg-light-teal text-primary'
+                      : 'bg-white/80 text-text hover:bg-light-teal hover:text-primary opacity-0 group-hover:opacity-100'
                     }`}
       >
-        <Heart size={13} fill={wishlisted ? '#EF4444' : 'none'} />
+        <Heart size={13} fill={wishlisted ? '#0FAFB8' : 'none'} />
       </button>
 
       {/* Quick view */}
       <button
         onClick={handleQuickView}
         className="absolute top-10 right-2.5 z-10 w-7 h-7 rounded-full
-                   bg-white/80 text-gray-400 hover:bg-primary hover:text-white
+                   bg-white/80 text-text hover:bg-primary hover:text-white
                    flex items-center justify-center transition-all duration-200
                    opacity-0 group-hover:opacity-100"
       >
@@ -85,7 +85,7 @@ const ProductCard = ({ product, onQuickView }) => {
       </button>
 
       {/* Image */}
-      <div className="relative bg-gray-50 aspect-square p-4 overflow-hidden">
+      <div className="relative bg-light-teal aspect-square p-4 overflow-hidden">
         <img
           src={product.image}
           alt={product.name}
@@ -104,10 +104,10 @@ const ProductCard = ({ product, onQuickView }) => {
         </div> */}
 
         {/* Brand */}
-        <p className="text-[10px] text-gray-400 font-medium">{product.brand}</p>
+        <p className="text-[10px] text-text/60 font-medium">{product.brand}</p>
 
         {/* Name */}
-        <p className="text-[13px] font-semibold text-gray-800 line-clamp-2
+        <p className="text-[13px] font-semibold text-text line-clamp-2
                       leading-[1.45] group-hover:text-primary transition-colors">
           {product.name}
         </p>
@@ -121,7 +121,7 @@ const ProductCard = ({ product, onQuickView }) => {
             ${(product.salePrice ?? product.price).toFixed(2)}
           </span>
           {product.salePrice && (
-            <span className="text-[11px] text-gray-400 line-through">
+            <span className="text-[11px] text-text/50 line-through">
               ${product.price.toFixed(2)}
             </span>
           )}
@@ -133,8 +133,8 @@ const ProductCard = ({ product, onQuickView }) => {
           className={`w-full mt-1.5 flex items-center justify-center gap-1.5
                       rounded-full py-2 text-[12px] font-bold transition-all duration-200
                       ${isAdding
-                        ? 'bg-green-600 text-white scale-95'
-                        : 'bg-primary-light text-primary hover:bg-primary hover:text-white shadow-sm hover:shadow-glow'
+                        ? 'bg-primary text-white scale-95'
+                        : 'bg-primary text-white border border-primary hover:bg-white hover:text-primary hover:border-2 hover:border-primary shadow-sm'
                       }`}
         >
           <ShoppingCart size={13} />

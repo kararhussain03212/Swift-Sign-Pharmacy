@@ -38,7 +38,7 @@ const SecondaryNav = () => {
               <div key={item.name} className="relative group h-full flex items-center">
                 <Link
                   to={item.to}
-                  className="flex items-center gap-1 text-gray-600 hover:text-[#1A9E6E]
+                  className="flex items-center gap-1 text-gray-600 hover:text-primary
                              transition-colors duration-[150ms] whitespace-nowrap relative"
                   style={{
                     fontSize: '13px',
@@ -54,7 +54,7 @@ const SecondaryNav = () => {
                   )}
                   
                   {/* Active indicator underline on hover */}
-                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#1A9E6E]
+                  <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary
                                    scale-x-0 group-hover:scale-x-100
                                    transition-transform duration-[150ms] origin-left" />
                 </Link>
@@ -106,7 +106,7 @@ const SecondaryNav = () => {
           <div className="flex-shrink-0 ml-4">
             <Link
               to="/asaan-order"
-              className="flex items-center gap-1.5 bg-[#1A9E6E] hover:bg-[#157A56] text-white text-[12px] font-semibold px-4 py-1.5 rounded-full transition-colors shadow-sm"
+              className="flex items-center gap-1.5 bg-[#0FAFB8] hover:bg-white text-white hover:text-[#0FAFB8] text-[12px] font-semibold px-4 py-1.5 rounded-full transition-colors shadow-sm border border-[#0FAFB8] hover:border-2"
             >
               <Upload size={13} />
               Upload Prescription 

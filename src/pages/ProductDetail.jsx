@@ -106,7 +106,7 @@ const ProductDetail = () => {
                   onClick={() => setActiveImage(img)}
                   className={`bg-white border rounded-xl p-2.5 flex items-center justify-center h-20 sm:h-24 overflow-hidden transition-all duration-200 ${
                     activeImage === img 
-                      ? 'border-[#1c716b] ring-2 ring-[#1c716b]/10' 
+                      ? 'border-[#073b45] ring-2 ring-[#073b45]/10' 
                       : 'border-gray-200 hover:border-gray-300'
                   }`}
                 >
@@ -127,7 +127,7 @@ const ProductDetail = () => {
                 ))}
               </div>
               <span className="text-[12px] text-gray-500 font-semibold">({product.reviewCount || 0} Reviews)</span>
-              <span className="bg-[#E8F5F0] text-primary text-[10px] font-bold px-3 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
+              <span className="bg-primary-light text-primary text-[10px] font-bold px-3 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
                 In Stock
               </span>
             </div>
@@ -248,16 +248,16 @@ const ProductDetail = () => {
                   toggleWishlist(product)
                   toast.success(isWishlisted(product.id) ? 'Removed from wishlist!' : 'Added to wishlist! ❤️')
                 }} 
-                className="flex items-center gap-2 hover:text-[#1c716b] transition-colors"
+                className="flex items-center gap-2 hover:text-[#073b45] transition-colors"
               >
-                <Heart size={25} fill={isWishlisted(product.id) ? '#1A9E6E' : 'none'} className={isWishlisted(product.id) ? 'text-primary' : 'text-gray-400 text-[0px]'} />
+                <Heart size={25} fill={isWishlisted(product.id) ? '#0FAFB8' : 'none'} className={isWishlisted(product.id) ? 'text-primary' : 'text-gray-400 text-[0px]'} />
                 <span>Add to wishlist</span>
               </button>
-              {/* <button className="flex items-center gap-2 hover:text-[#1c716b] transition-colors">
+              {/* <button className="flex items-center gap-2 hover:text-[#073b45] transition-colors">
                 <RefreshCw size={25} className="text-gray-400" />
                 <span>Compare</span>
               </button> */}
-              <button className="flex items-center gap-2 hover:text-[#1c716b] transition-colors">
+              <button className="flex items-center gap-2 hover:text-[#073b45] transition-colors">
                 <HelpCircle size={25} className="text-gray-400" />
                 <span>Ask Us</span>
               </button>

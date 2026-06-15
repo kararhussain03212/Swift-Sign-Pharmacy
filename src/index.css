@@ -12,19 +12,12 @@
 /* ── Design Tokens ─────────────────────────────────── */
 :root {
   /* Brand */
-  --primary:        #1A9E6E;
-  --primary-dark:   #157A56;
-  --primary-light:  #E8F5F0;
-  --secondary:      #F57C44;
+  --primary:        #0FAFB8;
+  --dark-teal:      #073B45;
+  --light-teal:     #EAFBFC;
+  --white:          #FFFFFF;
+  --text:           #1F2937;
 
-  /* Color palette tokens */
-  --color-surface-base:    #000000;
-  --color-surface-muted:   #ffffff;
-  --color-surface-raised:  #f4f3f3;
-  --color-text-tertiary:   #431b01;
-  --color-text-inverse:    #848484;
-  --color-border-muted:    #1c716b;
-  --color-border-default:  #e5e5e5;
 
   /* Typography */
   --font-family:      'Inter', sans-serif;
@@ -73,8 +66,8 @@ body {
   font-size: var(--font-size-base);
   font-weight: var(--font-weight-base);
   line-height: var(--line-height-base);
-  color: #1B1B2F;
-  background: #ffffff;
+  color: var(--text);
+  background: var(--white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -106,8 +99,8 @@ h1, h2, h3, h4, h5, h6 {
 .animate-float { animation: float 3s ease-in-out infinite; }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(26,158,110,0.4); }
-  50%       { box-shadow: 0 0 0 8px rgba(26,158,110,0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(15,175,184,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(15,175,184,0); }
 }
 .animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
@@ -121,7 +114,7 @@ h1, h2, h3, h4, h5, h6 {
 .swiper-pagination-bullet {
   width: 8px !important;
   height: 8px !important;
-  background: #d1d5db !important;
+  background: var(--light-teal) !important;
   opacity: 1 !important;
   border-radius: 999px !important;
   transition: all var(--motion-fast) !important;

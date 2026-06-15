@@ -82,7 +82,7 @@ const FloatingChat = () => {
         href={`https://wa.me/${PHONE.replace(/\D/g, '')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-[65px] h-[65px] bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
+        className="fixed bottom-6 right-6 z-50 w-[65px] h-[65px] bg-[#0FAFB8] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
         aria-label="Chat on WhatsApp"
       >
         <FaWhatsapp size={40} />
@@ -92,10 +92,10 @@ const FloatingChat = () => {
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-10 left-6 z-50 flex items-center gap-2.5 bg-[#A0E2D9] text-[#0A2540] px-5 py-2.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[15px]"
+          className="fixed bottom-10 left-6 z-50 flex items-center gap-2.5 bg-[#0fafb8] text-[#073b45] px-5 py-2.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[15px]"
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          <div className="bg-[#1a3a5c] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-2 flex items-center justify-center flex-shrink-0">
+          <div className="bg-[#073b45] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-2 flex items-center justify-center flex-shrink-0">
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
@@ -119,15 +119,15 @@ const FloatingChat = () => {
           {view === 'home' && (
             <>
               {/* Header */}
-              <div className="bg-[#A0E2D9] px-5 pt-5 pb-6 relative">
+              <div className="bg-[#0fafb8] px-5 pt-5 pb-6 relative">
                 <button
                   onClick={() => setIsOpen(false)}
-                  className="absolute top-3 right-3 text-[#0A2540] hover:opacity-60 transition-opacity"
+                  className="absolute top-3 right-3 text-[#073b45] hover:opacity-60 transition-opacity"
                 >
                   <X size={18} strokeWidth={2.5} />
                 </button>
-                <h2 className="font-extrabold text-[#0A2540] text-[17px]">Chat with us</h2>
-                <p className="text-[#0A2540] text-[13px] mt-1 leading-snug">
+                <h2 className="font-extrabold text-[#073b45] text-[17px]">Chat with us</h2>
+                <p className="text-[#073b45] text-[13px] mt-1 leading-snug">
                   👋 Hi, message us with any questions. We're happy to help!
                 </p>
               </div>
@@ -136,7 +136,7 @@ const FloatingChat = () => {
               <div className="bg-white px-4 py-4">
                 <button
                   onClick={() => setView('chat')}
-                  className="w-full bg-[#3d3d3d] hover:bg-[#2a2a2a] text-white font-bold py-3 rounded-xl text-[14px] transition-colors"
+                  className="w-full bg-[#073B45] hover:bg-[#0FAFB8] text-white hover:text-[#073B45] font-bold py-3 rounded-xl text-[14px] transition-colors"
                 >
                   Return to chat
                 </button>
@@ -150,7 +150,7 @@ const FloatingChat = () => {
                     <button
                       key={qa.id}
                       onClick={() => sendMessage(qa.text)}
-                      className="w-full text-left border border-gray-200 hover:border-[#A0E2D9] hover:bg-[#f0faf8] rounded-xl px-4 py-3 text-[13px] text-gray-700 font-medium transition-colors"
+                      className="w-full text-left border border-gray-200 hover:border-[#0fafb8] hover:bg-[#f0faf8] rounded-xl px-4 py-3 text-[13px] text-gray-700 font-medium transition-colors"
                     >
                       {qa.text}
                     </button>
@@ -164,15 +164,15 @@ const FloatingChat = () => {
           {view === 'chat' && (
             <>
               {/* Chat Header */}
-              <div className="bg-[#A0E2D9] px-4 py-3 flex items-center gap-3">
+              <div className="bg-[#0fafb8] px-4 py-3 flex items-center gap-3">
                 <button
                   onClick={() => setView('home')}
-                  className="text-[#0A2540] hover:opacity-60 transition-opacity"
+                  className="text-[#073b45] hover:opacity-60 transition-opacity"
                 >
                   <ArrowLeft size={20} strokeWidth={2.5} />
                 </button>
                 <div>
-                  <p className="font-extrabold text-[#0A2540] text-[14px] leading-tight">{PHARMACY_NAME}</p>
+                  <p className="font-extrabold text-[#073b45] text-[14px] leading-tight">{PHARMACY_NAME}</p>
                 </div>
               </div>
 
@@ -191,9 +191,9 @@ const FloatingChat = () => {
                         </p>}
                       </div>
                     ) : (
-                      <div className="bg-[#A0E2D9] text-[#0A2540] rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[75%]">
+                      <div className="bg-[#0fafb8] text-[#073b45] rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[75%]">
                         <p className="text-[13px] leading-relaxed">{msg.text}</p>
-                        <p className="text-[10px] text-[#0A2540]/60 mt-1 text-right">{msg.time}</p>
+                        <p className="text-[10px] text-[#073b45]/60 mt-1 text-right">{msg.time}</p>
                       </div>
                     )}
                   </div>
@@ -237,7 +237,7 @@ const FloatingChat = () => {
                 <button
                   onClick={() => sendMessage(inputVal)}
                   disabled={!inputVal.trim()}
-                  className="text-[#1A9E6E] hover:opacity-70 disabled:opacity-30 transition-opacity p-1"
+                  className="text-primary hover:opacity-70 disabled:opacity-30 transition-opacity p-1"
                 >
                   <Send size={18} />
                 </button>

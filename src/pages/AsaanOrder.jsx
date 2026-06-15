@@ -136,7 +136,7 @@ const AsaanOrder = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)',
+          background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
           padding: '90px 0 70px',
         }}
       >
@@ -188,7 +188,7 @@ const AsaanOrder = () => {
             style={{ fontSize: 'clamp(26px, 5vw, 46px)', lineHeight: 1.15 }}
           >
             Order Medicines Using{' '}
-            <span style={{ color: '#86efac' }}>Prescription</span>
+            <span style={{ color: '#EAFBFC' }}>Prescription</span>
           </h1>
           <p className="text-white/60 max-w-lg mx-auto text-[15px] leading-relaxed">
             Simply upload your doctor's prescription and let our pharmacy team prepare
@@ -211,7 +211,7 @@ const AsaanOrder = () => {
                 <div
                   className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
                   style={{
-                    background: 'linear-gradient(135deg,#1A9E6E,#0D3D2B)',
+                    background: 'linear-gradient(135deg,#0FAFB8,#073B45)',
                     color: '#fff',
                     boxShadow: '0 4px 16px rgba(26,158,110,0.35)',
                   }}
@@ -251,7 +251,7 @@ const AsaanOrder = () => {
             {submitted ? (
               <div className="flex flex-col items-center text-center py-10">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4"
-                  style={{ background: '#E8F5F0' }}>
+                  style={{ background: '#EAFBFC' }}>
                   <CheckCircle size={40} className="text-primary" />
                 </div>
                 <h3 className="font-bold text-gray-900 text-xl mb-2">Order Received! 🎉</h3>
@@ -285,8 +285,8 @@ const AsaanOrder = () => {
                   onDrop={handleDrop}
                   className="relative rounded-2xl border-2 border-dashed transition-all duration-200 cursor-pointer overflow-hidden"
                   style={{
-                    borderColor: dragging ? '#1A9E6E' : errors.file ? '#f87171' : '#D1D5DB',
-                    background: dragging ? '#E8F5F0' : errors.file ? '#FEF2F2' : '#FAFAFA',
+                    borderColor: dragging ? '#0FAFB8' : errors.file ? '#f87171' : '#D1D5DB',
+                    background: dragging ? '#EAFBFC' : errors.file ? '#FEF2F2' : '#FAFAFA',
                     minHeight: '220px',
                   }}
                 >
@@ -317,7 +317,7 @@ const AsaanOrder = () => {
                     <div className="flex flex-col items-center justify-center gap-3 py-14 px-6">
                       <div
                         className="w-16 h-16 rounded-2xl flex items-center justify-center"
-                        style={{ background: 'linear-gradient(135deg,#E8F5F0,#d1fae5)' }}
+                        style={{ background: 'linear-gradient(135deg,#EAFBFC,#d1fae5)' }}
                       >
                         <Upload size={28} className="text-primary" />
                       </div>
@@ -420,7 +420,7 @@ const AsaanOrder = () => {
                     disabled={loading}
                     className="flex items-center gap-2.5 text-white font-bold rounded-xl px-8 py-3 text-[14px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
                     style={{
-                      background: 'linear-gradient(135deg,#1A9E6E,#0D3D2B)',
+                      background: 'linear-gradient(135deg,#0FAFB8,#073B45)',
                       boxShadow: '0 4px 16px rgba(26,158,110,0.35)',
                     }}
                   >
@@ -448,14 +448,14 @@ const AsaanOrder = () => {
               <h3 className="font-bold text-gray-900 text-[17px] mb-1">
                 HOW TO UPLOAD YOUR PRESCRIPTION?
               </h3>
-              <div className="h-0.5 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#1A9E6E,transparent)' }} />
+              <div className="h-0.5 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#0FAFB8,transparent)' }} />
 
               <ul className="space-y-3">
                 {TIPS.map((tip, i) => (
                   <li key={i} className="flex items-start gap-3 text-[13px] text-gray-600 leading-relaxed">
                     <div
                       className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 text-white text-[10px] font-bold"
-                      style={{ background: '#1A9E6E' }}
+                      style={{ background: '#0FAFB8' }}
                     >
                       {i + 1}
                     </div>
@@ -558,10 +558,10 @@ const AsaanOrder = () => {
                         className="mt-1 mx-auto"
                         style={{
                           width: 50, height: 20,
-                          borderBottom: '1.5px solid #1A9E6E',
+                          borderBottom: '1.5px solid #0FAFB8',
                           fontStyle: 'italic',
                           fontSize: 9,
-                          color: '#1A9E6E',
+                          color: '#0FAFB8',
                           textAlign: 'center',
                           paddingBottom: 2,
                         }}
@@ -583,7 +583,7 @@ const AsaanOrder = () => {
             {/* WhatsApp / call CTA */}
             <div
               className="rounded-2xl p-5 flex items-center justify-between"
-              style={{ background: 'linear-gradient(135deg,#0D3D2B,#1A9E6E)', color: '#fff' }}
+              style={{ background: 'linear-gradient(135deg,#073B45,#0FAFB8)', color: '#fff' }}
             >
               <div>
                 <p className="font-bold text-[15px]">Need help?</p>

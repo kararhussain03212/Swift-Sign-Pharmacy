@@ -3,7 +3,7 @@ const WideBanner = () => {
     <section className="max-w-[1450px] mx-auto px-5 mt-8">
       <div
         className="relative rounded-2xl overflow-hidden"
-        style={{ background: '#3D4A2E', minHeight: '160px' }}
+        style={{ background: '#073B45', minHeight: '160px' }}
       >
         {/* Left stacked product images */}
         <div className="absolute left-6 bottom-0 flex items-end gap-1 z-10">
@@ -48,9 +48,9 @@ const WideBanner = () => {
               Extra 8% Off on the Healthcare Range
             </p>
             <button
-              className="bg-primary hover:bg-primary-dark text-white
+              className="bg-[#0FAFB8] hover:bg-white text-white hover:text-[#0FAFB8]
                          rounded-full px-5 py-2 text-[12px] font-bold
-                         transition-colors shadow-glow"
+                         transition-colors shadow-sm border border-[#0FAFB8] hover:border-2"
             >
               SHOP NOW
             </button>

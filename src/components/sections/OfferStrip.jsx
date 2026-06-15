@@ -2,7 +2,7 @@ import { Tag, Percent, Gift, Zap } from 'lucide-react'
 
 const offers = [
   { icon: <Tag size={22} />,     bg: '#FFF3CD', iconColor: '#F59E0B', title: 'UPTO 80% OFF',  link: 'Shop Now' },
-  { icon: <Percent size={22} />, bg: '#D1FAE5', iconColor: '#1A9E6E', title: 'UPTO 70% OFF',  link: 'Shop Now' },
+  { icon: <Percent size={22} />, bg: '#D1FAE5', iconColor: '#0FAFB8', title: 'UPTO 70% OFF',  link: 'Shop Now' },
   { icon: <Gift size={22} />,    bg: '#DBEAFE', iconColor: '#3B82F6', title: 'FREE ITEM',      link: 'Shop Now' },
   { icon: <Zap size={22} />,     bg: '#FFE4E6', iconColor: '#E53E3E', title: 'FLAT 34% OFF',   link: 'Shop Now' },
 ]

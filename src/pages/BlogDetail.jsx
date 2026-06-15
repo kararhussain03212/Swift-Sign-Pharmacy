@@ -230,7 +230,7 @@ const ShareButtons = ({ title, slug }) => {
 //       {/* PHARMACIST CTA */}
 //       <div
 //         className="relative rounded-2xl overflow-hidden p-6 text-white"
-//         style={{ background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)' }}
+//         style={{ background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)' }}
 //       >
 //         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full border-2 border-white/10" />
 //         <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full border border-white/10" />

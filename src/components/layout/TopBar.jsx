@@ -9,7 +9,7 @@ const messages = [
 const TopBar = () => {
   return (
     <div className="hidden md:flex items-center h-[34px] px-6 overflow-hidden"
-         style={{ backgroundColor: '#1c716b' }}>
+         style={{ backgroundColor: '#073b45' }}>
 
       {/* Marquee announcement */}
       <div className="flex-1 overflow-hidden relative">
@@ -33,14 +33,14 @@ const TopBar = () => {
 
       {/* Right side controls */}
       {/* <div className="flex items-center gap-5 flex-shrink-0">
-        <button className="flex items-center gap-1 text-white hover:text-green-100
+        <button className="flex items-center gap-1 text-white hover:text-primary-light
                            transition-colors duration-[150ms]"
                 style={{ fontSize: '12px' }}>
           <Globe size={12} className="opacity-80" />
           <span>English</span>
           <ChevronDown size={10} className="opacity-70" />
         </button>
-        <button className="flex items-center gap-1 text-white hover:text-green-100
+        <button className="flex items-center gap-1 text-white hover:text-primary-light
                            transition-colors duration-[150ms]"
                 style={{ fontSize: '12px' }}>
           <span>USD</span>

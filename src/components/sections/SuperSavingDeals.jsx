@@ -67,9 +67,9 @@ const SuperSavingDeals = () => {
                     style: { borderRadius: '12px', fontSize: '13px' },
                   })
                 }}
-                className="flex items-center gap-1.5 bg-primary hover:bg-primary-dark
-                           text-white rounded-full px-4 py-1.5 text-[12px] font-bold
-                           transition-colors shadow-glow"
+                className="flex items-center gap-1.5 bg-[#0FAFB8] hover:bg-white text-white hover:text-[#0FAFB8]
+                           rounded-full px-4 py-1.5 text-[12px] font-bold
+                           transition-colors shadow-sm border border-[#0FAFB8] hover:border-2"
               >
                 <ShoppingCart size={13} /> ADD TO CART
               </button>

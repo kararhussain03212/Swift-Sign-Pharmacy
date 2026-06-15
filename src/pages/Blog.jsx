@@ -64,7 +64,7 @@ const Blog = () => {
       <section
         className="relative overflow-hidden"
         style={{
-          background: 'linear-gradient(135deg, #0D3D2B 0%, #1A9E6E 100%)',
+          background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
           padding: '100px 0 80px',
         }}
       >
@@ -139,7 +139,7 @@ const Blog = () => {
             style={{ fontSize: 'clamp(28px, 5vw, 48px)', lineHeight: 1.15 }}
           >
             Health Articles &amp;{' '}
-            <span style={{ color: '#86efac' }}>Wellness Tips</span>
+            <span style={{ color: '#EAFBFC' }}>Wellness Tips</span>
           </h1>
 
           {/* Subtext */}
@@ -459,7 +459,7 @@ const Blog = () => {
             {/* WIDGET 4: NEWSLETTER CTA */}
             {/* <div
               className="relative rounded-2xl overflow-hidden p-6 text-center"
-              style={{ background: 'linear-gradient(135deg, #0D3D2B, #1A9E6E)' }}
+              style={{ background: 'linear-gradient(135deg, #073B45, #0FAFB8)' }}
             >
               <div className="absolute -top-6 -right-6 w-24 h-24 rounded-full border-2 border-white/10" />
               <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full border border-white/10" />

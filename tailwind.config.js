@@ -5,10 +5,14 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#1A9E6E',
-          dark:    '#157A56',
-          light:   '#E8F5F0',
+          DEFAULT: 'var(--primary)',
+          dark:    'var(--dark-teal)',
+          light:   'var(--light-teal)',
         },
+        'dark-teal': 'var(--dark-teal)',
+        'light-teal': 'var(--light-teal)',
+        'text': 'var(--text)',
+        'white': 'var(--white)',
         // Design token colors
         surface: {
           base:   '#000000',
@@ -18,7 +22,7 @@ export default {
         token: {
           tertiary:       '#431b01',
           inverse:        '#848484',
-          'border-muted': '#1c716b',
+          'border-muted': 'var(--dark-teal)',
           'border-def':   '#e5e5e5',
         },
       },
@@ -60,7 +64,7 @@ export default {
       boxShadow: {
         'card':       '0 2px 8px rgba(0,0,0,0.06)',
         'card-hover': '0 8px 28px rgba(0,0,0,0.12)',
-        'glow':       '0 4px 20px rgba(26,158,110,0.35)',
+        'glow':       '0 4px 20px var(--primary)',
         'nav':        '0 2px 12px rgba(0,0,0,0.08)',
       },
     },

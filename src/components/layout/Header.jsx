@@ -55,7 +55,7 @@ const Header = () => {
                             : ''}`}
               style={{
                 height: '48px',
-                border: `1px solid ${isSearchFocused ? '#1A9E6E' : '#e5e5e5'}`,
+                border: `1px solid ${isSearchFocused ? '#0FAFB8' : '#e5e5e5'}`,
                 borderRadius: '50px',
                 overflow: 'hidden',
                 backgroundColor: '#f4f3f3',
@@ -84,7 +84,7 @@ const Header = () => {
                 style={{
                   width: '48px',
                   height: '48px',
-                  backgroundColor: '#1A9E6E',
+                  backgroundColor: '#0FAFB8',
                   borderRadius: '0 50px 50px 0',
                 }}
               >
@@ -100,7 +100,7 @@ const Header = () => {
           {/* Deals Button */}
           <Link
             to="/shop?deals=true"
-            className="flex items-center gap-1.5 px-4 py-3 bg-[#e53935] rounded-full text-white font-semibold hover:opacity-80 transition-opacity whitespace-nowrap ml-4 flex-shrink-0"
+            className="flex items-center gap-1.5 px-4 py-3 bg-[#073B45] rounded-full text-white font-semibold hover:bg-[#0FAFB8] transition-colors whitespace-nowrap ml-4 flex-shrink-0"
             style={{ fontSize: '13px' }}
           >
             <VscPercentage size={20} className="animate-pulse text-white" />
@@ -141,7 +141,7 @@ const Header = () => {
                       style={{
                         width: '16px', height: '16px',
                         fontSize: '9px',
-                        backgroundColor: '#1A9E6E',
+                        backgroundColor: '#0FAFB8',
                       }}>
                   {wishlistCount}
                 </span>
@@ -160,7 +160,7 @@ const Header = () => {
                       style={{
                         width: '16px', height: '16px',
                         fontSize: '9px',
-                        backgroundColor: '#1A9E6E',
+                        backgroundColor: '#0FAFB8',
                       }}>
                   {cartCount}
                 </span>

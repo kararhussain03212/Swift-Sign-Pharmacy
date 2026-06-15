@@ -21,7 +21,7 @@ const Newsletter = () => {
   }
 
   return (
-    <section className="w-full mt-10 relative overflow-hidden" style={{ backgroundColor: '#0b5c46' }}>
+    <section className="w-full mt-10 relative overflow-hidden" style={{ backgroundColor: '#073B45' }}>
       <div className="max-w-[1450px] mx-auto px-5 flex flex-col md:flex-row items-center justify-between min-h-[220px] md:h-[400px]">
         {/* Left Content (Text & Email Input) */}
         <div className="py-8 md:py-0 flex-1 z-10 w-full md:w-auto text-center md:text-left">
@@ -49,7 +49,7 @@ const Newsletter = () => {
               />
               <button
                 onClick={handleSubmit}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-transparent hover:bg-slate-100 flex items-center justify-center text-[#0b5c46] transition-colors"
+                className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-transparent hover:bg-slate-100 flex items-center justify-center text-[#073B45] transition-colors"
               >
                 <Send size={24} />
               </button>
@@ -65,7 +65,7 @@ const Newsletter = () => {
       <div className="absolute right-0 top-0 h-full w-[40%] lg:w-[45%] hidden md:block z-0 overflow-hidden">
         {/* Curved Transition Path */}
         <svg 
-          className="absolute left-0 top-0 h-full w-36 text-[#0b5c46] fill-current -ml-[1px] z-10" 
+          className="absolute left-0 top-0 h-full w-36 text-[#073B45] fill-current -ml-[1px] z-10" 
           viewBox="0 0 100 100" 
           preserveAspectRatio="none"
         >

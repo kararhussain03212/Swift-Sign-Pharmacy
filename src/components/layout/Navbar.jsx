@@ -20,10 +20,10 @@ const Navbar = () => {
            style={{ height: '80px' }}>
 
         {/* ── LOCATION ────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center bg-[#9e2a7b] text-white rounded-md px-4 py-2" style={{ maxWidth: '350px' }}>
+        <div className="flex-shrink-0 flex items-center bg-primary text-white rounded-md px-4 py-2" style={{ maxWidth: '350px' }}>
           <span className="font-bold text-[13px] whitespace-nowrap">DELIVER TO:</span>
           <span className="font-normal text-[13px] ml-1.5 truncate">Dubai, United Arab Emirates</span>
-          <button className="font-bold text-[13px] ml-3 hover:underline whitespace-nowrap bg-white text-[#9e2a7b] px-2 py-0.5 rounded-sm">Change</button>
+          <button className="font-bold text-[13px] ml-3 hover:underline whitespace-nowrap bg-white text-primary px-2 py-0.5 rounded-sm">Change</button>
         </div>
 
         {/* ── NAV LINKS ─────────────────────────────────── */}
@@ -37,8 +37,8 @@ const Navbar = () => {
                 clsx(
                   'flex items-center gap-1 font-medium px-3 h-full rounded transition-colors duration-[150ms] whitespace-nowrap',
                   isActive
-                    ? 'text-[#1A9E6E]'
-                    : 'text-gray-700 hover:text-[#1A9E6E]'
+                    ? 'text-primary'
+                    : 'text-gray-700 hover:text-primary'
                 )
               }
               style={{ fontSize: '16px', height: '58px' }}
@@ -56,7 +56,7 @@ const Navbar = () => {
           </div>
           <Link
             to="/asaan-order"
-            className="flex items-center gap-2 border-2 border-blue-500 text-blue-500 hover:bg-blue-50
+            className="flex items-center gap-2 bg-[#0FAFB8] text-white border border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8] hover:border-2
                        px-4 py-2 rounded-lg font-bold text-[13px] transition-colors"
           >
             <FileUp size={16} strokeWidth={2.5} />
