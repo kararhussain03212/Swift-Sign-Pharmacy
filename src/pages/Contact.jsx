@@ -18,8 +18,10 @@ import {
   Check,
   HelpCircle,
   ChevronDown,
+  Globe,
+  UserPlus
 } from 'lucide-react'
-import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok } from 'react-icons/fa'
+import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok, FaWhatsapp } from 'react-icons/fa'
 
 const faqs = [
   {
@@ -61,6 +63,30 @@ const Contact = () => {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess]       = useState(false)
   const [openFaq, setOpenFaq]           = useState(null)
+
+  const handleCopy = (text, label) => {
+    navigator.clipboard.writeText(text)
+    toast.success(`${label} copied!`, { duration: 2000 })
+  }
+
+  const handleSaveContact = () => {
+    const textContent = `Contact Details:
+Arion Pharmacy
+
+Phone: +92 311 000 0000
+Email: hello@swiftsign.com
+Website: https://swiftsign.com
+Address: Blue Area, Islamabad, 44000, Pakistan`
+    
+    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = 'Arion_Pharmacy_Contact.txt'
+    link.click()
+    URL.revokeObjectURL(url)
+    toast.success('Contact saved!', { duration: 2000 })
+  }
 
   const handleChange = e => {
     setFormData(p => ({ ...p, [e.target.name]: e.target.value }))
@@ -561,6 +587,73 @@ const Contact = () => {
                     </div>
                   </div>
                 ))}
+              </div>
+            </div>
+
+            {/* SAVE CONTACT & QUICK LINKS CARD */}
+            <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-6 flex flex-col items-center">
+              <button 
+                onClick={handleSaveContact}
+                className="w-full bg-[#0FAFB8] text-white py-3.5 rounded-[24px] flex items-center justify-center gap-2 font-medium text-[15px] mb-8 hover:bg-[#073B45] transition-colors"
+              >
+                <UserPlus size={18} /> Save Contact
+              </button>
+              
+              <div className="grid grid-cols-3 gap-y-8 w-full text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('+923110000000', 'Phone number')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <Phone size={20} fill="currentColor" />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">Call</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('+923110000000', 'SMS number')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <MessageSquare size={20} fill="currentColor" />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">SMS</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('hello@swiftsign.com', 'Email address')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <Mail size={20} />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">Email</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('+923110000000', 'WhatsApp number')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <FaWhatsapp size={22} />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">WhatsApp</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('https://swiftsign.com', 'Website URL')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <Globe size={20} />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">Website</span>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <div 
+                    onClick={() => handleCopy('Blue Area, Islamabad, Pakistan', 'Address')}
+                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                  >
+                    <MapPin size={20} />
+                  </div>
+                  <span className="text-[13px] text-gray-900 font-medium">Location</span>
+                </div>
               </div>
             </div>
 

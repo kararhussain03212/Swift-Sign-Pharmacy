@@ -87,7 +87,7 @@ const Shop = () => {
             onClick={() => setSelectedCategory('all')}
             className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all
                         ${selectedCategory === 'all'
-                          ? 'bg-primary text-white shadow-glow'
+                          ? 'bg-primary text-white'
                           : 'bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
                         }`}
           >
@@ -99,7 +99,7 @@ const Shop = () => {
               onClick={() => setSelectedCategory(cat.slug)}
               className={`px-3.5 py-1.5 rounded-full text-[12px] font-medium transition-all whitespace-nowrap
                           ${selectedCategory === cat.slug
-                            ? 'bg-primary text-white shadow-glow'
+                            ? 'bg-primary text-white'
                             : 'bg-white border border-gray-200 text-gray-600 hover:border-primary hover:text-primary'
                           }`}
             >

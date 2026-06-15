@@ -15,6 +15,9 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  
+
+
 
   const { items: cartItems } = useCartStore()
   const { items: wishlistItems } = useWishlistStore()
@@ -30,13 +33,15 @@ const Header = () => {
 
   return (
     <>
+
+
       <header
-        className={`sticky top-0 z-50 bg-white transition-shadow duration-[300ms]
+        className={`sticky top-0 z-40 bg-white transition-shadow duration-[300ms]
                     ${scrolled ? 'shadow-nav' : 'shadow-sm'}`}
         style={{ borderBottom: '1px solid #e5e5e5' }}
       >
         <div className="max-w-[1450px] mx-auto px-6 flex items-center gap-6"
-             style={{ height: '100px' }}>
+             style={{ height: '90px' }}>
 
           {/* ── LOGO ───────────────────────────────────── */}
           <Link to="/" className="flex items-center gap-1.5 flex-shrink-0 group">
@@ -123,54 +128,63 @@ const Header = () => {
             {/* Divider */}
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />
 
-            {/* Account */}
-            <button className="hidden md:flex flex-col items-center gap-0.5
-                               text-gray-500 hover:text-primary transition-colors duration-[150ms]">
-              <User size={30} strokeWidth={1.75} />
-            </button>
+            {/* Icons & Delivery Container */}
+            <div className="flex flex-col items-center">
+              <div className="flex items-center gap-5 mb-1.5">
+                {/* Account */}
+                <button className="hidden md:flex flex-col items-center gap-0.5
+                                   text-gray-500 hover:text-primary transition-colors duration-[150ms]">
+                  <User size={30} strokeWidth={1.75} />
+                </button>
 
-            {/* Wishlist */}
-            <button
-              className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
-              onClick={() => navigate('/wishlist')}
-            >
-              <Heart size={30} strokeWidth={1.75} />
-              {wishlistCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
-                                 text-white font-bold rounded-full"
-                      style={{
-                        width: '16px', height: '16px',
-                        fontSize: '9px',
-                        backgroundColor: '#0FAFB8',
-                      }}>
-                  {wishlistCount}
-                </span>
-              )}
-            </button>
+                {/* Wishlist */}
+                <button
+                  className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
+                  onClick={() => navigate('/wishlist')}
+                >
+                  <Heart size={30} strokeWidth={1.75} />
+                  {wishlistCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
+                                     text-white font-bold rounded-full"
+                          style={{
+                            width: '16px', height: '16px',
+                            fontSize: '9px',
+                            backgroundColor: '#0FAFB8',
+                          }}>
+                      {wishlistCount}
+                    </span>
+                  )}
+                </button>
 
-            {/* Cart */}
-            <button
-              className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
-              onClick={() => setIsCartOpen(true)}
-            >
-              <ShoppingCart size={30} strokeWidth={1.75} />
-              {cartCount > 0 && (
-                <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
-                                 text-white font-bold rounded-full animate-pulse-glow"
-                      style={{
-                        width: '16px', height: '16px',
-                        fontSize: '9px',
-                        backgroundColor: '#0FAFB8',
-                      }}>
-                  {cartCount}
-                </span>
-              )}
-            </button>
+                {/* Cart */}
+                <button
+                  className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
+                  onClick={() => setIsCartOpen(true)}
+                >
+                  <ShoppingCart size={30} strokeWidth={1.75} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
+                                     text-white font-bold rounded-full animate-pulse-glow"
+                          style={{
+                            width: '16px', height: '16px',
+                            fontSize: '9px',
+                            backgroundColor: '#0FAFB8',
+                          }}>
+                      {cartCount}
+                    </span>
+                  )}
+                </button>
+              </div>
+              
+              
+            </div>
           </div>
         </div>
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+
     </>
   )
 }

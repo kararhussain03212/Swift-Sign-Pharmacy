@@ -13,6 +13,7 @@ import HealthArticles from '../components/sections/HealthArticles'
 import FeaturedBrands from '../components/sections/FeaturedBrands'
 import Newsletter from '../components/sections/Newsletter'
 import TrustBadges from '../components/sections/TrustBadges'
+import StoreLocation from '../components/sections/StoreLocation'
 
 const Home = () => {
   return (
@@ -33,6 +34,7 @@ const Home = () => {
       {/* <HealthArticles /> */}
       <FeaturedBrands />
       {/* <Newsletter /> */}
+      <StoreLocation />
       <TrustBadges />
       {/* Bottom padding for mobile nav */}
       <div className="md:hidden h-16" />
