@@ -1,12 +1,11 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, MapPin, User, Heart, ShoppingCart, X, ChevronDown, Flame } from 'lucide-react'
+import { Search, User, Heart, ShoppingCart, X } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
-import { VscPercentage } from "react-icons/vsc";
-import { categories } from '../../data/categories'
+import { VscPercentage } from "react-icons/vsc"
 
 
 const Header = () => {
@@ -14,10 +13,8 @@ const Header = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
+  const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  
-
-
 
   const { items: cartItems } = useCartStore()
   const { items: wishlistItems } = useWishlistStore()
@@ -33,33 +30,29 @@ const Header = () => {
 
   return (
     <>
-
-
       <header
         className={`sticky top-0 z-50 bg-white transition-shadow duration-[300ms]
                     ${scrolled ? 'shadow-nav' : 'shadow-sm'}`}
         style={{ borderBottom: '1px solid #e5e5e5' }}
       >
-        <div className="max-w-[1450px] mx-auto px-6 flex items-center gap-6"
-             style={{ height: '90px' }}>
+        {/* ── MAIN ROW ─────────────────────────────────── */}
+        <div className="max-w-[1450px] mx-auto px-3 sm:px-6 flex items-center gap-2 sm:gap-4 md:gap-6 h-14 sm:h-[70px] md:h-[90px]">
 
-          {/* ── LOGO ───────────────────────────────────── */}
+          {/* ── LOGO ─────────────────────────────────────── */}
           <Link to="/" className="flex items-center gap-1.5 flex-shrink-0 group">
-            <span className="font-bold text-gray-900 tracking-tight"
-                  style={{ fontSize: '30px', letterSpacing: '-0.5px' }}>
+            <span className="font-bold text-gray-900 tracking-tight text-lg sm:text-2xl md:text-[30px]"
+                  style={{ letterSpacing: '-0.5px' }}>
               Logo Here
             </span>
           </Link>
 
-          {/* ── SEARCH BAR ─────────────────────────────── */}
-          <div className="flex-1  relative" style={{ maxWidth: '550px' }}>
+          {/* ── SEARCH BAR (hidden on xs, visible sm+) ──── */}
+          <div className="hidden sm:flex flex-1 relative min-w-0" style={{ maxWidth: '550px' }}>
             <div
-              className={`flex items-center transition-all duration-[150ms]
-                          ${isSearchFocused
-                            ? 'ring-2 ring-primary ring-offset-0'
-                            : ''}`}
+              className={`flex items-center w-full transition-all duration-[150ms]
+                          ${isSearchFocused ? 'ring-2 ring-primary ring-offset-0' : ''}`}
               style={{
-                height: '48px',
+                height: '42px',
                 border: `1px solid ${isSearchFocused ? '#0FAFB8' : '#e5e5e5'}`,
                 borderRadius: '50px',
                 overflow: 'hidden',
@@ -73,9 +66,9 @@ const Header = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Search products"
-                style={{ fontSize: '15px' }}
-                className="flex-1 px-5 outline-none bg-transparent text-gray-700
-                           placeholder:text-gray-400 w-full"
+                style={{ fontSize: '14px' }}
+                className="flex-1 px-4 outline-none bg-transparent text-gray-700
+                           placeholder:text-gray-400 w-full min-w-0"
               />
               {searchQuery && (
                 <button onClick={() => setSearchQuery('')}
@@ -87,104 +80,153 @@ const Header = () => {
                 className="flex items-center justify-center flex-shrink-0
                            hover:opacity-90 transition-opacity duration-[150ms]"
                 style={{
-                  width: '48px',
-                  height: '48px',
+                  width: '42px',
+                  height: '42px',
                   backgroundColor: '#0FAFB8',
                   borderRadius: '0 50px 50px 0',
                 }}
               >
-                <Search size={16} color="white" />
+                <Search size={15} color="white" />
               </button>
             </div>
 
-            {/* Search dropdown */}
             {searchQuery.length > 1 && isSearchFocused && (
               <SearchDropdown query={searchQuery} />
             )}
           </div>
-          {/* Deals Button */}
+
+          {/* ── HOT DEALS (hidden on xs/sm) ──────────────── */}
           <Link
             to="/shop?deals=true"
-            className="flex items-center gap-1.5 px-4 py-3 bg-[#073B45] rounded-full text-white font-semibold hover:bg-[#0FAFB8] transition-colors whitespace-nowrap ml-4 flex-shrink-0"
-            style={{ fontSize: '13px' }}
+            className="hidden md:flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap flex-shrink-0 relative overflow-hidden group"
+            style={{
+              fontSize: '13px',
+              backgroundColor: '#FF4757',
+              boxShadow: '0 4px 15px rgba(255, 71, 87, 0.4)',
+              letterSpacing: '0.5px',
+            }}
           >
-            <VscPercentage size={20} className="animate-pulse text-white" />
-            Hot Deals
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                          transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
+                 style={{ width: '200%' }} />
+            <div className="relative z-10 flex items-center gap-2">
+              <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} />
+              <span>Hot Deals</span>
+              <span className="inline-block animate-pulse">🔥</span>
+            </div>
           </Link>
 
-          {/* ── RIGHT SIDE ICONS ────────────────────────── */}
-          <div className="flex items-center gap-5 ml-auto flex-shrink-0">
+          {/* ── RIGHT ICONS ──────────────────────────────── */}
+          <div className="flex items-center gap-2 sm:gap-3 md:gap-4 ml-auto flex-shrink-0">
 
-            {/* Country Selector */}
-            <div className="hidden md:flex flex-col items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
-              <img 
-                src="https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg" 
-                alt="Pakistan" 
-                className="w-[28px] h-[18px] object-cover rounded-[2px] shadow-sm mb-1" 
+            {/* Mobile search icon */}
+            <button
+              className="sm:hidden text-gray-500 hover:text-primary transition-colors p-1"
+              onClick={() => setMobileSearchOpen(s => !s)}
+              aria-label="Toggle search"
+            >
+              <Search size={20} strokeWidth={1.75} />
+            </button>
+
+            {/* Country flag (md+) */}
+            <div className="hidden lg:flex flex-col items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
+              <img
+                src="https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg"
+                alt="Pakistan"
+                className="w-[28px] h-[18px] object-cover rounded-[2px] shadow-sm mb-1"
               />
               <span className="text-[11px] font-bold text-gray-700 leading-none">Pakistan</span>
             </div>
 
-            {/* Divider */}
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />
 
-            {/* Icons & Delivery Container */}
-            <div className="flex flex-col items-center">
-              <div className="flex items-center gap-5 mb-1.5">
-                {/* Account */}
-                <button className="hidden md:flex flex-col items-center gap-0.5
-                                   text-gray-500 hover:text-primary transition-colors duration-[150ms]">
-                  <User size={30} strokeWidth={1.75} />
-                </button>
+            {/* Account (md+) */}
+            <button className="hidden md:flex text-gray-500 hover:text-primary transition-colors duration-[150ms]" aria-label="Account">
+              <User size={24} strokeWidth={1.75} />
+            </button>
 
-                {/* Wishlist */}
-                <button
-                  className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
-                  onClick={() => navigate('/wishlist')}
-                >
-                  <Heart size={30} strokeWidth={1.75} />
-                  {wishlistCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
-                                     text-white font-bold rounded-full"
-                          style={{
-                            width: '16px', height: '16px',
-                            fontSize: '9px',
-                            backgroundColor: '#0FAFB8',
-                          }}>
-                      {wishlistCount}
-                    </span>
-                  )}
-                </button>
+            {/* Wishlist */}
+            <button
+              className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
+              onClick={() => navigate('/wishlist')}
+              aria-label="Wishlist"
+            >
+              <Heart className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]" strokeWidth={1.75} />
+              {wishlistCount > 0 && (
+                <span className="absolute top-0 right-0 flex items-center justify-center
+                                 text-white font-bold rounded-full"
+                      style={{ width: '15px', height: '15px', fontSize: '9px', backgroundColor: '#0FAFB8' }}>
+                  {wishlistCount}
+                </span>
+              )}
+            </button>
 
-                {/* Cart */}
-                <button
-                  className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms]"
-                  onClick={() => setIsCartOpen(true)}
-                >
-                  <ShoppingCart size={30} strokeWidth={1.75} />
-                  {cartCount > 0 && (
-                    <span className="absolute -top-1.5 -right-1.5 flex items-center justify-center
-                                     text-white font-bold rounded-full animate-pulse-glow"
-                          style={{
-                            width: '16px', height: '16px',
-                            fontSize: '9px',
-                            backgroundColor: '#0FAFB8',
-                          }}>
-                      {cartCount}
-                    </span>
-                  )}
-                </button>
-              </div>
-              
-              
-            </div>
+            {/* Cart */}
+            <button
+              className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
+              onClick={() => setIsCartOpen(true)}
+              aria-label="Cart"
+            >
+              <ShoppingCart className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]" strokeWidth={1.75} />
+              {cartCount > 0 && (
+                <span className="absolute top-0 right-0 flex items-center justify-center
+                                 text-white font-bold rounded-full animate-pulse-glow"
+                      style={{ width: '15px', height: '15px', fontSize: '9px', backgroundColor: '#0FAFB8' }}>
+                  {cartCount}
+                </span>
+              )}
+            </button>
           </div>
         </div>
+
+        {/* ── MOBILE SEARCH DROPDOWN ───────────────────── */}
+        {mobileSearchOpen && (
+          <div className="sm:hidden px-3 pb-3 pt-1">
+            <div
+              className={`flex items-center transition-all duration-[150ms]
+                          ${isSearchFocused ? 'ring-2 ring-primary ring-offset-0' : ''}`}
+              style={{
+                height: '44px',
+                border: `1px solid ${isSearchFocused ? '#0FAFB8' : '#e5e5e5'}`,
+                borderRadius: '50px',
+                overflow: 'hidden',
+                backgroundColor: '#f4f3f3',
+              }}
+            >
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={e => setSearchQuery(e.target.value)}
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+                placeholder="Search medicines, vitamins..."
+                autoFocus
+                style={{ fontSize: '14px' }}
+                className="flex-1 px-4 outline-none bg-transparent text-gray-700 placeholder:text-gray-400"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="pr-2 text-gray-400 hover:text-gray-600">
+                  <X size={14} />
+                </button>
+              )}
+              <button
+                className="flex items-center justify-center flex-shrink-0 hover:opacity-90"
+                style={{ width: '44px', height: '44px', backgroundColor: '#0FAFB8', borderRadius: '0 50px 50px 0' }}
+              >
+                <Search size={15} color="white" />
+              </button>
+            </div>
+
+            {searchQuery.length > 1 && isSearchFocused && (
+              <div className="relative">
+                <SearchDropdown query={searchQuery} />
+              </div>
+            )}
+          </div>
+        )}
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-
-
     </>
   )
 }

@@ -6,14 +6,10 @@ import {
   Calendar,
   Clock,
   Tag,
-  Share2,
   Link2,
   ChevronRight,
   BookOpen,
   Heart,
-  MessageCircle,
-  ArrowRight,
-  CheckCircle,
 } from 'lucide-react'
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaWhatsapp } from 'react-icons/fa'
 import toast from 'react-hot-toast'
@@ -116,39 +112,6 @@ const ArticleBody = ({ blog }) => {
   )
 }
 
-/* ─── Key Takeaways ─────────────────────────────────── */
-// const KeyTakeaways = ({ blog }) => {
-//   const points = blog.body
-//     .split(/(?<=[.!?])\s+/)
-//     .filter(s => s.length > 30)
-//     .slice(0, 4)
-
-//   return (
-//     <div
-//       className="rounded-2xl border border-primary/20 bg-primary-light/40 p-6 my-8"
-//     >
-//       <div className="flex items-center gap-2.5 mb-4">
-//         <div className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center flex-shrink-0">
-//           <CheckCircle size={16} className="text-white" />
-//         </div>
-//         <h3 className="font-heading font-bold text-gray-900 text-[15px]">
-//           Key Takeaways
-//         </h3>
-//       </div>
-//       <ul className="space-y-3">
-//         {points.map((point, i) => (
-//           <li key={i} className="flex items-start gap-3">
-//             <span className="w-5 h-5 rounded-full bg-primary flex items-center justify-center flex-shrink-0 mt-0.5">
-//               <span className="text-white text-[9px] font-bold">{i + 1}</span>
-//             </span>
-//             <p className="text-[13px] text-gray-700 leading-relaxed">{point.trim()}</p>
-//           </li>
-//         ))}
-//       </ul>
-//     </div>
-//   )
-// }
-
 /* ─── Share buttons ─────────────────────────────────── */
 const ShareButtons = ({ title, slug }) => {
   const url   = `${window.location.origin}/blog/${slug}`
@@ -216,147 +179,6 @@ const ShareButtons = ({ title, slug }) => {
   )
 }
 
-/* ─── Sidebar widgets ───────────────────────────────── */
-// const Sidebar = ({ currentSlug, category, tags }) => {
-//   const related = blogs
-//     .filter(b => b.slug !== currentSlug && (b.category === category || b.tags.some(t => tags.includes(t))))
-//     .slice(0, 4)
-
-//   const popular = blogs.filter(b => b.slug !== currentSlug).slice(0, 5)
-
-//   return (
-//     <aside className="space-y-6">
-
-//       {/* PHARMACIST CTA */}
-//       <div
-//         className="relative rounded-2xl overflow-hidden p-6 text-white"
-//         style={{ background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)' }}
-//       >
-//         <div className="absolute -top-6 -right-6 w-28 h-28 rounded-full border-2 border-white/10" />
-//         <div className="absolute -bottom-4 -left-4 w-16 h-16 rounded-full border border-white/10" />
-//         <div className="relative z-10">
-//           <div className="w-12 h-12 bg-white/15 rounded-xl flex items-center justify-center mb-4">
-//             <MessageCircle size={22} className="text-white" />
-//           </div>
-//           <h4 className="font-heading font-bold text-[15px] mb-1.5">
-//             Ask Our Pharmacist
-//           </h4>
-//           <p className="text-white/65 text-[12px] leading-relaxed mb-4">
-//             Have questions about medicines or this article? Our licensed pharmacists are here Mon–Sat, 9am–9pm.
-//           </p>
-//           <Link
-//             to="/contact"
-//             className="flex items-center justify-center gap-2 bg-white text-primary font-bold text-[13px] rounded-xl py-2.5 hover:bg-gray-50 transition-colors"
-//           >
-//             Chat with Pharmacist <ArrowRight size={14} />
-//           </Link>
-//         </div>
-//       </div>
-
-      {/* RELATED POSTS */}
-      // {related.length > 0 && (
-      //   <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-      //     <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
-      //       <BookOpen size={15} className="text-primary" /> Related Articles
-      //     </h3>
-      //     <div className="space-y-4">
-      //       {related.map(post => (
-      //         <Link
-      //           key={post.id}
-      //           to={`/blog/${post.slug}`}
-      //           className="flex gap-3 group"
-      //         >
-      //           <img
-      //             src={post.cover}
-      //             alt={post.title}
-      //             className="w-16 h-14 rounded-xl object-cover flex-shrink-0"
-      //           />
-      //           <div className="flex-1 min-w-0">
-      //             <span
-      //               className="text-[9px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full text-white"
-      //               style={{ backgroundColor: post.categoryColor }}
-      //             >
-      //               {post.category}
-      //             </span>
-      //             <p className="text-[12px] font-semibold text-gray-800 line-clamp-2 leading-snug mt-1 group-hover:text-primary transition-colors">
-      //               {post.title}
-      //             </p>
-      //             <p className="text-[10px] text-gray-400 mt-1 flex items-center gap-1">
-      //               <Clock size={10} /> {post.readTime}
-      //             </p>
-      //           </div>
-      //         </Link>
-      //       ))}
-      //     </div>
-      //   </div>
-      // )}
-
-      {/* POPULAR POSTS */}
-      // <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-      //   <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4">
-      //     Popular This Week
-      //   </h3>
-      //   <div className="space-y-3">
-      //     {popular.map((post, i) => (
-      //       <Link
-      //         key={post.id}
-      //         to={`/blog/${post.slug}`}
-      //         className="flex items-start gap-3 group"
-      //       >
-      //         <span
-      //           className="w-7 h-7 flex-shrink-0 rounded-lg flex items-center justify-center text-[11px] font-black text-white"
-      //           style={{ backgroundColor: post.categoryColor }}
-      //         >
-      //           {i + 1}
-      //         </span>
-      //         <p className="text-[12px] font-medium text-gray-700 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
-      //           {post.title}
-      //         </p>
-      //       </Link>
-      //     ))}
-      //   </div>
-      // </div>
-
-      {/* NEWSLETTER */}
-      // <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-      //   <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-1">
-      //     Health Newsletter
-      //   </h3>
-      //   <p className="text-[12px] text-gray-500 mb-4">
-      //     Weekly tips from certified pharmacists, delivered free.
-      //   </p>
-      //   <input
-      //     type="email"
-      //     placeholder="your@email.com"
-      //     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] outline-none focus:border-primary focus: transition-all mb-2.5"
-      //   />
-      //   <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold rounded-xl py-2.5 text-[13px] transition-colors">
-      //     Subscribe Free
-      //   </button>
-      // </div>
-
-      {/* TAGS */}
-//       <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
-//         <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4 flex items-center gap-2">
-//           <Tag size={14} className="text-primary" /> Article Tags
-//         </h3>
-//         <div className="flex flex-wrap gap-2">
-//           {tags.map(tag => (
-//             <Link
-//               key={tag}
-//               to={`/blog?tag=${tag}`}
-//               className="text-[12px] border border-gray-200 rounded-full px-3 py-1 text-gray-600 hover:bg-primary hover:text-white hover:border-primary transition-all duration-150"
-//             >
-//               #{tag}
-//             </Link>
-//           ))}
-//         </div>
-//       </div>
-
-//     </aside>
-//   )
-// }
-
 /* ─── Main Page ─────────────────────────────────────── */
 const BlogDetail = () => {
   const { slug } = useParams()
@@ -420,11 +242,11 @@ const BlogDetail = () => {
         ═══════════════════════════════════════ */}
         <section
           className="relative overflow-hidden"
-          style={{ 
+          style={{
             backgroundImage: `linear-gradient(rgba(13, 61, 43, 0.85), rgba(26, 158, 110, 0.85)), url(${blog.cover})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
-            padding: '120px 0 100px' 
+            padding: 'clamp(64px, 12vw, 120px) 0 clamp(48px, 9vw, 100px)',
           }}
         >
           {/* Decorative circles */}
@@ -497,39 +319,39 @@ const BlogDetail = () => {
         <div className="max-w-3xl mx-auto px-5 mb-16 mt-12">
 
               {/* Quick stats bar */}
-              <div className="flex items-center gap-6 border border-gray-100 rounded-2xl px-6 py-4 mb-8 shadow-card">
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Clock size={16} className="text-primary" />
-                  <span className="text-[13px] font-medium">{blog.readTime}</span>
-                </div>
-                <div className="w-px h-5 bg-gray-200" />
-                <div className="flex items-center gap-2 text-gray-600">
-                  <BookOpen size={16} className="text-primary" />
-                  <span className="text-[13px] font-medium">In-depth guide</span>
-                </div>
-                <div className="w-px h-5 bg-gray-200" />
-                <div className="flex items-center gap-2 text-gray-600">
-                  <Tag size={15} className="text-primary" />
-                  <span className="text-[13px] font-medium">{blog.category}</span>
-                </div>
-                <div className="ml-auto">
+              <div className="border border-gray-100 rounded-2xl px-4 sm:px-6 py-3 sm:py-4 mb-8 shadow-card">
+                <div className="flex items-center justify-between gap-3 flex-wrap">
+                  <div className="flex items-center gap-3 sm:gap-6 flex-wrap">
+                    <div className="flex items-center gap-1.5 text-gray-600">
+                      <Clock size={14} className="text-primary flex-shrink-0" />
+                      <span className="text-[12px] sm:text-[13px] font-medium">{blog.readTime}</span>
+                    </div>
+                    <div className="hidden sm:block w-px h-4 bg-gray-200" />
+                    <div className="flex items-center gap-1.5 text-gray-600">
+                      <BookOpen size={14} className="text-primary flex-shrink-0" />
+                      <span className="text-[12px] sm:text-[13px] font-medium hidden sm:inline">In-depth guide</span>
+                      <span className="text-[12px] sm:text-[13px] font-medium sm:hidden">Guide</span>
+                    </div>
+                    <div className="hidden sm:block w-px h-4 bg-gray-200" />
+                    <div className="flex items-center gap-1.5 text-gray-600">
+                      <Tag size={13} className="text-primary flex-shrink-0" />
+                      <span className="text-[12px] sm:text-[13px] font-medium truncate max-w-[100px]">{blog.category}</span>
+                    </div>
+                  </div>
                   <button
                     onClick={handleLike}
                     className={clsx(
-                      'flex items-center gap-2 text-[13px] font-semibold px-4 py-2 rounded-xl border transition-all duration-200',
+                      'flex items-center gap-1.5 text-[12px] sm:text-[13px] font-semibold px-3 sm:px-4 py-1.5 sm:py-2 rounded-xl border transition-all duration-200 flex-shrink-0',
                       liked
                         ? 'bg-red-50 border-red-200 text-red-500'
                         : 'border-gray-200 text-gray-500 hover:border-red-200 hover:text-red-400'
                     )}
                   >
-                    <Heart size={15} className={liked ? 'fill-red-500' : ''} />
+                    <Heart size={13} className={liked ? 'fill-red-500' : ''} />
                     {likeCount}
                   </button>
                 </div>
               </div>
-
-              {/* Key Takeaways */}
-              {/* <KeyTakeaways blog={blog} /> */}
 
               {/* Article Body */}
               <ArticleBody blog={blog} />

@@ -1,5 +1,3 @@
-import { Globe, ChevronDown } from 'lucide-react'
-
 const messages = [
   'Limited Period Offer: Get up to 10% off + extra 15% off on medicines & more offers.',
   'Flash Deals Every Monday · Free Shipping on Orders Above $50',
@@ -30,23 +28,6 @@ const TopBar = () => {
           </span>
         </div>
       </div>
-
-      {/* Right side controls */}
-      {/* <div className="flex items-center gap-5 flex-shrink-0">
-        <button className="flex items-center gap-1 text-white hover:text-primary-light
-                           transition-colors duration-[150ms]"
-                style={{ fontSize: '12px' }}>
-          <Globe size={12} className="opacity-80" />
-          <span>English</span>
-          <ChevronDown size={10} className="opacity-70" />
-        </button>
-        <button className="flex items-center gap-1 text-white hover:text-primary-light
-                           transition-colors duration-[150ms]"
-                style={{ fontSize: '12px' }}>
-          <span>USD</span>
-          <ChevronDown size={10} className="opacity-70" />
-        </button>
-      </div> */}
     </div>
   )
 }

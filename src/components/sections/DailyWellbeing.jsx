@@ -11,8 +11,8 @@ const DailyWellbeing = () => {
   const comboProducts = products.filter(p => p.tags.includes('combo'))
 
   return (
-    <section className="bg-primary-light mt-10 py-10">
-      <div className="max-w-[1450px] mx-auto px-5">
+    <section className="bg-primary-light mt-8 sm:mt-10 py-8 sm:py-10">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-5">
         <SectionHeader
           title="Daily Well-being"
           prevRef={prevRef}
@@ -33,7 +33,7 @@ const DailyWellbeing = () => {
           autoplay={{ delay: 3500, disableOnInteraction: false }}
           loop={true}
           breakpoints={{
-            0:    { slidesPerView: 2, spaceBetween: 10 },
+            0:    { slidesPerView: 1, spaceBetween: 10 },
             640:  { slidesPerView: 3, spaceBetween: 12 },
             1024: { slidesPerView: 5, spaceBetween: 14 },
           }}

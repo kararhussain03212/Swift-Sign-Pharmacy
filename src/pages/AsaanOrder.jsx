@@ -130,14 +130,14 @@ const AsaanOrder = () => {
   }
 
   return (
-    <main>
+    <main className="pb-16 md:pb-0">
 
       {/* ══ HERO ══════════════════════════════════════════ */}
       <section
         className="relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
-          padding: '90px 0 70px',
+          padding: 'clamp(56px, 9vw, 90px) 0 clamp(44px, 7vw, 70px)',
         }}
       >
         {/* decorative circles */}
@@ -201,10 +201,10 @@ const AsaanOrder = () => {
       <div
         className="max-w-[1280px] mx-auto px-5 mt-8 relative z-10"
       >
-        <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-6 py-8">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+        <div className="bg-white rounded-2xl shadow-md border border-gray-100 px-4 sm:px-6 py-6 sm:py-8">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 sm:gap-8 relative">
             {/* Background line for desktop */}
-            <div className="hidden md:block absolute top-8 left-[16.66%] right-[16.66%] h-px bg-gray-200 z-0" />
+            <div className="hidden sm:block absolute top-8 left-[16.66%] right-[16.66%] h-px bg-gray-200 z-0" />
 
             {STEPS.map((step, i) => (
               <div key={i} className="flex flex-col items-center text-center gap-4 group relative z-10">
@@ -232,7 +232,7 @@ const AsaanOrder = () => {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8">
 
           {/* ── LEFT: Upload Card ── */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-md p-8">
+          <div className="bg-white rounded-3xl border border-gray-100 shadow-md p-5 sm:p-8">
 
             {/* header */}
             <div className="mb-6">
@@ -414,11 +414,11 @@ const AsaanOrder = () => {
                 </div>
 
                 {/* ── Send button ── */}
-                <div className="flex justify-end mt-6">
+                <div className="mt-6">
                   <button
                     onClick={handleSubmit}
                     disabled={loading}
-                    className="flex items-center gap-2.5 text-white font-bold rounded-xl px-8 py-3 text-[14px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
+                    className="w-full sm:w-auto sm:ml-auto flex items-center justify-center gap-2.5 text-white font-bold rounded-xl px-8 py-3 text-[14px] transition-all duration-200 hover:-translate-y-0.5 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed disabled:translate-y-0"
                     style={{
                       background: 'linear-gradient(135deg,#0FAFB8,#073B45)',
                       boxShadow: '0 4px 16px rgba(26,158,110,0.35)',

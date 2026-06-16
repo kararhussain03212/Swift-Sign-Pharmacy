@@ -2,14 +2,12 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import {
-  ChevronRight,
   Search,
   ChevronDown,
   ArrowRight,
   Calendar,
   Clock,
   BookOpen,
-  Mail,
 } from 'lucide-react'
 import { blogs } from '../data/blogs'
 import BlogCard from '../components/ui/BlogCard'
@@ -45,7 +43,6 @@ const Blog = () => {
   const [searchQuery, setSearchQuery]     = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
   const [visibleCount, setVisibleCount]   = useState(6)
-  const [sidebarSearch, setSidebarSearch] = useState('')
 
   const filtered = blogs
     .filter(b => !b.featured)
@@ -65,7 +62,7 @@ const Blog = () => {
         className="relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
-          padding: '100px 0 80px',
+          padding: 'clamp(60px, 10vw, 100px) 0 clamp(48px, 8vw, 80px)',
         }}
       >
         {/* Decorative BG elements */}
@@ -153,24 +150,24 @@ const Blog = () => {
             className="flex items-center bg-white rounded-full shadow-lg mx-auto overflow-hidden"
             style={{ maxWidth: '480px', height: '48px' }}
           >
-            <Search size={18} className="ml-5 text-gray-400 flex-shrink-0" />
+            <Search size={16} className="ml-4 text-gray-400 flex-shrink-0" />
             <input
               type="text"
               value={searchQuery}
               onChange={e => setSearchQuery(e.target.value)}
               placeholder="Search articles..."
-              className="flex-1 px-3 text-[14px] text-gray-700 outline-none bg-transparent"
+              className="flex-1 px-3 text-[13px] sm:text-[14px] text-gray-700 outline-none bg-transparent min-w-0"
             />
             <button
               onClick={() => {}}
-              className="bg-primary border border-primary hover:bg-primary-dark text-white font-bold text-[13px] px-8 h-full rounded-full transition-colors whitespace-nowrap"
+              className="bg-primary border border-primary hover:bg-primary-dark text-white font-bold text-[12px] sm:text-[13px] px-5 sm:px-8 h-full rounded-full transition-colors whitespace-nowrap flex-shrink-0"
             >
               Search
             </button>
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center justify-center gap-8 mt-8 flex-wrap">
+          <div className="flex items-center justify-center gap-5 sm:gap-8 mt-6 sm:mt-8 flex-wrap">
             {[
               { value: '120+', label: 'Articles' },
               { value: '15',   label: 'Categories' },
@@ -190,16 +187,15 @@ const Blog = () => {
           CATEGORY FILTER PILLS
       ═══════════════════════════════════════ */}
       <div
-        className="bg-white sticky z-30"
+        className="bg-white sticky z-30 top-14 sm:top-[70px] md:top-[90px]"
         style={{
-          top: '100px',
           borderBottom: '1px solid #E5E7EB',
-          padding: '16px 0',
+          padding: '12px 0',
           boxShadow: '0 2px 8px rgba(0,0,0,0.05)',
         }}
       >
-        <div className="max-w-[1280px] mx-auto px-5">
-          <div className="flex gap-2.5 overflow-x-auto scrollbar-hide">
+        <div className="max-w-[1280px] mx-auto px-4 sm:px-5">
+          <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             {CATEGORIES.map(cat => (
               <button
                 key={cat}

@@ -15,9 +15,10 @@ import Cart from './pages/Cart'
 import Wishlist from './pages/Wishlist'
 import Blog       from './pages/Blog'
 import BlogDetail from './pages/BlogDetail'
-import Contact    from './pages/Contact'
-import Diseases     from './pages/Diseases'
-import AsaanOrder   from './pages/AsaanOrder'
+import Contact     from './pages/Contact'
+import Diseases    from './pages/Diseases'
+import DiseaseDetail from './pages/DiseaseDetail'
+import AsaanOrder  from './pages/AsaanOrder'
 import StoreLocator from './pages/StoreLocator'
 import Checkout     from './pages/Checkout'
 
@@ -41,6 +42,7 @@ function App() {
             <Route path="/blog/:slug"        element={<BlogDetail />}    />
             <Route path="/contact"           element={<Contact />}       />
             <Route path="/diseases"          element={<Diseases />}      />
+            <Route path="/disease/:slug"     element={<DiseaseDetail />} />
             <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="/store-locator"     element={<StoreLocator />}  />
             <Route path="/checkout"          element={<Checkout />}      />

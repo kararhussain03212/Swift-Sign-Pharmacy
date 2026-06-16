@@ -11,7 +11,7 @@ const PopularProduct = () => {
   const trendingProducts = products.filter(p => p.tags.includes('trending'))
 
   return (
-    <section className="max-w-[1450px] mx-auto px-5 mt-10">
+    <section className="max-w-[1450px] mx-auto px-4 sm:px-5 mt-8 sm:mt-10">
       <SectionHeader
         title="Popular Product"
         prevRef={prevRef}
@@ -32,7 +32,7 @@ const PopularProduct = () => {
         autoplay={{ delay: 3000, disableOnInteraction: false }}
         loop={true}
         breakpoints={{
-          0:    { slidesPerView: 2, spaceBetween: 10 },
+          0:    { slidesPerView: 1, spaceBetween: 10 },
           640:  { slidesPerView: 3, spaceBetween: 12 },
           1024: { slidesPerView: 5, spaceBetween: 14 },
         }}

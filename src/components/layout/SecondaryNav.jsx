@@ -52,25 +52,53 @@ const SecondaryNav = () => {
 
   return (
     <>
-      <div className="bg-white hidden md:block relative z-30"
+      {/* ── MOBILE: Horizontal scroll category pills ──── */}
+      <div className="sm:hidden bg-white overflow-x-auto scrollbar-hide"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
-        <div className="max-w-[1450px] mx-auto px-6">
-          <div className="flex items-center justify-between" style={{ minHeight: '35px' }}>
+        <div className="flex items-center gap-1.5 px-3 py-2 min-w-max">
+          {navItems.map((item) => (
+            <Link
+              key={item.name}
+              to={item.to}
+              className="flex-shrink-0 text-[11px] font-semibold px-3 py-1.5 rounded-full bg-gray-50 text-gray-600
+                         hover:bg-primary-light hover:text-primary active:bg-primary active:text-white
+                         transition-colors whitespace-nowrap border border-gray-100"
+            >
+              {item.name}
+            </Link>
+          ))}
+          {/* Location button on mobile */}
+          <button
+            onClick={() => setIsLocationModalOpen(true)}
+            className="flex-shrink-0 flex items-center gap-1 text-[11px] font-semibold px-3 py-1.5 rounded-full
+                       bg-primary text-white whitespace-nowrap ml-1"
+          >
+            <MapPin size={10} />
+            Deliver to
+          </button>
+        </div>
+      </div>
+
+      {/* ── DESKTOP: Full nav ──────────────────────────── */}
+      <div className="bg-white hidden sm:block relative z-30"
+           style={{ borderBottom: '1px solid #e5e5e5' }}>
+        <div className="max-w-[1450px] mx-auto px-3 sm:px-6">
+          <div className="flex items-center justify-between flex-wrap gap-2" style={{ minHeight: '40px' }}>
 
             {/* Main Links */}
-            <div className="flex items-center gap-0 overflow-x-visible">
+            <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
                 <div key={item.name} className="relative group h-full flex items-center">
                   <Link
                     to={item.to}
-                    className="flex items-center gap-1 text-gray-600 hover:text-primary
+                    className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
                                transition-colors duration-[150ms] whitespace-nowrap relative"
                     style={{
-                      fontSize: '13px',
+                      fontSize: 'clamp(11px, 2vw, 13px)',
                       fontWeight: 400,
-                      paddingLeft: i === 0 ? '0px' : '16px',
-                      paddingRight: '16px',
-                      height: '35px',
+                      paddingLeft: i === 0 ? '0px' : 'clamp(8px, 2vw, 16px)',
+                      paddingRight: 'clamp(8px, 2vw, 16px)',
+                      height: '40px',
                     }}
                   >
                     {item.name}
@@ -128,20 +156,20 @@ const SecondaryNav = () => {
             </div>
 
             {/* ── DELIVERY LOCATION ON RIGHT SIDE ───────────────────── */}
-            <div className="flex items-center justify-end ml-4 pl-4 border-l border-gray-200 h-full min-w-0">
+            <div className="hidden lg:flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-2 flex-shrink-0 pl-4">
               <button
                 onClick={() => setIsLocationModalOpen(true)}
-                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-[11px] px-3 py-0.5 rounded-2xl my-1 shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
+                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-[10px] sm:text-[11px] px-2 sm:px-3 py-0.5 rounded-2xl shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
               >
                 Change
               </button>
 
-              <div className="flex items-center gap-2 ml-2 min-w-0">
-                <MapPin size={14} className="text-[#0FAFB8] flex-shrink-0" />
-                <div className="text-[11px] text-gray-700 min-w-0 flex items-center whitespace-nowrap">
-                  <span className="font-bold text-[#0FAFB8]">DELIVER TO:</span>
+              <div className="flex items-center gap-1.5 min-w-0">
+                <MapPin size={12} className="text-[#0FAFB8] flex-shrink-0" />
+                <div className="text-[10px] sm:text-[11px] text-gray-700 min-w-0 flex items-center gap-1">
+                  <span className="font-bold text-[#0FAFB8] hidden md:inline">DELIVER TO:</span>
                   <span
-                    className="ml-1 font-medium truncate inline-block max-w-[200px]"
+                    className="font-medium truncate max-w-[150px]"
                     title={location.fullAddress || getDisplayAddress()}
                   >
                     {getDisplayAddress()}

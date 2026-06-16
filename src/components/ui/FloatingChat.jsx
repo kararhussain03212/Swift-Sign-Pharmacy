@@ -82,17 +82,17 @@ const FloatingChat = () => {
         href={`https://wa.me/${PHONE.replace(/\D/g, '')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-6 right-6 z-50 w-[65px] h-[65px] bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
+        className="fixed bottom-24 md:bottom-6 right-6 z-50 w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
         aria-label="Chat on WhatsApp"
       >
-        <FaWhatsapp size={40} />
+        <FaWhatsapp size={28} />
       </a>
 
       {/* ── Need Help trigger button on the LEFT ── */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-10 left-6 z-50 flex items-center gap-2.5 bg-[#0fafb8] text-[#073b45] px-5 py-2.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[15px]"
+          className="fixed bottom-24 md:bottom-6 left-6 z-50 flex items-center gap-2 bg-[#0fafb8] text-[#073b45] px-3 py-2 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[13px]"
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
           <div className="bg-[#073b45] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-2 flex items-center justify-center flex-shrink-0">
@@ -107,7 +107,7 @@ const FloatingChat = () => {
       {/* ── Chat Panel ── */}
       {isOpen && (
         <div
-          className="fixed bottom-6 left-6 z-50 flex flex-col rounded-2xl overflow-hidden"
+          className="fixed bottom-24 md:bottom-6 left-6 z-50 flex flex-col rounded-2xl overflow-hidden"
           style={{
             width: '320px',
             maxHeight: '500px',

@@ -61,6 +61,10 @@
 /* ── Base Reset ─────────────────────────────────────── */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
+html {
+  overflow-x: hidden;
+}
+
 body {
   font-family: var(--font-family);
   font-size: var(--font-size-base);
@@ -68,6 +72,7 @@ body {
   line-height: var(--line-height-base);
   color: var(--text);
   background: var(--white);
+  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

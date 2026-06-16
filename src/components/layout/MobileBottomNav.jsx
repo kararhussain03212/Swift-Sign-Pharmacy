@@ -1,13 +1,13 @@
-import { Home, ShoppingBag, Heart, User, Search } from 'lucide-react'
+import { Home, ShoppingBag, User, Grid, FileText } from 'lucide-react'
 import { NavLink } from 'react-router-dom'
 import clsx from 'clsx'
 
 const tabs = [
-  { label: 'Home',     to: '/',         icon: Home       },
-  { label: 'Shop',     to: '/shop',     icon: Search     },
-  { label: 'Cart',     to: '/cart',     icon: ShoppingBag },
-  { label: 'Wishlist', to: '/wishlist', icon: Heart      },
-  { label: 'Account',  to: '#',         icon: User       },
+  { label: 'Home',         to: '/',             icon: Home        },
+  { label: 'Categories',   to: '/shop',         icon: Grid        },
+  { label: 'Cart',         to: '/cart',         icon: ShoppingBag },
+  { label: 'Prescription', to: '/asaan-order',  icon: FileText    },
+  { label: 'Account',      to: '#',             icon: User        },
 ]
 
 const MobileBottomNav = () => {

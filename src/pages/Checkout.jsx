@@ -21,29 +21,31 @@ const steps = ['Cart', 'Delivery', 'Payment', 'Confirm']
 
 function Stepper({ current }) {
   return (
-    <div className="flex items-center justify-center gap-0 mb-8 select-none">
+    <div className="flex items-center justify-center gap-0 mb-8 select-none px-2">
       {steps.map((s, i) => {
-        const done    = i < current
-        const active  = i === current
+        const done   = i < current
+        const active = i === current
         return (
           <div key={s} className="flex items-center">
             <div className="flex flex-col items-center gap-1">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm transition-all
-                  ${done   ? 'bg-primary text-white '
+                className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm transition-all
+                  ${done   ? 'bg-primary text-white'
                   : active ? 'bg-primary text-white ring-4 ring-primary/20'
                   :          'bg-gray-100 text-gray-400'}`}
               >
-                {done ? <CheckCircle2 size={16} /> : i + 1}
+                {done ? <CheckCircle2 size={14} /> : i + 1}
               </div>
-              <span className={`text-[11px] font-medium whitespace-nowrap
+              <span className={`text-[9px] sm:text-[11px] font-medium whitespace-nowrap
                 ${active ? 'text-primary' : done ? 'text-primary/70' : 'text-gray-400'}`}>
                 {s}
               </span>
             </div>
             {i < steps.length - 1 && (
-              <div className={`w-16 sm:w-24 h-[2px] mb-4 mx-1 transition-all
-                ${i < current ? 'bg-primary' : 'bg-gray-200'}`} />
+              <div className={`w-8 xs:w-10 sm:w-16 md:w-20 h-[2px] mb-4 mx-0.5 sm:mx-1 transition-all flex-shrink-0
+                ${i < current ? 'bg-primary' : 'bg-gray-200'}`}
+                style={{ minWidth: '24px' }}
+              />
             )}
           </div>
         )

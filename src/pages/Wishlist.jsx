@@ -27,10 +27,10 @@ const Wishlist = () => {
   }
 
   return (
-    <main className="max-w-[1450px] mx-auto px-5 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="font-heading font-bold text-2xl text-gray-900">
-          My Wishlist <span className="text-gray-400 font-normal text-lg">({items.length})</span>
+    <main className="max-w-[1450px] mx-auto px-4 sm:px-5 py-6 sm:py-8 pb-20 md:pb-8">
+      <div className="flex items-center justify-between mb-5 sm:mb-6">
+        <h1 className="font-heading font-bold text-xl sm:text-2xl text-gray-900">
+          My Wishlist <span className="text-gray-400 font-normal text-base sm:text-lg">({items.length})</span>
         </h1>
         <button
           onClick={clearWishlist}
@@ -40,7 +40,7 @@ const Wishlist = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
         {items.map(p => (
           <ProductCard key={p.id} product={p} />
         ))}

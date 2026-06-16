@@ -21,8 +21,8 @@ const storeImages = [
 
 const StoreLocation = () => {
   return (
-    <section className="py-16 bg-white overflow-hidden">
-      <div className="max-w-[1450px] mx-auto px-6">
+    <section className="w-full overflow-hidden py-10 sm:py-16 bg-white">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6">
 
         {/* Header */}
         <div className="mb-10">
@@ -104,8 +104,8 @@ const StoreLocation = () => {
           padding: 40px 0 30px;
         }
         .store-slide {
-          width: 680px !important;
-          height: 460px;
+          width: min(680px, 90vw) !important;
+          height: min(460px, 60vw);
           border-radius: 16px;
           overflow: hidden;
           transition: transform 0.4s ease;
@@ -150,8 +150,8 @@ const StoreLocation = () => {
           border-color: #0FAFB8;
           color: #0FAFB8;
         }
-        .store-prev-btn { left: calc(50% - 380px); }
-        .store-next-btn { right: calc(50% - 380px); }
+        .store-prev-btn { left: max(16px, calc(50% - 380px)); }
+        .store-next-btn { right: max(16px, calc(50% - 380px)); }
       `}</style>
     </section>
   )

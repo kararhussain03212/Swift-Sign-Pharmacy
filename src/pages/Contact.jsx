@@ -136,7 +136,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
         className="relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, #073B45 0%, #0FAFB8 100%)',
-          padding: '100px 0 80px',
+          padding: 'clamp(60px, 10vw, 100px) 0 clamp(48px, 8vw, 80px)',
         }}
       >
         {/* Decorative BG elements */}
@@ -240,8 +240,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
       {/* ═══════════════════════════════════════
           INFO CARDS ROW
       ═══════════════════════════════════════ */}
-      <div className="max-w-[1280px] mx-auto px-5 mt-12 relative z-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-5 mt-10 sm:mt-12 relative z-10">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
           {[
             {
               icon:    <Phone size={24} />,
@@ -300,11 +300,11 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
       {/* ═══════════════════════════════════════
           CONTACT FORM + MAP
       ═══════════════════════════════════════ */}
-      <section className="max-w-[1280px] mx-auto px-5 mt-12 mb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-8">
+      <section className="max-w-[1280px] mx-auto px-4 sm:px-5 mt-10 sm:mt-12 mb-12 sm:mb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6 sm:gap-8">
 
           {/* ── LEFT: CONTACT FORM ── */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-card p-8 lg:p-10">
+          <div className="bg-white rounded-2xl sm:rounded-3xl border border-gray-100 shadow-card p-5 sm:p-8 lg:p-10">
 
             {/* Form header */}
             <div className="mb-8">

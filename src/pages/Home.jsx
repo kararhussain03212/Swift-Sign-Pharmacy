@@ -7,20 +7,15 @@ import SuperSavingDeals from '../components/sections/SuperSavingDeals'
 import DailyWellbeing from '../components/sections/DailyWellbeing'
 import SexualWellness from '../components/sections/SexualWellness'
 import MedicalEquipments from '../components/sections/MedicalEquipments'
-import InTheSpotlight from '../components/sections/InTheSpotlight'
 import HealthierBanner from '../components/sections/HealthierBanner'
-import HealthArticles from '../components/sections/HealthArticles'
 import FeaturedBrands from '../components/sections/FeaturedBrands'
-import Newsletter from '../components/sections/Newsletter'
 import TrustBadges from '../components/sections/TrustBadges'
 import StoreLocation from '../components/sections/StoreLocation'
 
 const Home = () => {
   return (
-    <main>
+    <main className="w-full overflow-hidden">
       <HeroBanner />
-      {/* <OfferStrip /> */}
-      {/* <NewLaunches /> */}
       <ShopByCategory />
       <WideBanner />
       <PopularProduct />
@@ -30,10 +25,7 @@ const Home = () => {
       <SexualWellness />
       <HealthierBanner />
       <MedicalEquipments />
-      {/* <InTheSpotlight /> */}
-      {/* <HealthArticles /> */}
       <FeaturedBrands />
-      {/* <Newsletter /> */}
       <StoreLocation />
       <TrustBadges />
       {/* Bottom padding for mobile nav */}

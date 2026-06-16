@@ -2,17 +2,17 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 const SectionHeader = ({ title, subtitle, prevRef, nextRef, viewAllLink }) => {
   return (
-    <div className="flex items-center justify-between mb-5">
-      <div>
-        <h2 className="font-heading font-bold text-gray-900 text-xl md:text-3xl leading-tight">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
+      <div className="flex-1">
+        <h2 className="font-heading font-bold text-gray-900 text-lg sm:text-xl md:text-3xl leading-tight">
           {title}
         </h2>
         {subtitle && (
-          <p className="text-sm text-gray-400 mt-0.5">{subtitle}</p>
+          <p className="text-xs sm:text-sm text-gray-400 mt-0.5">{subtitle}</p>
         )}
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 flex-shrink-0">
         {viewAllLink && (
           <a
             href={viewAllLink}

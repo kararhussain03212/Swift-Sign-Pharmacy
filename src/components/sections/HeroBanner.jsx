@@ -1,6 +1,5 @@
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
-import { ArrowRight } from 'lucide-react'
 
 const slides = [
   {
@@ -15,9 +14,8 @@ const slides = [
   },
   {
     id: 2,
-    badgeColor: 'bg-orange-500',
     heading: 'Free Pharmacist Support',
-    firsttext: 'Upload your prescription and get expert \n ',
+    firsttext: 'Upload your prescription and get expert',
     secondtext: 'guidance before ordering',
     bgGradient: 'linear-gradient(to right, #f4f9f9, #bde0e0)',
     headingColor: '#1a365d',
@@ -26,9 +24,8 @@ const slides = [
   },
   {
     id: 3,
-    badgeColor: 'bg-primary',
-    heading: 'Same Day Delivery Fast & Reliable',
-    firsttext: 'Urgent Delivery currently only available ',
+    heading: 'Same Day Delivery',
+    firsttext: 'Urgent delivery currently only available',
     secondtext: 'in Islamabad',
     bgGradient: 'linear-gradient(to right, #f0fdf4, #a7f3d0)',
     headingColor: '#1a365d',
@@ -37,7 +34,6 @@ const slides = [
   },
   {
     id: 4,
-    badgeColor: 'bg-primary',
     heading: 'Fast & Reliable Delivery',
     firsttext: 'On-time delivery you',
     secondtext: 'can count on',
@@ -46,7 +42,6 @@ const slides = [
     subtextColor: '#2c5282',
     centered: false,
   },
-  
 ]
 
 const HeroBanner = () => {
@@ -64,36 +59,21 @@ const HeroBanner = () => {
           <SwiperSlide key={slide.id}>
             <div
               className="relative overflow-hidden"
-              style={{ 
-                background: slide.bgGradient || slide.bgColor, 
-                minHeight: '650px' 
-              }}
+              style={{ background: slide.bgGradient, minHeight: 'clamp(180px, 40vw, 580px)' }}
             >
               <div
-                className="max-w-[1450px] mx-auto px-5 h-full flex items-center"
-                style={{ minHeight: '760px' }}
+                className="max-w-[1450px] mx-auto px-4 sm:px-6 h-full flex items-center"
+                style={{ minHeight: 'clamp(180px, 40vw, 580px)' }}
               >
-                {/* TEXT CONTENT */}
-                <div className={`w-full max-w-4xl py-14 z-10 relative flex flex-col ${slide.centered ? 'items-center text-center mx-auto' : 'items-start text-left'}`}>
+                <div className={`w-full max-w-4xl py-8 sm:py-10 md:py-14 lg:py-20 z-10 relative flex flex-col
+                                 ${slide.centered ? 'items-center text-center mx-auto' : 'items-start text-left'}`}>
 
-                  {/* Badge */}
-                  {/* {slide.badge && (
-                    <span
-                      className={`inline-block ${slide.badgeColor} text-white
-                                 text-[10px] font-bold px-3 py-1 rounded-full
-                                 uppercase tracking-wider mb-4`}
-                    >
-                      {slide.badge}
-                    </span>
-                  )} */}
-
-                  {/* Heading */}
                   <h1
-                    className="font-heading font-extrabold leading-[1.15] mb-4"
-                    style={{ 
-                      fontSize: 'clamp(35px, 5vw, 85px)',
+                    className="font-heading font-extrabold leading-[1.15] mb-1.5 sm:mb-2 md:mb-4"
+                    style={{
+                      fontSize: 'clamp(18px, 5vw, 80px)',
                       color: slide.headingColor || '#111827',
-                      letterSpacing: '-1px'
+                      letterSpacing: '-0.5px',
                     }}
                   >
                     {slide.heading.split('\n').map((line, i) => (
@@ -101,28 +81,16 @@ const HeroBanner = () => {
                     ))}
                   </h1>
 
-                  {/* Subtext */}
-                  <p 
-                    className="font-medium mb-10 text-[22px] md:text-[28px] leading-snug"
-                    style={{ color: slide.subtextColor || 'var(--primary)' }}
+                  <p
+                    className="font-medium mb-3 sm:mb-5 md:mb-8 leading-snug"
+                    style={{
+                      fontSize: 'clamp(11px, 2vw, 22px)',
+                      color: slide.subtextColor || 'var(--primary)',
+                    }}
                   >
                     {slide.firsttext && <span>{slide.firsttext}<br /></span>}
                     {slide.secondtext && <span>{slide.secondtext}</span>}
                   </p>
-
-                  {/* CTA */}
-                  {/* {slide.ctaText && (
-                    <button
-                      className="inline-flex items-center gap-2 bg-primary
-                                 hover:bg-primary-dark text-white font-bold
-                                 rounded-full px-7 py-3 text-sm transition-all
-                                 duration-200  hover:shadow-lg
-                                 hover:-translate-y-0.5 animate-pulse-glow"
-                    >
-                      {slide.ctaText}
-                      <ArrowRight size={16} />
-                    </button>
-                  )} */}
                 </div>
               </div>
             </div>

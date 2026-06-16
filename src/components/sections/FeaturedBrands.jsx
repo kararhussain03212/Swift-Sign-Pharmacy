@@ -5,7 +5,7 @@ import SectionHeader from '../ui/SectionHeader'
 
 const FeaturedBrands = () => {
   return (
-    <section className="max-w-[1450px] mx-auto px-5 mt-10">
+    <section className="max-w-[1450px] mx-auto px-4 sm:px-5 mt-8 sm:mt-10">
       <SectionHeader title="Featured Brands" />
       <Swiper
         modules={[Autoplay]}

@@ -76,25 +76,20 @@ const StoreLocatorPage = () => {
   )
 
   return (
-    <main className="bg-gray-50 min-h-screen">
+    <main className="bg-gray-50 min-h-screen pb-16 md:pb-0">
 
       {/* ── Hero Banner ── */}
-      <div className="py-12 px-6 max-w-[1450px] mx-auto">
-          {/* <div className="flex items-center gap-2 text-gray-500 text-[13px] mb-3">
-            <Link to="/" className="hover:text-[#0FAFB8] transition-colors">Home</Link>
-            <ChevronRight size={14} />
-            <span className="text-[#0FAFB8] font-medium">Store Locator</span>
-          </div> */}
-          <h1 className="text-[#073B45] text-[36px] md:text-[44px] font-bold leading-tight mb-2">
+      <div className="py-8 sm:py-12 px-4 sm:px-6 max-w-[1450px] mx-auto">
+          <h1 className="text-[#073B45] text-2xl sm:text-[36px] md:text-[44px] font-bold leading-tight mb-2">
             Store Locator
           </h1>
-          <p className="text-gray-600 text-[15px] max-w-lg">
+          <p className="text-gray-600 text-[14px] sm:text-[15px] max-w-lg">
             Find your nearest Swift Pharmacy outlet for quality healthcare services, 24/7.
           </p>
       </div>
 
       {/* ── Map + Store List ── */}
-      <div className="max-w-[1450px] mx-auto px-6 py-10">
+      <div className="max-w-[1450px] mx-auto px-4 sm:px-6 py-8 sm:py-10">
         <div className="flex flex-col lg:flex-row gap-6">
           
 
@@ -113,7 +108,7 @@ const StoreLocatorPage = () => {
             </div>
 
             {/* Store Cards */}
-            <div className="space-y-3 max-h-[420px] overflow-y-auto pr-1">
+            <div className="space-y-3 max-h-[300px] sm:max-h-[420px] overflow-y-auto pr-1">
               {filtered.map(store => (
                 <div
                   key={store.id}
@@ -169,10 +164,10 @@ const StoreLocatorPage = () => {
       </div>
 
       {/* ── Stats ── */}
-      <div className="bg-white py-12 px-6 border-t border-b border-gray-200">
+      <div className="bg-white py-10 sm:py-12 px-4 sm:px-6 border-t border-b border-gray-200">
         <div className="max-w-[1450px] mx-auto">
           <p className="text-[#0FAFB8] font-semibold text-[13px] uppercase tracking-widest mb-1 text-center">Our Network</p>
-          <h2 className="text-[#073B45] text-[28px] font-bold text-center mb-8">Pharmacy Chain In The GCC</h2>
+          <h2 className="text-[#073B45] text-xl sm:text-[28px] font-bold text-center mb-8">Pharmacy Chain In The GCC</h2>
           <p className="text-gray-600 text-[14px] text-center max-w-2xl mx-auto mb-10">
             Swift Pharmacy is known as the region's leading pharmacy retail chain. Recognised as the leading pharmacy 
             for customer care and quality healthcare — our neighbourhood pharmacies are easily accessible.
@@ -190,9 +185,9 @@ const StoreLocatorPage = () => {
 
       {/* ── Retail Outlets Swiper ── */}
       <section className="py-16 bg-white overflow-hidden">
-        <div className="max-w-[1450px] mx-auto px-6">
+        <div className="max-w-[1450px] mx-auto px-4 sm:px-6">
           <p className="text-[#0FAFB8] font-semibold text-[13px] uppercase tracking-widest mb-2">Our Retail Outlets</p>
-          <h2 className="text-[28px] md:text-[34px] font-bold text-gray-900 mb-4">
+          <h2 className="text-xl sm:text-[28px] md:text-[34px] font-bold text-gray-900 mb-4">
             Supportive Personal Care In A Comfortable Environment
           </h2>
           <p className="text-gray-500 text-[15px] leading-relaxed max-w-[620px] mb-10">
@@ -241,15 +236,15 @@ const StoreLocatorPage = () => {
 
         <style>{`
           .store-swiper-page { width: 100%; padding: 40px 0 30px; }
-          .store-slide-page { width: 680px !important; height: 460px; border-radius: 16px; overflow: hidden; }
+          .store-slide-page { width: min(680px, 90vw) !important; height: min(460px, 60vw); border-radius: 16px; overflow: hidden; }
           .store-slide-inner-page { width: 100%; height: 100%; position: relative; border-radius: 16px; overflow: hidden; }
           .store-slide-overlay-page { position: absolute; inset: 0; background: rgba(0,0,0,0.1); border-radius: 16px; transition: background 0.3s; }
           .swiper-slide-active .store-slide-overlay-page { background: transparent; }
           .swiper-slide-active .store-slide-inner-page { box-shadow: 0 20px 60px rgba(15,175,184,0.25); }
           .store-nav-btn-page { position: absolute; bottom: 25px; z-index: 10; width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid #d1d5db; background: white; display: flex; align-items: center; justify-content: center; color: #6b7280; cursor: pointer; transition: all 0.2s; }
           .store-nav-btn-page:hover { border-color: #0FAFB8; color: #0FAFB8; }
-          .page-prev-btn { left: calc(50% - 380px); }
-          .page-next-btn { right: calc(50% - 380px); }
+          .page-prev-btn { left: max(16px, calc(50% - 380px)); }
+          .page-next-btn { right: max(16px, calc(50% - 380px)); }
         `}</style>
       </section>
 
