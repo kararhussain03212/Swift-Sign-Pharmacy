@@ -76,7 +76,7 @@ const Shop = () => {
             onChange={e => setSearchQuery(e.target.value)}
             placeholder="Search products..."
             className="w-full pl-9 pr-4 h-10 rounded-full border border-gray-200
-                       text-sm outline-none focus:border-primary focus:shadow-glow
+                       text-sm outline-none focus:border-primary focus:
                        transition-all"
           />
         </div>

@@ -18,7 +18,7 @@ const Wishlist = () => {
         <Link
           to="/shop"
           className="bg-primary text-white font-bold rounded-full px-8 py-3
-                     text-sm hover:bg-primary-dark transition-colors shadow-glow"
+                     text-sm hover:bg-primary-dark transition-colors "
         >
           Start Shopping
         </Link>

@@ -328,7 +328,7 @@ const ShareButtons = ({ title, slug }) => {
       //   <input
       //     type="email"
       //     placeholder="your@email.com"
-      //     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] outline-none focus:border-primary focus:shadow-glow transition-all mb-2.5"
+      //     className="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-[13px] outline-none focus:border-primary focus: transition-all mb-2.5"
       //   />
       //   <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold rounded-xl py-2.5 text-[13px] transition-colors">
       //     Subscribe Free

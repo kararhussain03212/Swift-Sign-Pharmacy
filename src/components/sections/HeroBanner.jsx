@@ -116,7 +116,7 @@ const HeroBanner = () => {
                       className="inline-flex items-center gap-2 bg-primary
                                  hover:bg-primary-dark text-white font-bold
                                  rounded-full px-7 py-3 text-sm transition-all
-                                 duration-200 shadow-glow hover:shadow-lg
+                                 duration-200  hover:shadow-lg
                                  hover:-translate-y-0.5 animate-pulse-glow"
                     >
                       {slide.ctaText}

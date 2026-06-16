@@ -362,7 +362,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
                       formErrors.name
                         ? 'border-red-400 bg-red-50'
-                        : 'border-gray-200 focus-within:border-primary focus-within:shadow-glow bg-white'
+                        : 'border-gray-200 focus-within:border-primary focus-within: bg-white'
                     )}>
                       <User size={16} className="ml-3.5 text-gray-400 flex-shrink-0" />
                       <input
@@ -390,7 +390,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
                       formErrors.email
                         ? 'border-red-400 bg-red-50'
-                        : 'border-gray-200 focus-within:border-primary focus-within:shadow-glow bg-white'
+                        : 'border-gray-200 focus-within:border-primary focus-within: bg-white'
                     )}>
                       <Mail size={16} className="ml-3.5 text-gray-400 flex-shrink-0" />
                       <input
@@ -418,7 +418,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                     <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
                       Phone Number
                     </label>
-                    <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-primary focus-within:shadow-glow transition-all bg-white">
+                    <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-primary focus-within: transition-all bg-white">
                       <Phone size={16} className="ml-3.5 text-gray-400 flex-shrink-0" />
                       <input
                         type="tel"
@@ -440,7 +440,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
                       formErrors.subject
                         ? 'border-red-400 bg-red-50'
-                        : 'border-gray-200 focus-within:border-primary focus-within:shadow-glow bg-white'
+                        : 'border-gray-200 focus-within:border-primary focus-within: bg-white'
                     )}>
                       <Tag size={16} className="ml-3.5 text-gray-400 flex-shrink-0" />
                       <input
@@ -469,7 +469,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                     'flex border rounded-xl overflow-hidden transition-all',
                     formErrors.message
                       ? 'border-red-400 bg-red-50'
-                      : 'border-gray-200 focus-within:border-primary focus-within:shadow-glow bg-white'
+                      : 'border-gray-200 focus-within:border-primary focus-within: bg-white'
                   )}>
                     <MessageSquare size={16} className="mt-3.5 ml-3.5 text-gray-400 flex-shrink-0 self-start" />
                     <textarea
@@ -522,7 +522,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                     'w-full flex items-center justify-center gap-2.5 bg-primary text-white font-bold rounded-xl py-4 text-[14px] transition-all duration-200',
                     isSubmitting
                       ? 'opacity-70 cursor-not-allowed'
-                      : 'hover:bg-primary-dark hover:shadow-glow hover:-translate-y-0.5 active:scale-95'
+                      : 'hover:bg-primary-dark hover: hover:-translate-y-0.5 active:scale-95'
                   )}
                 >
                   {isSubmitting ? (
@@ -718,7 +718,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                 className={clsx(
                   'bg-white rounded-2xl border overflow-hidden transition-all duration-200',
                   openFaq === i
-                    ? 'border-primary shadow-glow'
+                    ? 'border-primary '
                     : 'border-gray-100 shadow-card hover:border-gray-200'
                 )}
               >

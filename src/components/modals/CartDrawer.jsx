@@ -137,7 +137,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
             <button
               onClick={() => { onClose(); navigate('/cart') }}
               className="w-full bg-primary hover:bg-primary-dark text-white font-bold
-                         rounded-full py-3 text-sm transition-all shadow-glow
+                         rounded-full py-3 text-sm transition-all 
                          hover:shadow-lg hover:-translate-y-0.5"
             >
               Checkout · ${total.toFixed(2)}

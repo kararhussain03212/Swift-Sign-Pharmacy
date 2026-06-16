@@ -19,6 +19,7 @@ import Contact    from './pages/Contact'
 import Diseases     from './pages/Diseases'
 import AsaanOrder   from './pages/AsaanOrder'
 import StoreLocator from './pages/StoreLocator'
+import Checkout     from './pages/Checkout'
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             <Route path="/diseases"          element={<Diseases />}      />
             <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="/store-locator"     element={<StoreLocator />}  />
+            <Route path="/checkout"          element={<Checkout />}      />
             <Route path="*"                  element={<Home />}          />
           </Routes>
         </div>

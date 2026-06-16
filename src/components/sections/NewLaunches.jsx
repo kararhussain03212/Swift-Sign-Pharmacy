@@ -30,7 +30,7 @@ const NewLaunches = () => {
             className="mt-5 inline-flex items-center gap-2 bg-primary
                        text-white rounded-full px-5 py-2 text-[12px]
                        font-bold w-fit hover:bg-primary-dark transition-colors
-                       shadow-glow"
+                       "
           >
             <Tag size={13} /> GET COUPON
           </button>

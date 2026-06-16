@@ -45,7 +45,7 @@ const Navbar = () => {
           {/* ── LICENSE & PRESCRIPTION ─────────────────────────────────── */}
         <div className="flex-shrink-0 flex items-center gap-4">
           <div className="text-gray-700 text-right leading-tight">
-            <div className="text-[12px]">MOHAP License Number:</div>
+            <div className="text-[12px]">PCP License Number:</div>
             <div className="text-[14px] font-medium">OWUDH3B7-210426</div>
           </div>
           <Link

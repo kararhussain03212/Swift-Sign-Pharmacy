@@ -1,8 +1,9 @@
 import { Trash2, Plus, Minus, ShoppingBag } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import useCartStore from '../store/cartStore'
 
 const Cart = () => {
+  const navigate = useNavigate()
   const { items, removeFromCart, updateQuantity, clearCart } = useCartStore()
 
   const total = items.reduce(
@@ -19,7 +20,7 @@ const Cart = () => {
         <Link
           to="/shop"
           className="bg-primary text-white font-bold rounded-full px-8 py-3
-                     text-sm hover:bg-primary-dark transition-colors shadow-glow"
+                     text-sm hover:bg-primary-dark transition-colors "
         >
           Shop Now
         </Link>
@@ -103,9 +104,12 @@ const Cart = () => {
             <span>Total</span>
             <span>${(total + (total >= 50 ? 0 : 5.99)).toFixed(2)}</span>
           </div>
-          <button className="w-full bg-primary hover:bg-primary-dark text-white font-bold
-                             rounded-full py-3 text-sm transition-all shadow-glow
-                             hover:-translate-y-0.5">
+          <button
+            onClick={() => navigate('/checkout')}
+            className="w-full bg-primary hover:bg-primary-dark text-white font-bold
+                       rounded-full py-3 text-sm transition-all 
+                       hover:-translate-y-0.5"
+          >
             Proceed to Checkout
           </button>
           {total < 50 && (

@@ -207,7 +207,7 @@ const Blog = () => {
                 className={clsx(
                   'flex-shrink-0 rounded-full px-4 py-1.5 text-[13px] font-semibold border transition-all duration-200 whitespace-nowrap',
                   activeCategory === cat
-                    ? 'bg-primary text-white border-primary shadow-glow'
+                    ? 'bg-primary text-white border-primary '
                     : 'bg-white text-gray-600 border-gray-200 hover:border-primary hover:text-primary'
                 )}
               >
@@ -304,7 +304,7 @@ const Blog = () => {
                 </div>
 
                 {/* Read more — styled as button, navigation handled by parent Link */}
-                <span className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold text-[13px] px-5 py-2.5 rounded-full transition-all shadow-glow">
+                <span className="flex items-center gap-2 bg-primary hover:bg-primary-dark text-white font-bold text-[13px] px-5 py-2.5 rounded-full transition-all ">
                   Read Article <ArrowRight size={15} />
                 </span>
               </div>
@@ -347,7 +347,7 @@ const Blog = () => {
                   <div className="text-center mt-8">
                     <button
                       onClick={() => setVisibleCount(v => v + 6)}
-                      className="inline-flex items-center gap-2 border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-full px-8 py-3 text-[14px] transition-all hover:shadow-glow"
+                      className="inline-flex items-center gap-2 border-2 border-primary text-primary hover:bg-primary hover:text-white font-bold rounded-full px-8 py-3 text-[14px] transition-all hover:"
                     >
                       Load More Articles <ChevronDown size={16} />
                     </button>
@@ -365,7 +365,7 @@ const Blog = () => {
               <h3 className="font-heading font-bold text-gray-900 text-[15px] mb-4">
                 Search Articles
               </h3>
-              <div className="flex items-center border border-gray-200 rounded-full overflow-hidden focus-within:border-primary focus-within:shadow-glow transition-all">
+              <div className="flex items-center border border-gray-200 rounded-full overflow-hidden focus-within:border-primary focus-within: transition-all">
                 <input
                   value={sidebarSearch}
                   onChange={e => setSidebarSearch(e.target.value)}
