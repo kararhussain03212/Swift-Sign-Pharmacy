@@ -53,7 +53,7 @@ const SecondaryNav = () => {
   return (
     <>
       {/* ── MOBILE: Horizontal scroll category pills ──── */}
-      <div className="sm:hidden bg-white overflow-x-auto scrollbar-hide"
+      <div className="hidden bg-white overflow-x-auto scrollbar-hide"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
         <div className="flex items-center gap-1.5 px-3 py-2 min-w-max">
           {navItems.map((item) => (

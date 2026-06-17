@@ -39,8 +39,8 @@ const WideBanner = () => {
             >
               Up To 25% Off
             </h2>
-            <p className="text-white/75 text-xs sm:text-sm mt-1.5">On Top Brands</p>
-            <p className="text-white/50 text-[11px] sm:text-xs mt-1 mb-3 sm:mb-4">
+            <p className="text-white opacity-80 text-xs sm:text-sm mt-1.5 font-medium">On Top Brands</p>
+            <p className="text-white opacity-60 text-[11px] sm:text-xs mt-1 mb-3 sm:mb-4">
               Extra 8% Off on the Healthcare Range
             </p>
             <button

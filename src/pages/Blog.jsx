@@ -167,7 +167,7 @@ const Blog = () => {
           </div>
 
           {/* Stats row */}
-          <div className="flex items-center justify-center gap-5 sm:gap-8 mt-6 sm:mt-8 flex-wrap">
+          {/* <div className="flex items-center justify-center gap-5 sm:gap-8 mt-6 sm:mt-8 flex-wrap">
             {[
               { value: '120+', label: 'Articles' },
               { value: '15',   label: 'Categories' },
@@ -179,7 +179,7 @@ const Blog = () => {
                 <p className="text-white/50 text-[12px] mt-0.5">{stat.label}</p>
               </div>
             ))}
-          </div>
+          </div> */}
         </div>
       </section>
 

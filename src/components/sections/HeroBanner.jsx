@@ -59,11 +59,11 @@ const HeroBanner = () => {
           <SwiperSlide key={slide.id}>
             <div
               className="relative overflow-hidden"
-              style={{ background: slide.bgGradient, minHeight: 'clamp(180px, 40vw, 580px)' }}
+              style={{ background: slide.bgGradient, minHeight: 'clamp(280px, 45vw, 580px)' }}
             >
               <div
                 className="max-w-[1450px] mx-auto px-4 sm:px-6 h-full flex items-center"
-                style={{ minHeight: 'clamp(180px, 40vw, 580px)' }}
+                style={{ minHeight: 'clamp(280px, 45vw, 580px)' }}
               >
                 <div className={`w-full max-w-4xl py-8 sm:py-10 md:py-14 lg:py-20 z-10 relative flex flex-col
                                  ${slide.centered ? 'items-center text-center mx-auto' : 'items-start text-left'}`}>

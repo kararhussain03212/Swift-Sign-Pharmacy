@@ -278,7 +278,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
           ].map((card, i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 p-5 group cursor-default"
+              className="bg-white rounded-2xl shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 p-5 group cursor-default flex flex-col items-center text-center"
             >
               <div className={`w-12 h-12 ${card.iconBg} ${card.iconClr} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                 {card.icon}

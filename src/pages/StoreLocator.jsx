@@ -1,11 +1,33 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Autoplay, EffectCoverflow } from 'swiper/modules'
 import { MapPin, Phone, Clock, Search, ChevronRight, ChevronLeft } from 'lucide-react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/effect-coverflow'
+
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+})
+
+const MapController = ({ selectedLat, selectedLng }) => {
+  const map = useMap()
+  useEffect(() => {
+    if (selectedLat && selectedLng) {
+      map.flyTo([selectedLat, selectedLng], 15, { duration: 1.5 })
+    }
+  }, [selectedLat, selectedLng, map])
+  return null
+}
 
 const storeImages = [
   { src: '/store1.png', alt: 'Pharmacy Store - Main Floor' },
@@ -149,16 +171,38 @@ const StoreLocatorPage = () => {
           </div>
 
           {/* Map */}
-          <div className="flex-1 rounded-2xl overflow-hidden shadow-md border border-gray-200" style={{ minHeight: '440px' }}>
-            <iframe
-              title="Store Map"
-              width="100%"
-              height="100%"
-              style={{ minHeight: '440px', border: 0 }}
-              loading="lazy"
-              allowFullScreen
-              src={`https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d108868.93!2d74.2219!3d31.4827!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391904b5e8b3c85d%3A0x4ca6d3b9b4b1f5c0!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1699000000000`}
-            />
+          <div className="flex-1 rounded-2xl overflow-hidden shadow-md border border-gray-200 relative z-0 w-full" style={{ minHeight: '440px' }}>
+            <MapContainer 
+              center={[stores[0].lat, stores[0].lng]} 
+              zoom={12} 
+              style={{ height: '100%', minHeight: '440px', width: '100%' }}
+            >
+              <TileLayer
+                attribution='&copy; Google Maps'
+                url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+              />
+              
+              {stores.map(store => (
+                <Marker 
+                  key={store.id} 
+                  position={[store.lat, store.lng]}
+                  icon={redIcon}
+                  eventHandlers={{
+                    click: () => setSelected(store.id)
+                  }}
+                >
+                  <Popup>
+                    <strong>{store.name}</strong><br/>
+                    {store.address}
+                  </Popup>
+                </Marker>
+              ))}
+              
+              <MapController 
+                selectedLat={selected ? stores.find(s => s.id === selected)?.lat : null} 
+                selectedLng={selected ? stores.find(s => s.id === selected)?.lng : null} 
+              />
+            </MapContainer>
           </div>
         </div>
       </div>

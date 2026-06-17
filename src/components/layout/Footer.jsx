@@ -51,8 +51,8 @@ const Footer = () => {
                 </h2>
                 <div className="space-y-2 text-xs sm:text-[13px] text-white/75">
                   <p>Parkland City Center, I-8 Markaz, Islamabad</p>
-                  <p>Email: contactus@dwatson.pk</p>
-                  <p>Phone: 051-8447077, 0332-8447777</p>
+                  <p>Email: contactus@arion.pk</p>
+                  <p>Phone: 051-9999077, 0332-999977</p>
                 </div>
 
                 {/* Payment Logos */}
@@ -111,7 +111,7 @@ const Footer = () => {
         </div>
 
         {/* ── Bottom Bar ─────────────────────────────── */}
-        <div className="max-w-[1450px] mx-auto px-4 sm:px-6 md:px-8 py-4"
+        <div className="max-w-[1450px] mx-auto px-4 sm:px-6 md:px-8 pt-4 pb-20 md:pb-4"
              style={{ borderTop: '1px solid rgba(255,255,255,0.2)' }}>
           <p className="text-white/60 text-[10px] sm:text-[11px] leading-snug">
             © 2026 Arion Pharmacy - Commercial Market, Powered by Swift Sign Group Of Companies

@@ -1,12 +1,18 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, User, Heart, ShoppingCart, X } from 'lucide-react'
+import { Search, User, Heart, ShoppingCart, X, Menu, ChevronRight } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
 import { VscPercentage } from "react-icons/vsc"
 
+const navLinks = [
+  { label: 'Home',          to: '/' },
+  { label: 'Blog',          to: '/blog' },
+  { label: 'Store Locator', to: '/store-locator' },
+  { label: 'Contact',       to: '/contact' },
+]
 
 const Header = () => {
   const navigate = useNavigate()
@@ -14,6 +20,7 @@ const Header = () => {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
 
   const { items: cartItems } = useCartStore()
@@ -28,6 +35,18 @@ const Header = () => {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  // Prevent background scrolling when sidebar is open
+  useEffect(() => {
+    if (isMobileSidebarOpen) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'auto'
+    }
+    return () => {
+      document.body.style.overflow = 'auto'
+    }
+  }, [isMobileSidebarOpen])
+
   return (
     <>
       <header
@@ -38,13 +57,21 @@ const Header = () => {
         {/* ── MAIN ROW ─────────────────────────────────── */}
         <div className="max-w-[1450px] mx-auto px-3 sm:px-6 flex items-center gap-2 sm:gap-4 md:gap-6 h-14 sm:h-[70px] md:h-[90px]">
 
-          {/* ── LOGO ─────────────────────────────────────── */}
-          <Link to="/" className="flex items-center gap-1.5 flex-shrink-0 group">
-            <span className="font-bold text-gray-900 tracking-tight text-lg sm:text-2xl md:text-[30px]"
-                  style={{ letterSpacing: '-0.5px' }}>
-              Logo Here
-            </span>
-          </Link>
+          {/* ── MOBILE MENU & LOGO ─────────────────────────────────────── */}
+          <div className="flex items-center gap-3 flex-shrink-0">
+            <button 
+              className="sm:hidden text-gray-700 hover:text-[#0FAFB8] transition-colors p-1"
+              onClick={() => setIsMobileSidebarOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+            <Link to="/" className="flex items-center gap-1.5 group">
+              <span className="font-bold text-gray-900 tracking-tight text-lg sm:text-2xl md:text-[30px]"
+                    style={{ letterSpacing: '-0.5px' }}>
+                Logo Here
+              </span>
+            </Link>
+          </div>
 
           {/* ── SEARCH BAR (Left-aligned next to logo) ──── */}
           <div className="hidden sm:flex relative min-w-0" style={{ flex: '1 1 auto', maxWidth: '450px' }}>
@@ -102,8 +129,8 @@ const Header = () => {
               className="flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
               style={{
                 fontSize: '13px',
-                backgroundColor: '#FF4757',
-                boxShadow: '0 4px 15px rgba(255, 71, 87, 0.4)',
+                backgroundColor: '#FF0000',
+                boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
                 letterSpacing: '0.5px',
               }}
             >
@@ -111,7 +138,7 @@ const Header = () => {
                             transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
                    style={{ width: '200%' }} />
               <div className="relative z-10 flex items-center gap-2">
-                <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} />
+                {/* <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} /> */}
                 <span>Hot Deals</span>
                 <span className="inline-block animate-pulse">🔥</span>
               </div>
@@ -229,6 +256,61 @@ const Header = () => {
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+      {/* ── MOBILE SIDEBAR DRAWER ─────────────────────── */}
+      <>
+        {/* Backdrop */}
+        {isMobileSidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-[9999] sm:hidden transition-opacity"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+        
+        {/* Sidebar */}
+        <div
+          className={`fixed top-0 left-0 bottom-0 w-[280px] bg-white z-[10000] sm:hidden
+                      shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col
+                      ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <span className="font-bold text-gray-900 text-lg">Menu</span>
+            <button
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="text-gray-400 hover:text-gray-700 bg-gray-50 p-2 rounded-full transition-colors"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          {/* Links */}
+          <div className="flex flex-col py-2 overflow-y-auto">
+            {navLinks.map((link) => (
+              <Link
+                key={link.label}
+                to={link.to}
+                onClick={() => setIsMobileSidebarOpen(false)}
+                className="flex items-center justify-between px-5 py-3.5 text-gray-700 hover:bg-gray-50 hover:text-[#0FAFB8] transition-colors border-b border-gray-50 last:border-0"
+              >
+                <span className="font-semibold text-[15px]">{link.label}</span>
+                <ChevronRight size={16} className="text-gray-400" />
+              </Link>
+            ))}
+          </div>
+          
+          {/* Bottom Actions */}
+          <div className="mt-auto p-5 border-t border-gray-100 bg-gray-50">
+            <Link
+              to="/asaan-order"
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="flex items-center justify-center gap-2 bg-[#0FAFB8] text-white w-full py-3 rounded-xl font-bold text-sm hover:bg-[#0a9aa5] transition-colors"
+            >
+              Upload Prescription
+            </Link>
+          </div>
+        </div>
+      </>
     </>
   )
 }
