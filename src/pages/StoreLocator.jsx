@@ -267,15 +267,7 @@ const StoreLocatorPage = () => {
             <button className="page-next-btn store-nav-btn-page"><ChevronRight size={20} /></button>
           </div>
 
-          <div className="flex justify-center mt-10">
-            <Link
-              to="/store-locator"
-              className="flex items-center gap-2 border border-gray-400 text-gray-700 hover:border-[#0FAFB8] hover:text-[#0FAFB8] px-8 py-3 rounded-full font-semibold text-[14px] transition-all duration-200 group"
-            >
-              <MapPin size={16} className="group-hover:text-[#0FAFB8] transition-colors" />
-              STORE LOCATOR
-            </Link>
-          </div>
+
         </div>
 
         <style>{`

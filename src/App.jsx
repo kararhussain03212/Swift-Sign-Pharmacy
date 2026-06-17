@@ -21,6 +21,7 @@ import DiseaseDetail from './pages/DiseaseDetail'
 import AsaanOrder  from './pages/AsaanOrder'
 import StoreLocator from './pages/StoreLocator'
 import Checkout     from './pages/Checkout'
+import Certification from './pages/Certification'
 
 function App() {
   return (
@@ -46,6 +47,7 @@ function App() {
             <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="/store-locator"     element={<StoreLocator />}  />
             <Route path="/checkout"          element={<Checkout />}      />
+            <Route path="/certification"     element={<Certification />} />
             <Route path="*"                  element={<Home />}          />
           </Routes>
         </div>

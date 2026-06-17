@@ -5,10 +5,11 @@ import clsx from 'clsx'
 import { categories, diseasesList } from '../../data/categories'
 
 const navLinks = [
-  { label: 'Home',          to: '/',               },
-  { label: 'Blog',          to: '/blog',           },
-  { label: 'Store Locator', to: '/store-locator',  },
-  { label: 'Contact',       to: '/contact',        },
+  { label: 'Home',          to: '/',                },
+  { label: 'Blog',          to: '/blog',            },
+  { label: 'Certification', to: '/certification',   },
+  { label: 'Store Locator', to: '/store-locator',   },
+  { label: 'Contact',       to: '/contact',         },
 ]
 
 // Build nav items from categories.js
@@ -123,7 +124,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 flex items-center gap-2 sm:gap-4 w-full sm:w-auto" style={{ order: 2 }}>
           <div className="hidden lg:block text-gray-700 text-right leading-tight">
             <div className="text-[11px]">PCP License Number:</div>
-            <div className="text-[12px] font-medium">OWUDH3B7-210426</div>
+            <div className="text-[12px] font-medium">2659-A/2014-PC</div>
           </div>
           <Link
             to="/asaan-order"
