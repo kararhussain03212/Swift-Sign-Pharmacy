@@ -105,6 +105,22 @@ export const categories = [
       { name: 'Supports & Braces', slug: 'supports-braces' },
       { name: 'Hospital Supplies', slug: 'hospital-supplies' }
     ]
+  },
+  {
+    id: 9,
+    name: 'Obesity',
+    slug: 'obesity',
+    showInNav: true,
+    image: '/jellybee_gummies.png',
+    subCategories: []
+  },
+  {
+    id: 10,
+    name: 'Performance and Wellness',
+    slug: 'performance-and-wellness',
+    showInNav: true,
+    image: '/jellybee_gummies.png',
+    subCategories: []
   }
 ]
 
@@ -139,7 +155,7 @@ export const diseasesList = [
   },
   {
     "name": "Alzheimer's Disease",
-    "slug": "alzheimer-s-disease"
+    "slug": "alzheimers-disease"
   },
   {
     "name": "Amoebiasis",
@@ -331,11 +347,11 @@ export const diseasesList = [
   },
   {
     "name": "Crohn's Disease",
-    "slug": "crohn-s-disease"
+    "slug": "crohns-disease"
   },
   {
     "name": "Cushing's Disease",
-    "slug": "cushing-s-disease"
+    "slug": "cushings-disease"
   },
   {
     "name": "Deep Vein Thrombosis",
@@ -543,7 +559,7 @@ export const diseasesList = [
   },
   {
     "name": "Hodgkin's Lymphoma",
-    "slug": "hodgkin-s-lymphoma"
+    "slug": "hodgkins-lymphoma"
   },
   {
     "name": "Hormonal Supplement",
@@ -651,7 +667,7 @@ export const diseasesList = [
   },
   {
     "name": "Kaposi's Sarcoma",
-    "slug": "kaposi-s-sarcoma"
+    "slug": "kaposis-sarcoma"
   },
   {
     "name": "Leukemia",
@@ -819,11 +835,11 @@ export const diseasesList = [
   },
   {
     "name": "Parkinson's",
-    "slug": "parkinson-s"
+    "slug": "parkinsons"
   },
   {
     "name": "Parkinson's Disease",
-    "slug": "parkinson-s-disease"
+    "slug": "parkinsons-disease"
   },
   {
     "name": "Pentasomy X Disorder",

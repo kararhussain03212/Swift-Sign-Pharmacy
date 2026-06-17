@@ -46,8 +46,8 @@ const Header = () => {
             </span>
           </Link>
 
-          {/* ── SEARCH BAR (hidden on xs, visible sm+) ──── */}
-          <div className="hidden sm:flex flex-1 relative min-w-0" style={{ maxWidth: '550px' }}>
+          {/* ── SEARCH BAR (Left-aligned next to logo) ──── */}
+          <div className="hidden sm:flex relative min-w-0" style={{ flex: '1 1 auto', maxWidth: '450px' }}>
             <div
               className={`flex items-center w-full transition-all duration-[150ms]
                           ${isSearchFocused ? 'ring-2 ring-primary ring-offset-0' : ''}`}
@@ -95,26 +95,28 @@ const Header = () => {
             )}
           </div>
 
-          {/* ── HOT DEALS (hidden on xs/sm) ──────────────── */}
-          <Link
-            to="/shop?deals=true"
-            className="hidden md:flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap flex-shrink-0 relative overflow-hidden group"
-            style={{
-              fontSize: '13px',
-              backgroundColor: '#FF4757',
-              boxShadow: '0 4px 15px rgba(255, 71, 87, 0.4)',
-              letterSpacing: '0.5px',
-            }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                          transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
-                 style={{ width: '200%' }} />
-            <div className="relative z-10 flex items-center gap-2">
-              <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} />
-              <span>Hot Deals</span>
-              <span className="inline-block animate-pulse">🔥</span>
-            </div>
-          </Link>
+          {/* ── HOT DEALS (Centered in remaining space) ──────────────── */}
+          <div className="hidden md:flex flex-1 justify-center">
+            <Link
+              to="/shop?deals=true"
+              className="flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
+              style={{
+                fontSize: '13px',
+                backgroundColor: '#FF4757',
+                boxShadow: '0 4px 15px rgba(255, 71, 87, 0.4)',
+                letterSpacing: '0.5px',
+              }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                            transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
+                   style={{ width: '200%' }} />
+              <div className="relative z-10 flex items-center gap-2">
+                <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} />
+                <span>Hot Deals</span>
+                <span className="inline-block animate-pulse">🔥</span>
+              </div>
+            </Link>
+          </div>
 
           {/* ── RIGHT ICONS ──────────────────────────────── */}
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 ml-auto flex-shrink-0">

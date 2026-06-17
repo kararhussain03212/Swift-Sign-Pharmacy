@@ -86,7 +86,7 @@ const SecondaryNav = () => {
           <div className="flex items-center justify-between flex-wrap gap-2" style={{ minHeight: '40px' }}>
 
             {/* Main Links */}
-            <div className="flex items-center gap-0 overflow-x-auto scrollbar-hide" style={{ flex: 1 }}>
+            <div className="flex items-center gap-0 flex-wrap" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
                 <div key={item.name} className="relative group h-full flex items-center">
                   <Link

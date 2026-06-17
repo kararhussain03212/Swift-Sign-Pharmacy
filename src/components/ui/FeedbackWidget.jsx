@@ -9,15 +9,15 @@ const FeedbackWidget = () => {
       {/* The Feedback Vertical Tab (Always visible, pushed left when panel opens) */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-primary text-white font-medium py-2 px-1.5 rounded-r-md shadow-md flex items-center justify-center gap-1 hover:bg-primary-dark transition-colors h-[90px]"
+        className="bg-primary text-white font-medium py-2 px-1.5 md:py-3 md:px-2.5 rounded-r-md shadow-md flex items-center justify-center gap-1 hover:bg-primary-dark transition-colors h-[90px] md:h-[120px]"
         style={{
           writingMode: 'vertical-rl',
           textOrientation: 'mixed',
           transform: 'rotate(180deg)'
         }}
       >
-        <span className="text-[12px] tracking-widest mt-1">Feedback</span>
-        <span className="text-[16px] mb-1 font-light">{isOpen ? '–' : '+'}</span>
+        <span className="text-[12px] md:text-[15px] tracking-widest mt-1">Feedback</span>
+        <span className="text-[16px] md:text-[20px] mb-1 font-light">{isOpen ? '–' : '+'}</span>
       </button>
 
       {/* The Feedback Panel (Expands to the right of the button) */}

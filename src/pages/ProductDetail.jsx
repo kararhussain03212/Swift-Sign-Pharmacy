@@ -165,30 +165,20 @@ const ProductDetail = () => {
 
             {/* Product Meta */}
             <div className="flex flex-col gap-2.5 py-4 my-4 border-t border-b border-gray-100 text-[13px] sm:text-[14px]">
-              {product.category && (
+              {product.brand && (
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">Category:</span>
-                  <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="font-medium text-primary hover:underline capitalize">
-                    {product.category}
-                  </Link>
+                  <span className="font-bold text-gray-900">Manufacturer:</span>
+                  <span className="font-medium text-gray-600 capitalize">
+                    {product.brand}
+                  </span>
                 </div>
               )}
-              {product.subCategory && (
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">Sub Category:</span>
-                  <Link to={`/shop?subCategory=${encodeURIComponent(product.subCategory)}`} className="font-medium text-primary hover:underline capitalize">
-                    {product.subCategory}
-                  </Link>
-                </div>
-              )}
-              {product.salePrice && (
-                <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">Deals:</span>
-                  <Link to="/shop?deals=true" className="font-medium text-red-500 hover:underline flex items-center gap-1">
-                    <Flame size={13} /> Hot Deals
-                  </Link>
-                </div>
-              )}
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-gray-900">Form:</span>
+                <span className="font-medium text-gray-600 capitalize">
+                  {product.form || product.specifications?.['Product Form'] || 'Not specified'}
+                </span>
+              </div>
               <div>
                 <span className="font-bold text-gray-900">SKU#: </span>
                 <span className="font-medium text-gray-600">{product.sku || '258780'}</span>
@@ -267,6 +257,13 @@ const ProductDetail = () => {
           </div>
 
           <div className="max-w-none text-gray-600 text-[14px] sm:text-[15px] leading-relaxed flex flex-col gap-5 font-medium">
+            <div>
+              <h3 className="text-gray-900 font-extrabold text-base mb-2">Product Details:</h3>
+              <ul className="list-disc pl-5 flex flex-col gap-2">
+                {product.brand && <li><strong>Manufacturer:</strong> {product.brand}</li>}
+                <li><strong>Form:</strong> {product.form || product.specifications?.['Product Form'] || 'Not specified'}</li>
+              </ul>
+            </div>
             <p>{product.description}</p>
             {product.keyBenefits && (
               <div>

@@ -9,12 +9,14 @@ const QUICK_ANSWERS = [
   { id: 1, text: "What is your contact info? 📞" },
   { id: 2, text: "Track my order 🚚" },
   { id: 3, text: "What is your return policy? 📦" },
+  { id: 4, text: "I would like to order medication. 💊" },
 ]
 
 const AUTOMATED_REPLIES = {
   "What is your contact info? 📞": `You can reach us at ${PHONE}. We're here to assist you!`,
   "Track my order 🚚": "Please provide your order number and we'll look it up for you right away.",
   "What is your return policy? 📦": "We offer a 7-day return policy on most products. Please contact us with your order details.",
+  "I would like to order medication. 💊": `Upload your prescription or call ${PHONE}. Customer support will reach out soon!`,
 }
 
 const INITIAL_MESSAGES = [
@@ -82,21 +84,21 @@ const FloatingChat = () => {
         href={`https://wa.me/${PHONE.replace(/\D/g, '')}`}
         target="_blank"
         rel="noopener noreferrer"
-        className="fixed bottom-24 md:bottom-6 right-6 z-50 w-12 h-12 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
+        className="fixed bottom-24 md:bottom-6 right-6 z-50 w-12 h-12 md:w-16 md:h-16 bg-[#25D366] text-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform"
         aria-label="Chat on WhatsApp"
       >
-        <FaWhatsapp size={28} />
+        <FaWhatsapp className="text-[28px] md:text-[36px]" />
       </a>
 
       {/* ── Need Help trigger button on the LEFT ── */}
       {!isOpen && (
         <button
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-24 md:bottom-6 left-6 z-50 flex items-center gap-2 bg-[#0fafb8] text-[#073b45] px-3 py-2 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[13px]"
+          className="fixed bottom-24 md:bottom-6 left-6 z-50 flex items-center gap-2 md:gap-3 bg-[#0fafb8] text-[#073b45] px-3 py-2 md:px-5 md:py-3 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all font-bold text-[13px] md:text-[16px]"
           style={{ fontFamily: 'Inter, sans-serif' }}
         >
-          <div className="bg-[#073b45] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-2 flex items-center justify-center flex-shrink-0">
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
+          <div className="bg-[#073b45] text-white rounded-tl-xl rounded-tr-xl rounded-br-xl rounded-bl-sm p-2 md:p-2.5 flex items-center justify-center flex-shrink-0">
+            <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>

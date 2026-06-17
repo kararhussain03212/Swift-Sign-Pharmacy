@@ -18,9 +18,14 @@ const Footer = () => {
                 </h3>
                 <ul className="space-y-2 sm:space-y-3 text-xs sm:text-sm">
                   <li><Link to="/shop?category=medicines" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Medicines</Link></li>
-                  <li><Link to="/shop?category=health-supplements" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Health Supplements</Link></li>
-                  <li><Link to="/shop?category=skin-care" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Skin Care</Link></li>
-                  <li><Link to="/shop?category=herbal-medicines" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Herbal Medicines</Link></li>
+                  <li><Link to="/shop?category=vitamins" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Vitamins & Supplements</Link></li>
+                  <li><Link to="/shop?category=personalCare" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Personal Care</Link></li>
+                  <li><Link to="/shop?category=babyCare" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Baby Care</Link></li>
+                  <li><Link to="/shop?category=lifestyle-fitness" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Lifestyle & Fitness</Link></li>
+                  <li><Link to="/shop?category=organic" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Organic</Link></li>
+                  <li><Link to="/shop?category=healthcare-device" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Healthcare Device</Link></li>
+                  <li><Link to="/shop?category=obesity" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Obesity</Link></li>
+                  <li><Link to="/shop?category=performance-and-wellness" className="text-white/75 hover:text-[#0FAFB8] transition-colors">Performance and Wellness</Link></li>
                 </ul>
               </div>
 
@@ -52,7 +57,7 @@ const Footer = () => {
                 </div>
 
                 {/* Payment Logos */}
-                <div className="flex items-center gap-2 mt-5 flex-wrap">
+                {/* <div className="flex items-center gap-2 mt-5 flex-wrap">
                   <div className="bg-white rounded px-2 py-1">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-4 object-contain" />
                   </div>
@@ -62,7 +67,7 @@ const Footer = () => {
                   <div className="bg-white rounded px-2 py-1 text-[#006A4E] font-bold text-[10px]">HBLPay</div>
                   <div className="bg-white rounded px-2 py-1 text-[#F47920] font-bold text-[10px]">JazzCash</div>
                   <div className="bg-white rounded px-2 py-1 text-[#4CAF50] font-bold text-[10px]">EasyPaisa</div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
