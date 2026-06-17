@@ -12,11 +12,11 @@ const buildNavItems = () => {
     name: 'Diseases',
     slug: 'diseases',
     to: '/diseases',
-    subCategories: diseasesList.slice(0, 30) // show first 30 in dropdown
+    subCategories: [] // Removed dropdown as requested
   }
 
   const catItems = categories
-    .filter(cat => cat.showInNav !== false) // Only map categories where showInNav is not explicitly false
+    .filter(cat => cat.showInNav !== false && cat.slug !== 'performance-and-wellness') // Only map categories where showInNav is not explicitly false and exclude performance-and-wellness
     .map(cat => ({
       name: cat.name,
       slug: cat.slug,

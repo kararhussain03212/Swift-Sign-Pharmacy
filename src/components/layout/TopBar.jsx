@@ -11,21 +11,14 @@ const TopBar = () => {
 
       {/* Marquee announcement */}
       <div className="flex-1 overflow-hidden relative">
-        <div className="animate-marquee select-none">
-          <span className="text-white font-medium mr-12"
-                style={{ fontSize: '12px', letterSpacing: '0.01em' }}>
-            {messages[0]}
-            <span className="mx-2 opacity-60">|</span>
-            {messages[1]}
-            <span className="mx-2 opacity-60">|</span>
-            {messages[2]}
-            <span className="mx-2 opacity-60">|</span>
-            {messages[0]}
-            <span className="mx-2 opacity-60">|</span>
-            {messages[1]}
-            <span className="mx-2 opacity-60">|</span>
-            {messages[2]}
-          </span>
+        <div className="animate-marquee select-none hover:[animation-play-state:paused]">
+          {/* We duplicate the messages 4 times to ensure the container is wide enough for ultra-wide screens
+              Since the animation translates -50%, it will seamlessly loop back to the start when the first 2 copies finish. */}
+          {[1, 2, 3, 4].map((i) => (
+            <span key={i} className="text-white font-medium pr-12 flex-shrink-0" style={{ fontSize: '12px', letterSpacing: '0.01em' }}>
+              {messages[0]} <span className="mx-2 opacity-60">|</span> {messages[1]} <span className="mx-2 opacity-60">|</span> {messages[2]} {i !== 4 && <span className="mx-2 opacity-60">|</span>}
+            </span>
+          ))}
         </div>
       </div>
     </div>

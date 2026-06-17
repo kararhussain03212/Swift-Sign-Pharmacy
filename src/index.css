@@ -93,7 +93,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .animate-marquee {
   display: inline-flex;
-  animation: marquee 22s linear infinite;
+  animation: marquee 50s linear infinite;
   white-space: nowrap;
 }
 
