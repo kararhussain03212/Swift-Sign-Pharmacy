@@ -37,7 +37,7 @@ const Navbar = () => {
            style={{ minHeight: '52px', paddingTop: '7px', paddingBottom: '7px' }}>
 
         {/* ── NAV LINKS ─────────────────────────────────── */}
-        <div className="flex items-center justify-start gap-0.5 sm:gap-1 lg:gap-2 flex-nowrap" style={{ order: 1 }}>
+        <div className="flex items-center justify-start gap-1 sm:gap-2 lg:gap-3 flex-nowrap" style={{ order: 1, minWidth: 0, flex: 1 }}>
 
           {/* ── CATEGORIES DROPDOWN ─────────────────────────────────── */}
           <div className="relative group flex items-center h-full flex-shrink-0">
@@ -109,7 +109,7 @@ const Navbar = () => {
               end={link.to === '/'}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center gap-1 font-medium px-1 sm:px-1.5 lg:px-3 py-1.5 lg:py-2 rounded transition-colors duration-[150ms] whitespace-nowrap flex-shrink-0',
+                  'flex items-center gap-1 font-medium px-1.5 sm:px-2 lg:px-3 py-1.5 lg:py-2 rounded transition-colors duration-[150ms] whitespace-nowrap flex-shrink-0',
                   isActive
                     ? 'text-[#0FAFB8]'
                     : 'text-gray-700 hover:text-[#0FAFB8]'
