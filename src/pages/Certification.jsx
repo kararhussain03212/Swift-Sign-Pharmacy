@@ -53,6 +53,7 @@ const certificates = {
 const Certification = () => {
   const [lightboxIndex, setLightboxIndex] = useState(null)
   const [lightboxSection, setLightboxSection] = useState('academic')
+  const [isHidden, setIsHidden] = useState(false)
 
   const currentSection = lightboxSection === 'academic' ? certificates.academic : certificates.professional
 
@@ -89,13 +90,28 @@ const Certification = () => {
       if (e.ctrlKey && (e.key === 's' || e.key === 'p' || e.key === 'u' || e.key === 'a')) {
         e.preventDefault()
       }
+      if (e.key === 'PrintScreen') {
+        navigator.clipboard?.writeText('').catch(() => {})
+        setIsHidden(true)
+        setTimeout(() => setIsHidden(false), 1200)
+      }
     }
     const preventRightClick = e => e.preventDefault()
+    const handleBlur = () => setIsHidden(true)
+    const handleFocus = () => setIsHidden(false)
+    const handleVisibility = () => setIsHidden(document.hidden)
+
     document.addEventListener('keydown', preventShortcuts)
     document.addEventListener('contextmenu', preventRightClick)
+    window.addEventListener('blur', handleBlur)
+    window.addEventListener('focus', handleFocus)
+    document.addEventListener('visibilitychange', handleVisibility)
     return () => {
       document.removeEventListener('keydown', preventShortcuts)
       document.removeEventListener('contextmenu', preventRightClick)
+      window.removeEventListener('blur', handleBlur)
+      window.removeEventListener('focus', handleFocus)
+      document.removeEventListener('visibilitychange', handleVisibility)
     }
   }, [])
 
@@ -121,8 +137,21 @@ const Certification = () => {
     <main className="cert-page">
       <style>{`
         @media print { .cert-page { display: none !important; } }
+        .cert-page { -webkit-user-select: none; user-select: none; }
         .cert-page img { -webkit-user-drag: none; user-drag: none; pointer-events: none; -webkit-user-select: none; user-select: none; }
       `}</style>
+
+      {isHidden && (
+        <div
+          className="fixed inset-0 z-[99999] flex items-center justify-center"
+          style={{ background: '#073B45' }}
+        >
+          <div className="flex flex-col items-center gap-3 text-white/70">
+            <Lock size={28} />
+            <p className="text-[13px] font-semibold">Content hidden — confidential certificates</p>
+          </div>
+        </div>
+      )}
 
       {/* ═══════════════════ HERO ═══════════════════ */}
       <section

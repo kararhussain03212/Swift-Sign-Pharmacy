@@ -94,10 +94,10 @@ const SecondaryNav = () => {
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
                                transition-colors duration-[150ms] whitespace-nowrap relative"
                     style={{
-                      fontSize: 'clamp(11px, 2vw, 13px)',
+                      fontSize: 'clamp(10px, 1.8vw, 13px)',
                       fontWeight: 400,
-                      paddingLeft: i === 0 ? '0px' : 'clamp(8px, 2vw, 16px)',
-                      paddingRight: 'clamp(8px, 2vw, 16px)',
+                      paddingLeft: i === 0 ? '0px' : 'clamp(6px, 1.5vw, 14px)',
+                      paddingRight: 'clamp(6px, 1.5vw, 14px)',
                       height: '40px',
                     }}
                   >
@@ -120,7 +120,7 @@ const SecondaryNav = () => {
                                     transition-all duration-200 z-50">
                       {/* "View All" link for Diseases */}
                       {item.slug === 'diseases' && (
-                        <Link to="/diseases" className="block px-4 py-2 text-[13px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
+                        <Link to="/diseases" className="block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
                           View A-Z Guide →
                         </Link>
                       )}
@@ -141,8 +141,8 @@ const SecondaryNav = () => {
                             key={subSlug}
                             to={subTo}
                             className={isViewAll
-                              ? 'block px-4 py-2 text-[13px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1 transition-colors'
-                              : 'block px-4 py-2 text-[13px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate'
+                              ? 'block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1 transition-colors'
+                              : 'block px-4 py-2 text-[12px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate'
                             }
                           >
                             {isViewAll ? `${subName} →` : subName}

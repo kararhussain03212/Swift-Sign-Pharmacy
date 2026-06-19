@@ -126,9 +126,9 @@ const Header = () => {
           <div className="hidden md:flex flex-1 justify-center">
             <Link
               to="/shop?deals=true"
-              className="flex items-center gap-2 px-4 lg:px-5 py-2.5 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
+              className="flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
               style={{
-                fontSize: '13px',
+                fontSize: 'clamp(11px, 1.5vw, 13px)',
                 backgroundColor: '#FF0000',
                 boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
                 letterSpacing: '0.5px',

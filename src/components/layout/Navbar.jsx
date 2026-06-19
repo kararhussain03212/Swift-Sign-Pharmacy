@@ -33,18 +33,18 @@ const Navbar = () => {
          style={{ borderBottom: '1px solid #e5e5e5' }}>
 
       {/* Top section with location and license (if needed as a separate bar, or integrated) */}
-      <div className="max-w-[1450px] mx-auto px-2 sm:px-3 lg:px-4 flex items-center justify-between gap-1 sm:gap-1.5 lg:gap-3"
-           style={{ minHeight: '44px', paddingTop: '5px', paddingBottom: '5px' }}>
+      <div className="max-w-[1450px] mx-auto px-2 sm:px-3 lg:px-4 flex items-center justify-between gap-1 sm:gap-1.5 lg:gap-3 flex-nowrap overflow-hidden"
+           style={{ minHeight: '52px', paddingTop: '7px', paddingBottom: '7px' }}>
 
         {/* ── NAV LINKS ─────────────────────────────────── */}
-        <div className="flex items-center justify-start gap-0.5 sm:gap-1 lg:gap-2" style={{ order: 1 }}>
+        <div className="flex items-center justify-start gap-0.5 sm:gap-1 lg:gap-2 flex-nowrap" style={{ order: 1 }}>
 
           {/* ── CATEGORIES DROPDOWN ─────────────────────────────────── */}
-          <div className="relative group flex items-center h-full">
-            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-3 py-1.5 lg:py-2 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm hover:bg-[#0a9aa5] transition-colors flex-shrink-0">
+          <div className="relative group flex items-center h-full flex-shrink-0">
+            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-4 py-1.5 lg:py-2.5 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm hover:bg-[#0a9aa5] transition-colors flex-shrink-0">
               <Menu size={14} className="sm:hidden" />
               <Menu size={15} className="hidden sm:block lg:hidden" />
-              <Menu size={16} className="hidden lg:block" />
+              <Menu size={18} className="hidden lg:block" />
               <span className="hidden xs:inline">Categories</span>
             </button>
             
@@ -109,13 +109,13 @@ const Navbar = () => {
               end={link.to === '/'}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center gap-1 font-medium px-1 sm:px-1.5 lg:px-2.5 py-1.5 rounded transition-colors duration-[150ms] whitespace-nowrap',
+                  'flex items-center gap-1 font-medium px-1 sm:px-1.5 lg:px-3 py-1.5 lg:py-2 rounded transition-colors duration-[150ms] whitespace-nowrap flex-shrink-0',
                   isActive
                     ? 'text-[#0FAFB8]'
                     : 'text-gray-700 hover:text-[#0FAFB8]'
                 )
               }
-              style={{ fontSize: 'clamp(10px, 1.5vw, 13px)' }}
+              style={{ fontSize: 'clamp(10px, 1.5vw, 15px)' }}
             >
               <span className="lg:hidden">{link.labelShort}</span>
               <span className="hidden lg:inline">{link.label}</span>
@@ -124,18 +124,19 @@ const Navbar = () => {
         </div>
 
         {/* ── LICENSE & PRESCRIPTION ─────────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5 lg:gap-2 w-full sm:w-auto" style={{ order: 2 }}>
-          <div className="hidden xl:block text-gray-700 text-right leading-tight text-[9px]">
-            <div>PCP License:</div>
-            <div className="font-medium">2659-A/2014-PC</div>
+        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5 lg:gap-3 w-full sm:w-auto" style={{ order: 2 }}>
+          <div className="hidden lg:block text-gray-700 text-right leading-tight text-[11px]">
+            <div>PCP License Number:</div>
+            <div className="text-[12px] font-medium">2659-A/2014-PC</div>
           </div>
           <Link
             to="/asaan-order"
-            className="flex items-center gap-0.5 sm:gap-1 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
-                       px-2 sm:px-2.5 lg:px-3 py-1.5 rounded-full font-bold text-[9px] sm:text-[10px] lg:text-[12px] transition-colors flex-shrink-0"
+            className="flex items-center gap-0.5 sm:gap-1 lg:gap-1.5 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
+                       px-2 sm:px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-full font-bold text-[9px] sm:text-[10px] lg:text-[13px] transition-colors flex-shrink-0"
           >
             <FileUp size={12} className="sm:hidden" strokeWidth={2.5} />
-            <FileUp size={13} className="hidden sm:block" strokeWidth={2.5} />
+            <FileUp size={13} className="hidden sm:block lg:hidden" strokeWidth={2.5} />
+            <FileUp size={14} className="hidden lg:block" strokeWidth={2.5} />
             <span className="hidden sm:inline">PRESCRIPTION</span>
             <span className="sm:hidden">Rx</span>
           </Link>
