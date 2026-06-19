@@ -180,20 +180,21 @@ const SecondaryNav = () => {
             )}
 
             {/* ── DELIVERY LOCATION ON RIGHT SIDE ───────────────────── */}
-            <div className="hidden lg:flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-2 flex-shrink-0 pl-4">
+            <div className="flex sm:flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-1 sm:gap-2 flex-shrink-0 pl-2 sm:pl-4">
               <button
                 onClick={() => setIsLocationModalOpen(true)}
-                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-[10px] sm:text-[11px] px-2 sm:px-3 py-0.5 rounded-2xl shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
+                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-[9px] sm:text-[10px] md:text-[11px] px-2 sm:px-3 py-0.5 rounded-2xl shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
               >
                 Change
               </button>
 
-              <div className="flex items-center gap-1.5 min-w-0">
-                <MapPin size={12} className="text-[#0FAFB8] flex-shrink-0" />
-                <div className="text-[10px] sm:text-[11px] text-gray-700 min-w-0 flex items-center gap-1">
-                  <span className="font-bold text-[#0FAFB8] hidden md:inline">DELIVER TO:</span>
+              <div className="hidden sm:flex items-center gap-1 sm:gap-1.5 min-w-0">
+                <MapPin size={10} className="sm:hidden text-[#0FAFB8] flex-shrink-0" />
+                <MapPin size={12} className="hidden sm:block text-[#0FAFB8] flex-shrink-0" />
+                <div className="text-[9px] sm:text-[10px] md:text-[11px] text-gray-700 min-w-0 flex items-center gap-1">
+                  <span className="font-bold text-[#0FAFB8] hidden lg:inline">DELIVER TO:</span>
                   <span
-                    className="font-medium truncate max-w-[150px]"
+                    className="font-medium truncate max-w-[100px] sm:max-w-[150px]"
                     title={location.fullAddress || getDisplayAddress()}
                   >
                     {getDisplayAddress()}
