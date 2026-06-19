@@ -32,6 +32,7 @@ const navItems = buildNavItems()
 const SecondaryNav = () => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
   const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false)
+  const [openSubcategory, setOpenSubcategory] = useState(null)
   const { location, isDeliveryAvailable } = useLocationStore()
 
   const getDisplayAddress = () => {
@@ -104,7 +105,7 @@ const SecondaryNav = () => {
                   >
                     {item.name}
                     {item.subCategories && item.subCategories.length > 0 && (
-                      <ChevronDown size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                      <ChevronDown size={11} className={`opacity-40 group-hover:opacity-100 transition-all cursor-pointer ${openSubcategory === item.slug ? 'rotate-180' : ''}`} onClick={(e) => { e.preventDefault(); setOpenSubcategory(openSubcategory === item.slug ? null : item.slug) }} />
                     )}
 
                     {/* Active indicator underline on hover */}
@@ -115,10 +116,10 @@ const SecondaryNav = () => {
 
                   {/* Dropdown Menu */}
                   {item.subCategories && item.subCategories.length > 0 && (
-                    <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
-                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto opacity-0 invisible translate-y-2
-                                    group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
-                                    transition-all duration-200 z-50">
+                    <div className={`absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
+                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto
+                                    transition-all duration-200 z-50
+                                    ${openSubcategory === item.slug ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'}`}>
                       {/* "View All" link for Diseases */}
                       {item.slug === 'diseases' && (
                         <Link to="/diseases" className="block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
@@ -159,7 +160,10 @@ const SecondaryNav = () => {
             {/* More Button (Tablet only) - Right side */}
             {navItems.length > 5 && (
               <button
-                onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                onClick={() => {
+                  setIsMoreDropdownOpen(!isMoreDropdownOpen)
+                  setOpenSubcategory(null)
+                }}
                 className="flex lg:hidden items-center gap-1 text-gray-600 hover:text-primary
                            transition-colors duration-[150ms] whitespace-nowrap relative flex-shrink-0"
                 style={{
@@ -171,7 +175,7 @@ const SecondaryNav = () => {
                 }}
               >
                 More
-                <ChevronDown size={11} className={`transition-transform duration-300 ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={11} className={`transition-transform duration-300 ${isMoreDropdownOpen ? '' : 'rotate-180'}`} />
               </button>
             )}
 
@@ -219,7 +223,7 @@ const SecondaryNav = () => {
                   >
                     {item.name}
                     {item.subCategories && item.subCategories.length > 0 && (
-                      <ChevronDown size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                      <ChevronDown size={11} className={`opacity-40 group-hover:opacity-100 transition-all cursor-pointer ${openSubcategory === item.slug ? 'rotate-180' : ''}`} onClick={(e) => { e.preventDefault(); setOpenSubcategory(openSubcategory === item.slug ? null : item.slug) }} />
                     )}
 
                     {/* Active indicator underline on hover */}
@@ -230,10 +234,10 @@ const SecondaryNav = () => {
 
                   {/* Dropdown Menu */}
                   {item.subCategories && item.subCategories.length > 0 && (
-                    <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
-                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto opacity-0 invisible translate-y-2
-                                    group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
-                                    transition-all duration-200 z-50">
+                    <div className={`absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
+                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto
+                                    transition-all duration-200 z-50
+                                    ${openSubcategory === item.slug ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'}`}>
                       {/* "View All" link for Diseases */}
                       {item.slug === 'diseases' && (
                         <Link to="/diseases" className="block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
