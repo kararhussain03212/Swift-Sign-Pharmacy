@@ -31,6 +31,7 @@ const navItems = buildNavItems()
 
 const SecondaryNav = () => {
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false)
+  const [isMoreDropdownOpen, setIsMoreDropdownOpen] = useState(false)
   const { location, isDeliveryAvailable } = useLocationStore()
 
   const getDisplayAddress = () => {
@@ -153,6 +154,45 @@ const SecondaryNav = () => {
                   )}
                 </div>
               ))}
+
+              {/* More Categories Dropdown (Tablet only) */}
+              {navItems.length > 5 && (
+                <div className="relative group flex lg:hidden h-full items-center">
+                  <button
+                    onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                    className="flex items-center gap-1 text-gray-600 hover:text-primary
+                               transition-colors duration-[150ms] whitespace-nowrap relative"
+                    style={{
+                      fontSize: 'clamp(10px, 1.8vw, 13px)',
+                      fontWeight: 400,
+                      paddingLeft: 'clamp(6px, 1.5vw, 14px)',
+                      paddingRight: 'clamp(6px, 1.5vw, 14px)',
+                      height: '40px',
+                    }}
+                  >
+                    More
+                    <ChevronDown size={11} className={`transition-transform ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* More Categories Dropdown Menu */}
+                  {isMoreDropdownOpen && (
+                    <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
+                                    rounded-b-xl py-2 min-w-[200px] z-50">
+                      {navItems.slice(5).map(item => (
+                        <Link
+                          key={item.slug}
+                          to={item.to}
+                          className="block px-4 py-2.5 text-[12px] text-gray-600 hover:bg-primary-light hover:text-primary
+                                     transition-colors whitespace-nowrap"
+                          onClick={() => setIsMoreDropdownOpen(false)}
+                        >
+                          {item.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {/* ── DELIVERY LOCATION ON RIGHT SIDE ───────────────────── */}
