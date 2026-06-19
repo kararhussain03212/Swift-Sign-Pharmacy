@@ -5,11 +5,11 @@ import clsx from 'clsx'
 import { categories, diseasesList } from '../../data/categories'
 
 const navLinks = [
-  { label: 'Home',          to: '/',                },
-  { label: 'Blog',          to: '/blog',            },
-  { label: 'Certification', to: '/certification',   },
-  { label: 'Store Locator', to: '/store-locator',   },
-  { label: 'Contact',       to: '/contact',         },
+  { label: 'Home', labelShort: 'Home',  to: '/',                },
+  { label: 'Blog', labelShort: 'Blog',  to: '/blog',            },
+  { label: 'Certification', labelShort: 'Cert', to: '/certification',   },
+  { label: 'Store Locator', labelShort: 'Stores', to: '/store-locator',   },
+  { label: 'Contact', labelShort: 'Contact', to: '/contact',         },
 ]
 
 // Build nav items from categories.js
@@ -33,17 +33,19 @@ const Navbar = () => {
          style={{ borderBottom: '1px solid #e5e5e5' }}>
 
       {/* Top section with location and license (if needed as a separate bar, or integrated) */}
-      <div className="max-w-[1450px] mx-auto px-3 sm:px-4 flex items-center justify-between gap-2 sm:gap-3"
-           style={{ minHeight: '46px', paddingTop: '6px', paddingBottom: '6px' }}>
+      <div className="max-w-[1450px] mx-auto px-2 sm:px-3 lg:px-4 flex items-center justify-between gap-1 sm:gap-1.5 lg:gap-3"
+           style={{ minHeight: '44px', paddingTop: '5px', paddingBottom: '5px' }}>
 
         {/* ── NAV LINKS ─────────────────────────────────── */}
-        <div className="flex items-center justify-start gap-0.5 sm:gap-2" style={{ order: 1 }}>
+        <div className="flex items-center justify-start gap-0.5 sm:gap-1 lg:gap-2" style={{ order: 1 }}>
 
           {/* ── CATEGORIES DROPDOWN ─────────────────────────────────── */}
           <div className="relative group flex items-center h-full">
-            <button className="flex items-center gap-1.5 bg-[#0FAFB8] text-white px-3 py-2 rounded-full font-bold text-xs sm:text-sm hover:bg-[#0a9aa5] transition-colors flex-shrink-0">
-              <Menu size={16} />
-              Categories
+            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-3 py-1.5 lg:py-2 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm hover:bg-[#0a9aa5] transition-colors flex-shrink-0">
+              <Menu size={14} className="sm:hidden" />
+              <Menu size={15} className="hidden sm:block lg:hidden" />
+              <Menu size={16} className="hidden lg:block" />
+              <span className="hidden xs:inline">Categories</span>
             </button>
             
             {/* Primary Dropdown (Left Menu) */}
@@ -107,31 +109,33 @@ const Navbar = () => {
               end={link.to === '/'}
               className={({ isActive }) =>
                 clsx(
-                  'flex items-center gap-1 font-medium px-1.5 sm:px-2.5 py-1.5 rounded transition-colors duration-[150ms] whitespace-nowrap',
+                  'flex items-center gap-1 font-medium px-1 sm:px-1.5 lg:px-2.5 py-1.5 rounded transition-colors duration-[150ms] whitespace-nowrap',
                   isActive
                     ? 'text-[#0FAFB8]'
                     : 'text-gray-700 hover:text-[#0FAFB8]'
                 )
               }
-              style={{ fontSize: 'clamp(11px, 1.8vw, 13px)' }}
+              style={{ fontSize: 'clamp(10px, 1.5vw, 13px)' }}
             >
-              {link.label}
+              <span className="lg:hidden">{link.labelShort}</span>
+              <span className="hidden lg:inline">{link.label}</span>
             </NavLink>
           ))}
         </div>
 
         {/* ── LICENSE & PRESCRIPTION ─────────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center gap-1.5 sm:gap-2 w-full sm:w-auto" style={{ order: 2 }}>
-          <div className="hidden xl:block text-gray-700 text-right leading-tight text-[10px]">
+        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5 lg:gap-2 w-full sm:w-auto" style={{ order: 2 }}>
+          <div className="hidden xl:block text-gray-700 text-right leading-tight text-[9px]">
             <div>PCP License:</div>
             <div className="font-medium">2659-A/2014-PC</div>
           </div>
           <Link
             to="/asaan-order"
-            className="flex items-center gap-1 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
-                       px-2.5 sm:px-3 py-1.5 rounded-full font-bold text-[10px] sm:text-[12px] transition-colors flex-shrink-0"
+            className="flex items-center gap-0.5 sm:gap-1 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
+                       px-2 sm:px-2.5 lg:px-3 py-1.5 rounded-full font-bold text-[9px] sm:text-[10px] lg:text-[12px] transition-colors flex-shrink-0"
           >
-            <FileUp size={13} strokeWidth={2.5} />
+            <FileUp size={12} className="sm:hidden" strokeWidth={2.5} />
+            <FileUp size={13} className="hidden sm:block" strokeWidth={2.5} />
             <span className="hidden sm:inline">PRESCRIPTION</span>
             <span className="sm:hidden">Rx</span>
           </Link>
