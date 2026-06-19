@@ -84,12 +84,12 @@ const SecondaryNav = () => {
       <div className="bg-white hidden sm:block relative z-30"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
         <div className="max-w-[1450px] mx-auto px-3 sm:px-6">
-          <div className="flex items-center justify-between flex-wrap gap-2" style={{ minHeight: '40px' }}>
+          <div className="flex items-center justify-between flex-wrap gap-2" style={{ minHeight: isMoreDropdownOpen ? 'auto' : '40px' }}>
 
             {/* Main Links */}
             <div className="flex items-center gap-0 flex-wrap" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
-                <div key={item.name} className={`relative group h-full flex items-center ${i > 4 ? 'hidden lg:flex' : ''}`}>
+                <div key={item.name} className={`relative group h-full flex items-center ${i > 4 && !isMoreDropdownOpen ? 'hidden lg:flex' : ''}`}>
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
@@ -155,80 +155,23 @@ const SecondaryNav = () => {
                 </div>
               ))}
 
-              {/* More Categories Dropdown (Tablet only) */}
+              {/* More Button (Tablet only) */}
               {navItems.length > 5 && (
-                <div className="relative group flex lg:hidden h-full items-center">
-                  <button
-                    onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
-                    className="flex items-center gap-1 text-gray-600 hover:text-primary
-                               transition-colors duration-[150ms] whitespace-nowrap relative"
-                    style={{
-                      fontSize: 'clamp(10px, 1.8vw, 13px)',
-                      fontWeight: 400,
-                      paddingLeft: 'clamp(6px, 1.5vw, 14px)',
-                      paddingRight: 'clamp(6px, 1.5vw, 14px)',
-                      height: '40px',
-                    }}
-                  >
-                    More
-                    <ChevronDown size={11} className={`transition-transform ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
-                  </button>
-
-                  {/* More Categories Dropdown Menu - Horizontal Grid with All Subcategories */}
-                  {isMoreDropdownOpen && (
-                    <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
-                                    rounded-b-xl py-6 px-8 z-50 overflow-y-auto"
-                         style={{ minWidth: '900px', maxHeight: '500px' }}>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {navItems.slice(5).map((item) => (
-                          <div key={item.slug} className="flex flex-col">
-                            {/* Category Title with Dropdown Arrow */}
-                            <Link
-                              to={item.to}
-                              className="font-bold text-[14px] text-gray-900 hover:text-primary mb-4 pb-2 border-b-2 border-gray-200 hover:border-primary transition-all flex items-center gap-1"
-                              onClick={() => setIsMoreDropdownOpen(false)}
-                            >
-                              {item.name}
-                              {item.subCategories && item.subCategories.length > 0 && (
-                                <ChevronDown size={12} className="text-gray-400" />
-                              )}
-                            </Link>
-
-                            {/* Subcategories List */}
-                            {item.subCategories && item.subCategories.length > 0 ? (
-                              <div className="flex flex-col gap-2.5">
-                                {item.subCategories.map(sub => {
-                                  const subName = typeof sub === 'object' ? sub.name : sub
-                                  const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-                                  const isViewAll = subSlug.startsWith('all-')
-                                  let subTo = `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
-
-                                  if (isViewAll) {
-                                    subTo = `/shop`
-                                  }
-
-                                  return (
-                                    <Link
-                                      key={subSlug}
-                                      to={subTo}
-                                      className={isViewAll
-                                        ? 'text-[13px] font-semibold text-primary hover:text-primary hover:underline transition-colors'
-                                        : 'text-[13px] text-gray-600 hover:text-primary hover:underline transition-colors'
-                                      }
-                                      onClick={() => setIsMoreDropdownOpen(false)}
-                                    >
-                                      {isViewAll ? `${subName} →` : subName}
-                                    </Link>
-                                  )
-                                })}
-                              </div>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <button
+                  onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                  className="flex lg:hidden items-center gap-1 text-gray-600 hover:text-primary
+                             transition-colors duration-[150ms] whitespace-nowrap relative"
+                  style={{
+                    fontSize: 'clamp(10px, 1.8vw, 13px)',
+                    fontWeight: 400,
+                    paddingLeft: 'clamp(6px, 1.5vw, 14px)',
+                    paddingRight: 'clamp(6px, 1.5vw, 14px)',
+                    height: '40px',
+                  }}
+                >
+                  More
+                  <ChevronDown size={11} className={`transition-transform duration-300 ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
+                </button>
               )}
             </div>
 
