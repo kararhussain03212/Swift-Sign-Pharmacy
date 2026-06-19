@@ -84,12 +84,12 @@ const SecondaryNav = () => {
       <div className="bg-white hidden sm:block relative z-30"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
         <div className="max-w-[1450px] mx-auto px-3 sm:px-6">
-          <div className="flex items-center justify-between flex-wrap gap-2" style={{ minHeight: isMoreDropdownOpen ? 'auto' : '40px' }}>
+          <div className="flex items-center justify-between gap-2" style={{ minHeight: '40px' }}>
 
-            {/* Main Links */}
-            <div className="flex items-center gap-0 flex-wrap" style={{ flex: 1 }}>
+            {/* Main Links - First 5 categories */}
+            <div className="flex items-center gap-0" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
-                <div key={item.name} className={`relative group h-full flex items-center ${i > 4 && !isMoreDropdownOpen ? 'hidden lg:flex' : ''}`}>
+                <div key={item.name} className={`relative group h-full flex items-center ${i > 4 ? 'hidden lg:flex' : ''}`}>
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
@@ -154,26 +154,26 @@ const SecondaryNav = () => {
                   )}
                 </div>
               ))}
-
-              {/* More Button (Tablet only) */}
-              {navItems.length > 5 && (
-                <button
-                  onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
-                  className="flex lg:hidden items-center gap-1 text-gray-600 hover:text-primary
-                             transition-colors duration-[150ms] whitespace-nowrap relative"
-                  style={{
-                    fontSize: 'clamp(10px, 1.8vw, 13px)',
-                    fontWeight: 400,
-                    paddingLeft: 'clamp(6px, 1.5vw, 14px)',
-                    paddingRight: 'clamp(6px, 1.5vw, 14px)',
-                    height: '40px',
-                  }}
-                >
-                  More
-                  <ChevronDown size={11} className={`transition-transform duration-300 ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
-              )}
             </div>
+
+            {/* More Button (Tablet only) - Right side */}
+            {navItems.length > 5 && (
+              <button
+                onClick={() => setIsMoreDropdownOpen(!isMoreDropdownOpen)}
+                className="flex lg:hidden items-center gap-1 text-gray-600 hover:text-primary
+                           transition-colors duration-[150ms] whitespace-nowrap relative flex-shrink-0"
+                style={{
+                  fontSize: 'clamp(10px, 1.8vw, 13px)',
+                  fontWeight: 400,
+                  paddingLeft: 'clamp(6px, 1.5vw, 14px)',
+                  paddingRight: 'clamp(6px, 1.5vw, 14px)',
+                  height: '40px',
+                }}
+              >
+                More
+                <ChevronDown size={11} className={`transition-transform duration-300 ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+            )}
 
             {/* ── DELIVERY LOCATION ON RIGHT SIDE ───────────────────── */}
             <div className="hidden lg:flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-2 flex-shrink-0 pl-4">
@@ -198,6 +198,79 @@ const SecondaryNav = () => {
               </div>
             </div>
           </div>
+
+          {/* Hidden Categories Row (shown when More is clicked) */}
+          {isMoreDropdownOpen && (
+            <div className="flex items-center gap-0 border-t border-gray-100 pt-2" style={{ paddingBottom: '8px' }}>
+              {navItems.slice(5).map((item, i) => (
+                <div key={item.slug} className="relative group h-full flex items-center">
+                  <Link
+                    to={item.to}
+                    className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
+                               transition-colors duration-[150ms] whitespace-nowrap relative"
+                    style={{
+                      fontSize: 'clamp(10px, 1.8vw, 13px)',
+                      fontWeight: 400,
+                      paddingLeft: i === 0 ? '0px' : 'clamp(6px, 1.5vw, 14px)',
+                      paddingRight: 'clamp(6px, 1.5vw, 14px)',
+                      height: '40px',
+                    }}
+                    onClick={() => setIsMoreDropdownOpen(false)}
+                  >
+                    {item.name}
+                    {item.subCategories && item.subCategories.length > 0 && (
+                      <ChevronDown size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                    )}
+
+                    {/* Active indicator underline on hover */}
+                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary
+                                     scale-x-0 group-hover:scale-x-100
+                                     transition-transform duration-[150ms] origin-left" />
+                  </Link>
+
+                  {/* Dropdown Menu */}
+                  {item.subCategories && item.subCategories.length > 0 && (
+                    <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
+                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto opacity-0 invisible translate-y-2
+                                    group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+                                    transition-all duration-200 z-50">
+                      {/* "View All" link for Diseases */}
+                      {item.slug === 'diseases' && (
+                        <Link to="/diseases" className="block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">
+                          View A-Z Guide →
+                        </Link>
+                      )}
+                      {item.subCategories.map(sub => {
+                        const subName = typeof sub === 'object' ? sub.name : sub
+                        const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                        const isViewAll = subSlug.startsWith('all-')
+                        let subTo = item.slug === 'diseases'
+                          ? `/shop?diseaseCategory=${encodeURIComponent(subSlug)}`
+                          : `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+
+                        if (isViewAll) {
+                          subTo = `/shop`
+                        }
+                        return (
+                          <Link
+                            key={subSlug}
+                            to={subTo}
+                            className={isViewAll
+                              ? 'block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1 transition-colors'
+                              : 'block px-4 py-2 text-[12px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate'
+                            }
+                            onClick={() => setIsMoreDropdownOpen(false)}
+                          >
+                            {isViewAll ? `${subName} →` : subName}
+                          </Link>
+                        )
+                      })}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
