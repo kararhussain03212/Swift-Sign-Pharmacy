@@ -203,9 +203,9 @@ const SecondaryNav = () => {
             </div>
           </div>
 
-          {/* Hidden Categories Row (shown when More is clicked) */}
+          {/* Hidden Categories Row (shown when More is clicked on tablet only) */}
           {isMoreDropdownOpen && (
-            <div className="flex items-center gap-0 border-t border-gray-100 pt-2" style={{ paddingBottom: '8px' }}>
+            <div className="flex lg:hidden items-center gap-0 border-t border-gray-100 pt-2" style={{ paddingBottom: '8px' }}>
               {navItems.slice(5).map((item, i) => (
                 <div key={item.slug} className="relative group h-full flex items-center">
                   <Link
