@@ -174,21 +174,73 @@ const SecondaryNav = () => {
                     <ChevronDown size={11} className={`transition-transform ${isMoreDropdownOpen ? 'rotate-180' : ''}`} />
                   </button>
 
-                  {/* More Categories Dropdown Menu */}
+                  {/* More Categories Dropdown Menu - Horizontal */}
                   {isMoreDropdownOpen && (
                     <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
-                                    rounded-b-xl py-2 min-w-[200px] z-50">
-                      {navItems.slice(5).map(item => (
-                        <Link
-                          key={item.slug}
-                          to={item.to}
-                          className="block px-4 py-2.5 text-[12px] text-gray-600 hover:bg-primary-light hover:text-primary
-                                     transition-colors whitespace-nowrap"
-                          onClick={() => setIsMoreDropdownOpen(false)}
-                        >
-                          {item.name}
-                        </Link>
-                      ))}
+                                    rounded-b-xl py-2 px-2 z-50"
+                         style={{ minWidth: '400px' }}>
+                      <div className="flex items-center gap-0 flex-wrap">
+                        {navItems.slice(5).map((item, i) => (
+                          <div key={item.slug} className="relative group h-full flex items-center">
+                            <Link
+                              to={item.to}
+                              className="flex items-center gap-0.5 text-gray-600 hover:text-primary
+                                         transition-colors duration-[150ms] whitespace-nowrap relative"
+                              style={{
+                                fontSize: 'clamp(10px, 1.8vw, 13px)',
+                                fontWeight: 400,
+                                paddingLeft: 'clamp(6px, 1.5vw, 14px)',
+                                paddingRight: 'clamp(6px, 1.5vw, 14px)',
+                                height: '40px',
+                              }}
+                              onClick={() => setIsMoreDropdownOpen(false)}
+                            >
+                              {item.name}
+                              {item.subCategories && item.subCategories.length > 0 && (
+                                <ChevronDown size={11} className="opacity-40 group-hover:opacity-100 transition-opacity" />
+                              )}
+
+                              {/* Active indicator underline on hover */}
+                              <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary
+                                               scale-x-0 group-hover:scale-x-100
+                                               transition-transform duration-[150ms] origin-left" />
+                            </Link>
+
+                            {/* Subcategories Dropdown for More items */}
+                            {item.subCategories && item.subCategories.length > 0 && (
+                              <div className="absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
+                                              rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto opacity-0 invisible translate-y-2
+                                              group-hover:opacity-100 group-hover:visible group-hover:translate-y-0
+                                              transition-all duration-200 z-50 mt-1">
+                                {item.subCategories.map(sub => {
+                                  const subName = typeof sub === 'object' ? sub.name : sub
+                                  const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
+                                  const isViewAll = subSlug.startsWith('all-')
+                                  let subTo = `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+
+                                  if (isViewAll) {
+                                    subTo = `/shop`
+                                  }
+
+                                  return (
+                                    <Link
+                                      key={subSlug}
+                                      to={subTo}
+                                      className={isViewAll
+                                        ? 'block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1 transition-colors'
+                                        : 'block px-4 py-2 text-[12px] text-gray-600 hover:bg-primary-light hover:text-primary transition-colors truncate'
+                                      }
+                                      onClick={() => setIsMoreDropdownOpen(false)}
+                                    >
+                                      {isViewAll ? `${subName} →` : subName}
+                                    </Link>
+                                  )
+                                })}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
                 </div>
