@@ -7,7 +7,7 @@ import { categories, diseasesList } from '../../data/categories'
 const navLinks = [
   { label: 'Home', labelShort: 'Home',  to: '/',                },
   { label: 'Blog', labelShort: 'Blog',  to: '/blog',            },
-  { label: 'Certification', labelShort: 'Cert', to: '/certification',   },
+  { label: 'Certification', labelShort: 'Certification', to: '/certification',   },
   { label: 'Store Locator', labelShort: 'Stores', to: '/store-locator',   },
   { label: 'Contact', labelShort: 'Contact', to: '/contact',         },
 ]
@@ -49,7 +49,7 @@ const Navbar = () => {
             </button>
             
             {/* Primary Dropdown (Left Menu) */}
-            <div className="absolute top-[100%] left-0 mt-[1px] bg-white shadow-xl border border-gray-100 rounded-b-lg min-w-[260px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
+            <div className="absolute top-[100%] left-0 mt-[1px] bg-white shadow-xl border border-gray-100 rounded-b-lg min-w-[200px] sm:min-w-[260px] opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 flex flex-col py-2">
               {navItems.map(item => (
                 <div
                   key={item.slug}
@@ -63,15 +63,15 @@ const Navbar = () => {
                   
                   {/* Flyout Menu (Right Menu) */}
                   {item.subCategories && item.subCategories.length > 0 && (
-                    <div 
-                      className="absolute top-0 left-[100%] ml-0 bg-white shadow-xl border border-gray-100 rounded-lg min-w-[450px] min-h-[100%] opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-200 z-50 p-6 cursor-default" 
+                    <div
+                      className="absolute top-0 left-[100%] ml-0 bg-white shadow-xl border border-gray-100 rounded-lg min-w-[300px] sm:min-w-[450px] min-h-[100%] opacity-0 invisible group-hover/item:opacity-100 group-hover/item:visible transition-all duration-200 z-50 p-3 sm:p-6 cursor-default"
                       onClick={e => e.stopPropagation()}
                     >
-                      <div className="flex justify-between items-center mb-4 border-b pb-3">
-                        <h3 className="font-extrabold text-[18px] text-gray-800">{item.name}</h3>
-                        <Link to={item.to} className="text-[13px] text-[#0FAFB8] hover:underline font-bold">View All</Link>
+                      <div className="flex justify-between items-center mb-3 sm:mb-4 border-b pb-2 sm:pb-3">
+                        <h3 className="font-extrabold text-[14px] sm:text-[18px] text-gray-800">{item.name}</h3>
+                        <Link to={item.to} className="text-[11px] sm:text-[13px] text-[#0FAFB8] hover:underline font-bold">View All</Link>
                       </div>
-                      <div className="grid grid-cols-2 gap-x-6 gap-y-3">
+                      <div className="grid grid-cols-2 gap-x-3 sm:gap-x-6 gap-y-2 sm:gap-y-3">
                         {item.subCategories.map(sub => {
                           const subName = typeof sub === 'object' ? sub.name : sub
                           const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
@@ -88,7 +88,7 @@ const Navbar = () => {
                             <Link
                               key={subSlug}
                               to={subTo}
-                              className="text-[13px] text-gray-600 hover:text-[#0FAFB8] hover:bg-gray-50 px-2 py-1.5 rounded transition-colors truncate block"
+                              className="text-[11px] sm:text-[13px] text-gray-600 hover:text-[#0FAFB8] hover:bg-gray-50 px-1.5 sm:px-2 py-1 sm:py-1.5 rounded transition-colors truncate block"
                             >
                               {subName}
                             </Link>
