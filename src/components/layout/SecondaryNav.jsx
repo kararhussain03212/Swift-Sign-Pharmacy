@@ -88,7 +88,7 @@ const SecondaryNav = () => {
             {/* Main Links */}
             <div className="flex items-center gap-0 flex-wrap" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
-                <div key={item.name} className="relative group h-full flex items-center">
+                <div key={item.name} className={`relative group h-full flex items-center ${i > 4 ? 'hidden lg:flex' : ''}`}>
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
