@@ -55,14 +55,14 @@ const SecondaryNav = () => {
   return (
     <>
       {/* ── MOBILE: Horizontal scroll category pills ──── */}
-      <div className="hidden bg-white overflow-x-auto scrollbar-hide"
+      <div className="sm:hidden bg-white overflow-x-auto scrollbar-hide"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
-        <div className="flex items-center gap-1.5 px-3 py-2 min-w-max">
+        <div className="flex items-center gap-2 px-3 py-2 min-w-max">
           {navItems.map((item) => (
             <Link
               key={item.name}
               to={item.to}
-              className="flex-shrink-0 text-[9px] font-semibold px-2 py-1 rounded-full bg-gray-50 text-gray-600
+              className="flex-shrink-0 text-xs font-semibold px-2.5 py-1.5 rounded-full bg-gray-50 text-gray-600
                          hover:bg-primary-light hover:text-primary active:bg-primary active:text-white
                          transition-colors whitespace-nowrap border border-gray-100"
             >
@@ -72,10 +72,10 @@ const SecondaryNav = () => {
           {/* Location button on mobile */}
           <button
             onClick={() => setIsLocationModalOpen(true)}
-            className="flex-shrink-0 flex items-center gap-1 text-[9px] font-semibold px-2 py-1 rounded-full
+            className="flex-shrink-0 flex items-center gap-1 text-xs font-semibold px-2.5 py-1.5 rounded-full
                        bg-primary text-white whitespace-nowrap ml-1"
           >
-            <MapPin size={10} />
+            <MapPin size={14} />
             Deliver to
           </button>
         </div>
@@ -84,22 +84,22 @@ const SecondaryNav = () => {
       {/* ── DESKTOP: Full nav ──────────────────────────── */}
       <div className="bg-white hidden sm:block relative z-30"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
-        <div className="max-w-[1450px] mx-auto px-2 sm:px-3 md:px-4 lg:px-6">
+        <div className="max-w-[1450px] mx-auto px-2 sm:px-3 md:px-3 lg:px-4">
           <div className="flex items-center justify-between gap-0.5 sm:gap-1 overflow-x-auto scrollbar-hide" style={{ minHeight: '40px' }}>
 
             {/* Main Links - First 3 categories on tablet */}
             <div className="flex items-center gap-0 min-w-0" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
-                <div key={item.name} className={`relative group h-full flex items-center ${i > 2 ? 'hidden md:flex' : ''}`}>
+                <div key={item.name} className={`relative group h-full flex items-center ${i > 1 ? 'hidden lg:flex' : ''}`}>
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
                                transition-colors duration-[150ms] whitespace-nowrap relative"
                     style={{
-                      fontSize: 'clamp(8px, 1.5vw, 11px)',
-                      fontWeight: 400,
-                      paddingLeft: i === 0 ? '0px' : 'clamp(4px, 1vw, 10px)',
-                      paddingRight: 'clamp(4px, 1vw, 10px)',
+                      fontSize: 'clamp(11px, 1.1vw, 13px)',
+                      fontWeight: 500,
+                      paddingLeft: i === 0 ? '0px' : 'clamp(4px, 0.5vw, 6px)',
+                      paddingRight: 'clamp(4px, 0.5vw, 6px)',
                       height: '40px',
                     }}
                   >
@@ -158,19 +158,19 @@ const SecondaryNav = () => {
             </div>
 
             {/* More Button (Tablet only) - Right side */}
-            {navItems.length > 3 && (
+            {navItems.length > 2 && (
               <button
                 onClick={() => {
                   setIsMoreDropdownOpen(!isMoreDropdownOpen)
                   setOpenSubcategory(null)
                 }}
-                className="flex md:hidden items-center gap-1 text-gray-600 hover:text-primary
+                className="flex lg:hidden items-center gap-1 text-gray-600 hover:text-primary
                            transition-colors duration-[150ms] whitespace-nowrap relative flex-shrink-0"
                 style={{
-                  fontSize: 'clamp(8px, 1.5vw, 11px)',
-                  fontWeight: 400,
-                  paddingLeft: 'clamp(4px, 1vw, 10px)',
-                  paddingRight: 'clamp(4px, 1vw, 10px)',
+                  fontSize: 'clamp(11px, 1.1vw, 13px)',
+                  fontWeight: 500,
+                  paddingLeft: 'clamp(4px, 0.5vw, 6px)',
+                  paddingRight: 'clamp(4px, 0.5vw, 6px)',
                   height: '40px',
                 }}
               >
@@ -180,21 +180,21 @@ const SecondaryNav = () => {
             )}
 
             {/* ── DELIVERY LOCATION ON RIGHT SIDE ───────────────────── */}
-            <div className="flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-0.5 sm:gap-1 flex-shrink-0 pl-1 sm:pl-1.5 md:pl-2 lg:pl-3">
+            <div className="flex items-center justify-end border-l border-gray-200 h-full min-w-0 gap-1.5 sm:gap-2 md:gap-2.5 flex-shrink-0 pl-2 sm:pl-2 md:pl-3 lg:pl-4">
               <button
                 onClick={() => setIsLocationModalOpen(true)}
-                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-[7px] sm:text-[8px] md:text-[9px] px-1.5 sm:px-2 py-0.5 rounded-2xl shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
+                className="bg-[#0FAFB8] hover:bg-[#0a9aa5] border border-[#0FAFB8] text-white font-semibold text-xs sm:text-xs md:text-sm px-2.5 sm:px-3 py-1 rounded-2xl shadow-sm transition-colors flex-shrink-0 whitespace-nowrap"
               >
                 Change
               </button>
 
-              <div className="hidden sm:flex items-center gap-1 sm:gap-1.5 min-w-0">
-                <MapPin size={10} className="sm:hidden text-[#0FAFB8] flex-shrink-0" />
-                <MapPin size={12} className="hidden sm:block text-[#0FAFB8] flex-shrink-0" />
-                <div className="text-[6px] sm:text-[7px] md:text-[8px] text-gray-700 min-w-0 flex items-center gap-0.5">
-                  <span className="font-bold text-[#0FAFB8] hidden lg:inline text-[6px] sm:text-[7px]">DELIVER TO:</span>
+              <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 min-w-0">
+                <MapPin size={16} className="sm:hidden text-[#0FAFB8] flex-shrink-0" />
+                <MapPin size={18} className="hidden sm:block text-[#0FAFB8] flex-shrink-0" />
+                <div className="text-xs sm:text-xs md:text-sm text-gray-700 min-w-0 flex items-center gap-1">
+                  <span className="font-bold text-[#0FAFB8] hidden lg:inline text-xs sm:text-xs">DELIVER TO:</span>
                   <span
-                    className="font-medium truncate max-w-[60px] sm:max-w-[80px] md:max-w-[120px]"
+                    className="font-medium truncate max-w-[80px] sm:max-w-[100px] md:max-w-[140px]"
                     title={location.fullAddress || getDisplayAddress()}
                   >
                     {getDisplayAddress()}
@@ -206,18 +206,18 @@ const SecondaryNav = () => {
 
           {/* Hidden Categories Row (shown when More is clicked on tablet only) */}
           {isMoreDropdownOpen && (
-            <div className="flex md:hidden items-center gap-0 border-t border-gray-100 pt-2" style={{ paddingBottom: '8px' }}>
-              {navItems.slice(3).map((item, i) => (
+            <div className="flex lg:hidden items-center gap-0 border-t border-gray-100 pt-1.5 pb-1.5" style={{ minHeight: '40px' }}>
+              {navItems.slice(2).map((item, i) => (
                 <div key={item.slug} className="relative group h-full flex items-center">
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
                                transition-colors duration-[150ms] whitespace-nowrap relative"
                     style={{
-                      fontSize: 'clamp(8px, 1.5vw, 11px)',
-                      fontWeight: 400,
-                      paddingLeft: i === 0 ? '0px' : 'clamp(4px, 1vw, 10px)',
-                      paddingRight: 'clamp(4px, 1vw, 10px)',
+                      fontSize: 'clamp(11px, 1vw, 12px)',
+                      fontWeight: 500,
+                      paddingLeft: i === 0 ? '0px' : 'clamp(4px, 0.5vw, 6px)',
+                      paddingRight: 'clamp(4px, 0.5vw, 6px)',
                       height: '40px',
                     }}
                     onClick={() => setIsMoreDropdownOpen(false)}
