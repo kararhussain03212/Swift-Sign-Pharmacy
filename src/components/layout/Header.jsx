@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { Search, User, Heart, ShoppingCart, X, Menu, ChevronRight, MapPin } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { Search, User, ShoppingCart, X, Menu, ChevronRight, MapPin } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
-import useWishlistStore from '../../store/wishlistStore'
 import useLocationStore from '../../store/locationStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
@@ -18,7 +17,6 @@ const navLinks = [
 ]
 
 const Header = () => {
-  const navigate = useNavigate()
   const [searchQuery, setSearchQuery] = useState('')
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
@@ -28,11 +26,9 @@ const Header = () => {
   const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false)
 
   const { items: cartItems } = useCartStore()
-  const { items: wishlistItems } = useWishlistStore()
   const { location } = useLocationStore()
 
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
-  const wishlistCount = wishlistItems.length
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
@@ -60,31 +56,40 @@ const Header = () => {
         style={{ borderBottom: '1px solid #e5e5e5' }}
       >
         {/* ── MAIN ROW ─────────────────────────────────── */}
-        <div className="max-w-[1450px] mx-auto px-3 sm:px-6 flex items-center gap-2 sm:gap-4 md:gap-6 h-14 sm:h-[70px] md:h-[90px]">
+        <div className="max-w-[1450px] mx-auto px-3 sm:px-6 flex items-center gap-2 sm:gap-4 md:gap-6 h-20 sm:h-[70px] md:h-[100px]">
 
-          {/* ── MOBILE MENU & LOGO ─────────────────────────────────────── */}
-          <div className="flex items-center gap-3 flex-shrink-0">
-            <button 
-              className="sm:hidden text-gray-700 hover:text-[#0FAFB8] transition-colors p-1"
+          {/* ── MOBILE: Menu & Search Icons (Left) ────────────────────── */}
+          <div className="flex items-center gap-2 sm:hidden flex-shrink-0">
+            <button
+              className="text-gray-700 hover:text-[#0FAFB8] transition-colors p-1"
               onClick={() => setIsMobileSidebarOpen(true)}
             >
               <Menu size={24} />
             </button>
-            <Link to="/" className="flex items-center gap-1.5 group">
-              <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-2xl"
-                    style={{ letterSpacing: '-0.5px' }}>
-                Logo Here
-              </span>
-            </Link>
+            <button
+              className="text-gray-500 hover:text-primary transition-colors p-1"
+              onClick={() => setMobileSearchOpen(s => !s)}
+              aria-label="Toggle search"
+            >
+              <Search size={20} strokeWidth={1.75} />
+            </button>
           </div>
 
-          {/* ── SEARCH BAR (Left-aligned next to logo) ──── */}
-          <div className="hidden sm:flex relative min-w-0" style={{ flex: '1 1 auto', maxWidth: '450px' }}>
+          {/* ── LOGO (Center on mobile, left on desktop) ──────────────── */}
+          <Link to="/" className="flex items-center gap-1.5 group flex-1 sm:flex-shrink-0 justify-center sm:justify-start">
+            <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-3xl lg:text-3xl"
+                  style={{ letterSpacing: '-0.5px' }}>
+              Logo Here
+            </span>
+          </Link>
+
+          {/* ── SEARCH BAR (Left-aligned next to logo, desktop only) ──── */}
+          <div className="hidden sm:flex relative min-w-0" style={{ flex: '1 1 auto', maxWidth: '600px' }}>
             <div
               className={`flex items-center w-full transition-all duration-[150ms]
                           ${isSearchFocused ? 'ring-2 ring-primary ring-offset-0' : ''}`}
               style={{
-                height: '42px',
+                height: 'clamp(42px, 6vw, 50px)',
                 border: `1px solid ${isSearchFocused ? '#0FAFB8' : '#e5e5e5'}`,
                 borderRadius: '50px',
                 overflow: 'hidden',
@@ -98,27 +103,27 @@ const Header = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Search products"
-                style={{ fontSize: '12px' }}
+                style={{ fontSize: 'clamp(12px, 1.5vw, 15px)' }}
                 className="flex-1 px-4 outline-none bg-transparent text-gray-700
                            placeholder:text-gray-400 w-full min-w-0"
               />
               {searchQuery && (
                 <button onClick={() => setSearchQuery('')}
                         className="pr-2 text-gray-400 hover:text-gray-600 flex-shrink-0">
-                  <X size={14} />
+                  <X size={window.innerWidth >= 768 ? 16 : 14} />
                 </button>
               )}
               <button
                 className="flex items-center justify-center flex-shrink-0
                            hover:opacity-90 transition-opacity duration-[150ms]"
                 style={{
-                  width: '42px',
-                  height: '42px',
+                  width: 'clamp(42px, 6vw, 50px)',
+                  height: 'clamp(42px, 6vw, 50px)',
                   backgroundColor: '#0FAFB8',
                   borderRadius: '0 50px 50px 0',
                 }}
               >
-                <Search size={15} color="white" />
+                <Search size={window.innerWidth >= 1024 ? 20 : window.innerWidth >= 768 ? 18 : 15} color="white" />
               </button>
             </div>
 
@@ -133,7 +138,7 @@ const Header = () => {
               to="/shop?deals=true"
               className="flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
               style={{
-                fontSize: 'clamp(10px, 1.3vw, 12px)',
+                fontSize: 'clamp(10px, 1.5vw, 15px)',
                 backgroundColor: '#FF0000',
                 boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
                 letterSpacing: '0.5px',
@@ -153,13 +158,13 @@ const Header = () => {
           {/* ── RIGHT ICONS ──────────────────────────────── */}
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 ml-auto flex-shrink-0">
 
-            {/* Mobile search icon */}
+            {/* Mobile location icon */}
             <button
               className="sm:hidden text-gray-500 hover:text-primary transition-colors p-1"
-              onClick={() => setMobileSearchOpen(s => !s)}
-              aria-label="Toggle search"
+              onClick={() => setIsLocationSelectorOpen(true)}
+              aria-label="Location"
             >
-              <Search size={20} strokeWidth={1.75} />
+              <MapPin size={20} strokeWidth={1.75} />
             </button>
 
             {/* Country flag (md+) */}
@@ -177,22 +182,6 @@ const Header = () => {
             {/* Account (md+) */}
             <button className="hidden md:flex text-gray-500 hover:text-primary transition-colors duration-[150ms]" aria-label="Account">
               <User size={24} strokeWidth={1.75} />
-            </button>
-
-            {/* Wishlist */}
-            <button
-              className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
-              onClick={() => navigate('/wishlist')}
-              aria-label="Wishlist"
-            >
-              <Heart className="w-[20px] h-[20px] sm:w-[22px] sm:h-[22px]" strokeWidth={1.75} />
-              {wishlistCount > 0 && (
-                <span className="absolute top-0 right-0 flex items-center justify-center
-                                 text-white font-bold rounded-full"
-                      style={{ width: '15px', height: '15px', fontSize: '9px', backgroundColor: '#0FAFB8' }}>
-                  {wishlistCount}
-                </span>
-              )}
             </button>
 
             {/* Cart */}
