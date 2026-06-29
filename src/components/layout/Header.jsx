@@ -71,7 +71,7 @@ const Header = () => {
               <Menu size={24} />
             </button>
             <Link to="/" className="flex items-center gap-1.5 group">
-              <span className="font-bold text-gray-900 tracking-tight text-lg sm:text-2xl md:text-[30px]"
+              <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-2xl"
                     style={{ letterSpacing: '-0.5px' }}>
                 Logo Here
               </span>
@@ -98,7 +98,7 @@ const Header = () => {
                 onFocus={() => setIsSearchFocused(true)}
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Search products"
-                style={{ fontSize: '14px' }}
+                style={{ fontSize: '12px' }}
                 className="flex-1 px-4 outline-none bg-transparent text-gray-700
                            placeholder:text-gray-400 w-full min-w-0"
               />
@@ -133,7 +133,7 @@ const Header = () => {
               to="/shop?deals=true"
               className="flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
               style={{
-                fontSize: 'clamp(11px, 1.5vw, 13px)',
+                fontSize: 'clamp(10px, 1.3vw, 12px)',
                 backgroundColor: '#FF0000',
                 boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
                 letterSpacing: '0.5px',
@@ -169,7 +169,7 @@ const Header = () => {
                 alt="Pakistan"
                 className="w-[28px] h-[18px] object-cover rounded-[2px] shadow-sm mb-1"
               />
-              <span className="text-[11px] font-bold text-gray-700 leading-none">Pakistan</span>
+              <span className="text-[9px] font-bold text-gray-700 leading-none">Pakistan</span>
             </div>
 
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />
@@ -235,7 +235,7 @@ const Header = () => {
                 onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
                 placeholder="Search medicines, vitamins..."
                 autoFocus
-                style={{ fontSize: '14px' }}
+                style={{ fontSize: '12px' }}
                 className="flex-1 px-4 outline-none bg-transparent text-gray-700 placeholder:text-gray-400"
               />
               {searchQuery && (

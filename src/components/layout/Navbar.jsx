@@ -1,9 +1,11 @@
 import { NavLink, Link, useNavigate } from 'react-router-dom'
-import { FileUp, Menu, ChevronRight } from 'lucide-react'
+import { FileUp, Menu, ChevronRight, MapPin } from 'lucide-react'
 import { useState } from 'react'
 import clsx from 'clsx'
 import { categories, diseasesList } from '../../data/categories'
 import { licenseInfo } from '../../data/contactInfo'
+import useLocationStore from '../../store/locationStore'
+import LocationSelector from '../modals/LocationSelector'
 
 const navLinks = [
   { label: 'Home', labelShort: 'Home',  to: '/',                },
@@ -27,9 +29,12 @@ const navItems = [
 
 const Navbar = () => {
   const [activeCategory, setActiveCategory] = useState(navItems[0])
+  const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false)
   const navigate = useNavigate()
+  const { location } = useLocationStore()
 
   return (
+    <>
     <nav className="hidden sm:block bg-white relative z-40"
          style={{ borderBottom: '1px solid #e5e5e5' }}>
 
@@ -38,11 +43,11 @@ const Navbar = () => {
            style={{ minHeight: '52px', paddingTop: '7px', paddingBottom: '7px' }}>
 
         {/* ── NAV LINKS ─────────────────────────────────── */}
-        <div className="flex items-center justify-start gap-1 sm:gap-2 lg:gap-3 flex-nowrap" style={{ order: 1, minWidth: 0, flex: 1 }}>
+        <div className="flex items-center justify-start gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-3 flex-nowrap" style={{ order: 1, minWidth: 0, flex: 1 }}>
 
           {/* ── CATEGORIES DROPDOWN ─────────────────────────────────── */}
           <div className="relative group flex items-center h-full flex-shrink-0">
-            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-4 py-1.5 lg:py-2.5 rounded-full font-bold text-[10px] sm:text-xs lg:text-sm hover:bg-[#073B45] transition-all duration-200 ease-in-out transform hover:shadow-lg flex-shrink-0">
+            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-4 py-1.5 lg:py-2.5 rounded-full font-bold text-[8px] sm:text-[9px] lg:text-sm hover:bg-[#073B45] transition-all duration-200 ease-in-out transform hover:shadow-lg flex-shrink-0">
               <Menu size={14} className="sm:hidden" />
               <Menu size={15} className="hidden sm:block lg:hidden" />
               <Menu size={18} className="hidden lg:block" />
@@ -116,7 +121,7 @@ const Navbar = () => {
                     : 'text-gray-700 hover:text-[#0FAFB8]'
                 )
               }
-              style={{ fontSize: 'clamp(10px, 1.5vw, 15px)' }}
+              style={{ fontSize: 'clamp(11px, 1.8vw, 14px)' }}
             >
               <span className="lg:hidden">{link.labelShort}</span>
               <span className="hidden lg:inline">{link.label}</span>
@@ -125,7 +130,21 @@ const Navbar = () => {
         </div>
 
         {/* ── LICENSE & PRESCRIPTION ─────────────────────────────────── */}
-        <div className="flex-shrink-0 flex items-center gap-1 sm:gap-1.5 lg:gap-3 w-full sm:w-auto" style={{ order: 2 }}>
+        <div className="flex-shrink-0 flex items-center gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-3 w-full sm:w-auto" style={{ order: 2 }}>
+          {/* LOCATION (Tablet & Desktop) */}
+          <button
+            onClick={() => setIsLocationSelectorOpen(true)}
+            className="hidden md:flex items-center gap-0.5 px-1.5 md:px-2 py-1 rounded hover:bg-gray-50 transition-colors flex-shrink-0 border-0 bg-transparent"
+          >
+            <MapPin size={14} className="text-[#0FAFB8] flex-shrink-0" />
+            <div className="flex flex-col items-start text-left">
+              <span className="text-[7px] text-gray-500 font-semibold leading-none whitespace-nowrap">Location</span>
+              <span className="text-[9px] font-bold text-gray-700 leading-tight whitespace-nowrap">{location?.city || 'Select'}</span>
+            </div>
+            <span className="text-[8px] font-bold text-[#0FAFB8] whitespace-nowrap">Change</span>
+          </button>
+
+          <div className="hidden lg:block w-px h-6" style={{ backgroundColor: '#e5e5e5' }} />
           <div className="hidden lg:block text-gray-700 text-right leading-tight text-[11px]">
             <div>{licenseInfo.description}:</div>
             <div className="text-[12px] font-medium">{licenseInfo.number}</div>
@@ -133,7 +152,7 @@ const Navbar = () => {
           <Link
             to="/asaan-order"
             className="flex items-center gap-0.5 sm:gap-1 lg:gap-1.5 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
-                       px-2 sm:px-2.5 lg:px-4 py-1.5 lg:py-2 rounded-full font-bold text-[9px] sm:text-[10px] lg:text-[13px] transition-colors flex-shrink-0"
+                       px-1.5 sm:px-2 lg:px-3 py-1 lg:py-1.5 rounded-full font-bold text-[8px] sm:text-[9px] lg:text-[12px] transition-colors flex-shrink-0"
           >
             <FileUp size={12} className="sm:hidden" strokeWidth={2.5} />
             <FileUp size={13} className="hidden sm:block lg:hidden" strokeWidth={2.5} />
@@ -144,6 +163,9 @@ const Navbar = () => {
         </div>
       </div>
     </nav>
+
+    <LocationSelector isOpen={isLocationSelectorOpen} onClose={() => setIsLocationSelectorOpen(false)} />
+    </>
   )
 }
 
