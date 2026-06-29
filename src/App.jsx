@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import TopBar from './components/layout/TopBar'
 import Header from './components/layout/Header'
 import Navbar from './components/layout/Navbar'
@@ -25,12 +26,13 @@ import Certification from './pages/Certification'
 
 function App() {
   return (
-    <BrowserRouter>
-      <div className="min-h-screen flex flex-col">
-        <TopBar />
-        <Header />
-        <Navbar />
-        <SecondaryNav />
+    <GoogleReCaptchaProvider reCaptchaKey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}>
+      <BrowserRouter>
+        <div className="min-h-screen flex flex-col">
+          <TopBar />
+          <Header />
+          <Navbar />
+          <SecondaryNav />
 
         <div className="flex-1">
           <Routes>
@@ -71,6 +73,7 @@ function App() {
         />
       </div>
     </BrowserRouter>
+    </GoogleReCaptchaProvider>
   )
 }
 

@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, User, Heart, ShoppingCart, X, Menu, ChevronRight } from 'lucide-react'
+import { Search, User, Heart, ShoppingCart, X, Menu, ChevronRight, MapPin } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
+import useLocationStore from '../../store/locationStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
+import LocationSelector from '../modals/LocationSelector'
 import { VscPercentage } from "react-icons/vsc"
+import { getEstimatedDeliveryDays } from '../../data/locations'
 
 const navLinks = [
   { label: 'Home',          to: '/' },
@@ -22,9 +25,11 @@ const Header = () => {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
+  const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false)
 
   const { items: cartItems } = useCartStore()
   const { items: wishlistItems } = useWishlistStore()
+  const { location } = useLocationStore()
 
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
   const wishlistCount = wishlistItems.length
@@ -256,6 +261,7 @@ const Header = () => {
       </header>
 
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+      <LocationSelector isOpen={isLocationSelectorOpen} onClose={() => setIsLocationSelectorOpen(false)} />
 
       {/* ── MOBILE SIDEBAR DRAWER ─────────────────────── */}
       <>
@@ -283,6 +289,21 @@ const Header = () => {
               <X size={18} />
             </button>
           </div>
+
+          {/* Delivery Location */}
+          <button
+            onClick={() => {
+              setIsLocationSelectorOpen(true)
+              setIsMobileSidebarOpen(false)
+            }}
+            className="flex items-center gap-2 px-5 py-3.5 border-b border-gray-50 hover:bg-gray-50 transition-colors w-full"
+          >
+            <MapPin size={18} className="text-[#0FAFB8] flex-shrink-0" />
+            <div className="flex flex-col items-start">
+              <span className="text-[11px] text-gray-500 font-semibold">DELIVER TO</span>
+              <span className="text-sm font-bold text-gray-900">{location?.city || 'Select Location'}</span>
+            </div>
+          </button>
 
           {/* Links */}
           <div className="flex flex-col py-2 overflow-y-auto">

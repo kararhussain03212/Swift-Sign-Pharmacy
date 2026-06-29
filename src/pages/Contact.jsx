@@ -1,7 +1,9 @@
 import { useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import {
   ChevronRight,
   Phone,
@@ -22,6 +24,7 @@ import {
   UserPlus
 } from 'lucide-react'
 import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok, FaWhatsapp } from 'react-icons/fa'
+import { contactInfo, licenseInfo } from '../data/contactInfo'
 
 const faqs = [
   {
@@ -51,6 +54,7 @@ const faqs = [
 ]
 
 const Contact = () => {
+  const { executeRecaptcha } = useGoogleReCaptcha()
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -71,18 +75,17 @@ const Contact = () => {
 
   const handleSaveContact = () => {
     const textContent = `Contact Details:
-Arion Pharmacy
+${contactInfo.businessName}
 
-Phone: +92 311 000 0000
-Email: hello@swiftsign.com
-Website: https://swiftsign.com
-Address: Blue Area, Islamabad, 44000, Pakistan`
-    
+Phone: ${contactInfo.phone}
+Email: ${contactInfo.email}
+Address: ${contactInfo.address.full}`
+
     const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = 'Arion_Pharmacy_Contact.txt'
+    link.download = `${contactInfo.businessName.replace(/\s+/g, '_')}_Contact.txt`
     link.click()
     URL.revokeObjectURL(url)
     toast.success('Contact saved!', { duration: 2000 })
@@ -119,11 +122,31 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
       setFormErrors(errors)
       return
     }
+
+    if (!executeRecaptcha) {
+      toast.error('reCAPTCHA is not ready. Please try again.', { duration: 3000 })
+      return
+    }
+
     setIsSubmitting(true)
-    await new Promise(r => setTimeout(r, 1800))
-    setIsSubmitting(false)
-    setIsSuccess(true)
-    toast.success('Message sent successfully! 🎉', { duration: 4000 })
+    try {
+      // Execute reCAPTCHA
+      const token = await executeRecaptcha('contact_form')
+
+      // Simulate sending form data (in production, send to backend with token)
+      // Your backend should verify the token with Google
+      await new Promise(r => setTimeout(r, 1800))
+
+      setIsSuccess(true)
+      toast.success('Message sent successfully! 🎉', { duration: 4000 })
+      // Reset form
+      setFormData({ name: '', email: '', phone: '', subject: '', message: '', newsletter: false })
+    } catch (error) {
+      console.error('Error:', error)
+      toast.error('Failed to send message. Please try again.', { duration: 3000 })
+    } finally {
+      setIsSubmitting(false)
+    }
   }
 
   return (
@@ -248,23 +271,23 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
               iconBg:  'bg-green-50',
               iconClr: 'text-primary',
               title:   'Call Us',
-              lines:   ['234-867-7867', '+92 311 000 0000'],
-              sub:     'Mon–Sat, 9am–9pm',
+              lines:   [contactInfo.phone],
+              sub:     contactInfo.hours.summary,
             },
             {
               icon:    <Mail size={24} />,
               iconBg:  'bg-blue-50',
               iconClr: 'text-primary',
               title:   'Email Us',
-              lines:   ['hello@swiftsign.com', 'support@swiftsign.com'],
-              sub:     'Reply within 24 hours',
+              lines:   [contactInfo.email],
+              sub:     contactInfo.responseTime,
             },
             {
               icon:    <MapPin size={24} />,
               iconBg:  'bg-orange-50',
               iconClr: 'text-orange-500',
               title:   'Visit Us',
-              lines:   ['Blue Area, Islamabad', 'Pakistan – 44000'],
+              lines:   [contactInfo.address.street, `${contactInfo.address.area}, ${contactInfo.address.city}, ${contactInfo.address.country}`],
               sub:     'Open for walk-ins',
             },
             {
@@ -272,8 +295,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
               iconBg:  'bg-purple-50',
               iconClr: 'text-purple-500',
               title:   'Working Hours',
-              lines:   ['Mon – Sat: 9am – 9pm', 'Sunday: 10am – 5pm'],
-              sub:     'Public holidays: closed',
+              lines:   [contactInfo.hours.weekday, contactInfo.hours.weekend],
+              sub:     contactInfo.hours.holidays,
             },
           ].map((card, i) => (
             <div
@@ -338,6 +361,7 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   onClick={() => {
                     setIsSuccess(false)
                     setFormData({ name: '', email: '', phone: '', subject: '', message: '', newsletter: false })
+                    setFormErrors({})
                   }}
                   className="mt-6 text-primary font-semibold text-[13px] border border-primary rounded-full px-5 py-2 hover:bg-primary hover:text-white transition-all"
                 >
@@ -514,6 +538,19 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   </span>
                 </label>
 
+                {/* reCAPTCHA notice */}
+                <p className="text-[11px] text-gray-400 text-center">
+                  This site is protected by reCAPTCHA and the Google{' '}
+                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Privacy Policy
+                  </a>
+                  {' '}and{' '}
+                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+                    Terms of Service
+                  </a>
+                  {' '}apply.
+                </p>
+
                 {/* Submit button */}
                 <button
                   type="submit"
@@ -550,13 +587,13 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
               style={{ height: '320px' }}
             >
               <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3318.847!2d73.0478!3d33.7294!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38dfbef8b4eb5f0b%3A0x314f0e8b6a71b0e5!2sBlue%20Area%2C%20Islamabad%2C%20Pakistan!5e0!3m2!1sen!2s!4v1680000000000"
+                src={contactInfo.mapsEmbed}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
                 allowFullScreen
                 loading="lazy"
-                title="DCare Location"
+                title={`${contactInfo.businessName} Location`}
                 referrerPolicy="no-referrer-when-downgrade"
               />
             </div>
@@ -569,10 +606,10 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
               </h3>
               <div className="space-y-3">
                 {[
-                  { icon: <MapPin size={23} />,  label: 'Address', value: 'Blue Area, Islamabad, Pakistan' },
-                  { icon: <Phone size={23} />,   label: 'Phone',   value: '234-867-7867' },
-                  { icon: <Mail size={23} />,    label: 'Email',   value: 'hello@swiftsign.com' },
-                  { icon: <Clock size={23} />,   label: 'Hours',   value: 'Mon–Sat: 9am–9pm' },
+                  { icon: <MapPin size={23} />,  label: 'Address', value: contactInfo.address.full },
+                  { icon: <Phone size={23} />,   label: 'Phone',   value: contactInfo.phone },
+                  { icon: <Mail size={23} />,    label: 'Email',   value: contactInfo.email },
+                  { icon: <Clock size={23} />,   label: 'Hours',   value: contactInfo.hours.weekday },
                 ].map(item => (
                   <div
                     key={item.label}
@@ -592,17 +629,17 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
 
             {/* SAVE CONTACT & QUICK LINKS CARD */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-6 flex flex-col items-center">
-              <button 
+              <button
                 onClick={handleSaveContact}
                 className="w-full bg-[#0FAFB8] text-white py-3.5 rounded-[24px] flex items-center justify-center gap-2 font-medium text-[15px] mb-8 hover:bg-[#073B45] transition-colors"
               >
                 <UserPlus size={18} /> Save Contact
               </button>
-              
+
               <div className="grid grid-cols-3 gap-y-8 w-full text-center">
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('+923110000000', 'Phone number')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.phone, 'Phone number')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <Phone size={20} fill="currentColor" />
@@ -610,8 +647,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   <span className="text-[13px] text-gray-900 font-medium">Call</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('+923110000000', 'SMS number')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.phone, 'SMS number')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <MessageSquare size={20} fill="currentColor" />
@@ -619,8 +656,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   <span className="text-[13px] text-gray-900 font-medium">SMS</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('hello@swiftsign.com', 'Email address')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.email, 'Email address')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <Mail size={20} />
@@ -628,8 +665,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   <span className="text-[13px] text-gray-900 font-medium">Email</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('+923110000000', 'WhatsApp number')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.whatsapp, 'WhatsApp number')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <FaWhatsapp size={22} />
@@ -637,8 +674,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   <span className="text-[13px] text-gray-900 font-medium">WhatsApp</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('https://swiftsign.com', 'Website URL')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.website, 'Website URL')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <Globe size={20} />
@@ -646,8 +683,8 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                   <span className="text-[13px] text-gray-900 font-medium">Website</span>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <div 
-                    onClick={() => handleCopy('Blue Area, Islamabad, Pakistan', 'Address')}
+                  <div
+                    onClick={() => handleCopy(contactInfo.address.full, 'Address')}
                     className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
                   >
                     <MapPin size={20} />
@@ -667,14 +704,16 @@ Address: Blue Area, Islamabad, 44000, Pakistan`
                </span>
                <div className="flex items-center gap-2.5">
                  {[
-                   { name: 'Facebook',  icon: <FaFacebookF size={15} />,  href: '#' },
-                   { name: 'Instagram', icon: <FaInstagram size={15} />,  href: '#' },
-                   { name: 'YouTube',   icon: <FaYoutube size={15} />,    href: '#' },
-                   { name: 'TikTok',    icon: <FaTiktok size={15} />,     href: '#' },
+                   { name: 'Facebook',  icon: <FaFacebookF size={15} />,  href: contactInfo.social.facebook },
+                   { name: 'Instagram', icon: <FaInstagram size={15} />,  href: contactInfo.social.instagram },
+                   { name: 'YouTube',   icon: <FaYoutube size={15} />,    href: contactInfo.social.youtube },
+                   { name: 'TikTok',    icon: <FaTiktok size={15} />,     href: contactInfo.social.tiktok },
                  ].map(s => (
                    <a
                      key={s.name}
                      href={s.href}
+                     target="_blank"
+                     rel="noopener noreferrer"
                      className="w-10 h-10 rounded-xl border border-[#073B45] flex items-center justify-center text-[#073B45] hover:bg-[#073B45] hover:text-white transition-all duration-200"
                      title={s.name}
                    >

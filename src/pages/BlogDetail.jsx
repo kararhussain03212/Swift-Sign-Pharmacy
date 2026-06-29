@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from 'react-router-dom'
 import clsx from 'clsx'
 import {
   ArrowLeft,
+  ArrowRight,
   Calendar,
   Clock,
   Tag,
@@ -44,7 +45,7 @@ const ReadingProgress = () => {
 const ArticleBody = ({ blog }) => {
   const body = blog.body;
   let blocks = [];
-  
+
   // Support both new markdown-style \n\n and old sentence splitting
   if (body.includes('\n\n')) {
     blocks = body.split('\n\n');
@@ -56,17 +57,17 @@ const ArticleBody = ({ blog }) => {
   }
 
   return (
-    <div className="prose-article">
+    <div className="prose-article space-y-8">
       {blocks.map((block, i) => {
         // If it's a heading
         if (block.startsWith('## ')) {
           return (
-            <h2 
-              key={i} 
-              className="text-center font-heading font-bold text-4xl py-20 px-8 rounded-xl my-12 shadow-sm"
-              style={{ 
-                backgroundColor: `${blog.categoryColor}15`, 
-                color: blog.categoryColor 
+            <h2
+              key={i}
+              className="font-heading font-bold text-3xl leading-tight py-8 px-6 rounded-2xl my-12 shadow-md hover:shadow-lg transition-shadow"
+              style={{
+                backgroundColor: blog.categoryColor,
+                color: 'white'
               }}
             >
               {block.replace('## ', '')}
@@ -77,33 +78,31 @@ const ArticleBody = ({ blog }) => {
         // First paragraph gets a slightly larger, darker style
         if (i === 0) {
           return (
-            <p key={i} className="text-[16px] leading-[1.85] text-gray-700 mb-6 font-medium">
+            <p key={i} className="text-[17px] leading-[1.9] text-gray-800 mb-8 font-medium border-l-4 pl-6" style={{ borderColor: blog.categoryColor }}>
               {block}
             </p>
           )
         }
-        
+
         // Auto pull-quote for old format blocks
         if (i === 2 && !body.includes('\n\n')) {
           return (
             <div key={`pq-${i}`}>
-              <p className="text-[15px] leading-[1.85] text-gray-600 mb-6">{block}</p>
+              <p className="text-[16px] leading-[1.85] text-gray-700 mb-8">{block}</p>
               <blockquote
-                className="relative border-l-4 border-primary bg-primary-light/60 rounded-r-2xl px-7 py-5 my-8"
+                className="relative border-l-4 rounded-r-3xl px-8 py-6 my-10 shadow-sm hover:shadow-md transition-shadow bg-gradient-to-r from-primary/5 to-transparent"
+                style={{ borderColor: blog.categoryColor }}
               >
-                <div
-                  className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-12 bg-primary-dark rounded-full"
-                />
-                <p className="text-[17px] leading-[1.7] font-semibold text-primary-dark italic">
+                <p className="text-[18px] leading-[1.8] font-semibold italic text-gray-800">
                   &ldquo;{block.split('.')[0]}.&rdquo;
                 </p>
               </blockquote>
             </div>
           )
         }
-        
+
         return (
-          <p key={i} className="text-[15px] leading-[1.85] text-gray-600 mb-6">
+          <p key={i} className="text-[16px] leading-[1.85] text-gray-700 mb-8">
             {block}
           </p>
         )
@@ -255,14 +254,6 @@ const BlogDetail = () => {
 
           <div className="max-w-[1280px] mx-auto px-5 relative z-10">
 
-            {/* Breadcrumb */}
-            <nav className="flex items-center gap-2 mb-6">
-              <Link to="/" className="text-white/50 text-[13px] hover:text-white transition-colors">Home</Link>
-              <ChevronRight size={13} className="text-white/30" />
-              <Link to="/blog" className="text-white/50 text-[13px] hover:text-white transition-colors">Blog</Link>
-              <ChevronRight size={13} className="text-white/30" />
-              <span className="text-white/80 text-[13px] line-clamp-1">{blog.title}</span>
-            </nav>
 
             {/* Category pill */}
             <span
@@ -299,17 +290,6 @@ const BlogDetail = () => {
               </div>
             </div>
 
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2">
-              {blog.tags.map(tag => (
-                <span
-                  key={tag}
-                  className="text-[11px] bg-white/10 border border-white/15 text-white/80 px-3 py-1 rounded-full"
-                >
-                  #{tag}
-                </span>
-              ))}
-            </div>
           </div>
         </section>
 

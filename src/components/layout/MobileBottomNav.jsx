@@ -63,10 +63,10 @@ const MobileBottomNav = () => {
             <span className="text-[9px] font-medium">Prescription</span>
           </NavLink>
           
-          {/* Account */}
-          <NavLink to="/account" className={({ isActive }) => clsx('flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors', isActive ? 'text-[#0FAFB8]' : 'text-gray-400 hover:text-[#0FAFB8]')}>
+          {/* Wishlist */}
+          <NavLink to="/wishlist" className={({ isActive }) => clsx('flex flex-col items-center gap-0.5 px-3 py-1 rounded-xl transition-colors', isActive ? 'text-[#0FAFB8]' : 'text-gray-400 hover:text-[#0FAFB8]')}>
             <User size={20} />
-            <span className="text-[9px] font-medium">Account</span>
+            <span className="text-[9px] font-medium">Wishlist</span>
           </NavLink>
         </div>
       </nav>

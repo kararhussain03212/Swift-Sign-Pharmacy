@@ -386,49 +386,6 @@ export const diseaseDetailsData = {
       'If forgetfulness develops slowly without affecting daily life, it may be a normal aging process. However, if memory loss occurs suddenly, causes sleep disturbances, wandering, or difficulty remembering basic things — increasing the risk of self-harm — consult a doctor right away.',
   },
 
-  'alzheimers-disease': {
-    title: "Alzheimer's Disease",
-
-    description:
-      "Alzheimer's disease is a progressive neurological disorder characterized by memory loss and cognitive deterioration due to the death of brain cells. It worsens gradually over time and is classified into seven stages: Stage 1 (no symptoms), Stage 2 (early forgetfulness), Stage 3 (mild impairments), Stage 4 (memory loss and inability to perform tasks — most commonly diagnosed at this stage), Stage 5 (moderate to severe symptoms), Stage 6 (requires help with basic activities such as eating), and Stage 7 (severe stage with possible loss of speech and facial expressions).",
-
-    causes:
-      "Alzheimer's disease is caused when harmful protein fragments join together to form clumps inside and outside brain cells, disrupting signaling between them and eventually leading to brain cell death.",
-
-    riskFactors: [
-      'Genetic causes (Down\'s syndrome, gene mutation of Psen1 or Psen2)',
-      'Advanced age (people above 80 are most commonly affected)',
-      'Family history of Alzheimer\'s disease',
-      'History of head injury',
-      'Pre-existing conditions such as diabetes, heart disease, or high blood pressure',
-    ],
-
-    symptoms: [
-      'Short term memory loss',
-      'Sleeping issues',
-      'Difficulty in communicating',
-      'Confusion',
-      'Drastic mood changes',
-      'Long term memory loss',
-      'Paranoia and hallucinations',
-    ],
-
-    diagnosis: [
-      'Detailed medical history including previous injuries and family history',
-      'Blood tests, urine tests, and other medical tests to evaluate conditions like diabetes and high blood pressure',
-      'Brain scans (CT scan and MRI) for definitive diagnosis',
-    ],
-
-    management: [
-      'No cure currently exists for Alzheimer\'s disease',
-      'Medications to slow symptom progression: Fluoxetine, Lorazepam, Aripiprazole, Sertraline',
-      'Vaccine therapy (in development): trains the immune system to attack harmful protein fragments before they form clumps',
-    ],
-
-    whenToConsultDoctor:
-      'If forgetfulness develops slowly without affecting daily life, it may be a normal aging process. However, if memory loss occurs suddenly, causes sleep disturbances, wandering, or difficulty remembering basic things — increasing the risk of self-harm — consult a doctor right away.',
-  },
-
   'amoebiasis': {
     title: "Amoebiasis",
 

@@ -12,6 +12,7 @@ import {
   User,
   PhoneCall,
 } from 'lucide-react'
+import { contactInfo } from '../data/contactInfo'
 
 /* ── Step data ─────────────────────────────────── */
 const STEPS = [
@@ -401,7 +402,7 @@ const AsaanOrder = () => {
                         type="tel"
                         value={phone}
                         onChange={e => { setPhone(e.target.value); setErrors(p => ({ ...p, phone: '' })) }}
-                        placeholder="+92 300 0000000"
+                        placeholder={contactInfo.phone}
                         className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent"
                       />
                     </div>

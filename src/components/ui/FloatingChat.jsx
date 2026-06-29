@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react'
 import { FaWhatsapp } from 'react-icons/fa'
 import { ArrowLeft, Send, ImagePlus, X } from 'lucide-react'
+import { contactInfo } from '../../data/contactInfo'
 
-const PHARMACY_NAME = 'Arion Pharmacy - Commercial M...'
-const PHONE = '+92 300 0000000'
+const PHARMACY_NAME = `${contactInfo.businessName} - Support`
+const PHONE = contactInfo.phone
 
 const QUICK_ANSWERS = [
   { id: 1, text: "What is your contact info? 📞" },
@@ -23,7 +24,7 @@ const INITIAL_MESSAGES = [
   {
     id: 0,
     from: 'bot',
-    text: `Hi there 👋 Welcome to ${PHARMACY_NAME.replace('...', '')}! You can also reach us at ${PHONE}. We're here to assist you!`,
+    text: `Hi there 👋 Welcome to ${PHARMACY_NAME}! You can also reach us at ${PHONE}. We're here to assist you!`,
     time: '',
     isAuto: true,
   }
