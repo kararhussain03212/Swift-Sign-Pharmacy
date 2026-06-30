@@ -34,6 +34,13 @@ const NAV = [
   { path: "/settings/product",  label: "Product Page" },
   { path: "/settings/blog",     label: "Blog Page" },
   { path: "/contact-settings",  label: "Contact Page" },
+  // Arion Pharmacy — Header module
+  { path: "/header", label: "Header", group: "header" },
+  { path: "/header/announcement-bar", label: "Announcement Bar", child: true, childGroup: "header" },
+  { path: "/header/site-settings",    label: "Site Settings",    child: true, childGroup: "header" },
+  { path: "/header/nav-links",        label: "Nav Links",        child: true, childGroup: "header" },
+  { path: "/header/categories",       label: "Categories",       child: true, childGroup: "header" },
+  { path: "/header/locations",        label: "Locations",        child: true, childGroup: "header" },
 ];
 
 const PAGE_TITLES = {
@@ -64,6 +71,11 @@ const PAGE_TITLES = {
   "/profile":                        "Admin Profile",
   "/users":                          "User Management",
   "/addresses":                      "Customer Addresses",
+  "/header/announcement-bar":        "Announcement Bar",
+  "/header/site-settings":           "Header — Site Settings",
+  "/header/nav-links":               "Nav Links",
+  "/header/categories":              "Categories",
+  "/header/locations":               "Locations",
 };
 
 /* nav-link class helpers */
@@ -92,6 +104,7 @@ export default function Layout({ children }) {
   const [sidebarOpen,      setSidebarOpen]      = useState(false);
   const [homeManual,       setHomeManual]        = useState(false);
   const [aboutManual,      setAboutManual]       = useState(false);
+  const [headerManual,     setHeaderManual]      = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -101,8 +114,9 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
 
   /* ── derive dropdown open state from route (no setState-in-effect) */
-  const homeOpen  = homeManual  || location.pathname.startsWith("/settings/home");
-  const aboutOpen = aboutManual || location.pathname.startsWith("/about/");
+  const homeOpen   = homeManual   || location.pathname.startsWith("/settings/home");
+  const aboutOpen  = aboutManual  || location.pathname.startsWith("/about/");
+  const headerOpen = headerManual || location.pathname.startsWith("/header/");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -240,6 +254,33 @@ export default function Layout({ children }) {
                   {aboutOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "about").map((e) => (
+                        <Link
+                          key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Header module dropdown */
+            if (item.group === "header") {
+              const active = location.pathname.startsWith("/header/");
+              return (
+                <div key="header-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setHeaderManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${headerOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {headerOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "header").map((e) => (
                         <Link
                           key={e.path}
                           to={e.path}

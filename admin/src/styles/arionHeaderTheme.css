@@ -1,0 +1,39 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/*
+  Scoped theme for the Arion Pharmacy "Header" admin module
+  (Announcement Bar, Site Settings, Nav Links, Categories, Locations).
+  Deliberately separate from --admin-* tokens in index.css so the rest
+  of the admin panel is untouched.
+*/
+.arion-theme {
+  font-family: "Space Grotesk", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+
+  --arion-bg: #060b14;
+  --arion-card: rgba(15, 23, 35, 0.55);
+  --arion-card-solid: #0b1320;
+  --arion-border: rgba(15, 175, 184, 0.25);
+  --arion-border-strong: rgba(15, 175, 184, 0.5);
+  --arion-cyan: #0fafb8;
+  --arion-cyan-strong: #0a9aa5;
+  --arion-cyan-light: rgba(15, 175, 184, 0.14);
+  --arion-ink: #ffffff;
+  --arion-muted: rgba(255, 255, 255, 0.55);
+}
+
+.arion-theme .arion-glass {
+  background: var(--arion-card);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid var(--arion-border);
+}
+
+.arion-theme input,
+.arion-theme textarea,
+.arion-theme select {
+  font-family: inherit;
+}
+
+.arion-theme ::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}

@@ -1,4 +1,4 @@
-export const products = [
+﻿export const products = [
   {
     id: 21,
     slug: 'la-shield-sunscreen',
@@ -420,4 +420,397 @@ export const products = [
     stock: 300,
     description: 'High-potency Vitamin C with natural bioflavonoids for maximum immune support.',
   },
+  {
+    id: 100,
+    slug: 'acetic-acid-glacial-99-5',
+    name: 'Acetic acid, glacial, 99.5-100.05%, USP, Multi-Compendial, GMP Manufactured Product, J.T.Bakerâ„¢',
+    form: 'Liquid',
+    brand: 'Avantor (J.T. Baker)',
+    category: 'laboratory-chemicals',
+    subCategory: 'General Laboratory Chemicals',
+    image: 'https://www.thermofisher.com/TFS-Assets/CCG/Chemical-Structures/chemical-structure-cas-64-19-7.jpg-650.jpg',
+    price: 150.00,
+    rating: 4.8,
+    reviewCount: 45,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'analytical'],
+    stock: 25,
+    description: 'High-purity acetic acid suitable for laboratory and analytical applications. GMP manufactured and meets USP standards.',
+    quantities: [
+      { label: '500 mL', value: '500ml', price: 150.00 },
+      { label: '2.5 L', value: '2.5l', price: 320.00 },
+      { label: '15 L', value: '15l', price: 1200.00 },
+      { label: '450 lb.', value: '450lb', price: 2500.00 }
+    ],
+    packaging: [
+      { label: 'Clear glass bottle, PVC-coated', value: 'glass-pvc', default: true },
+      { label: 'Clear glass bottle', value: 'glass' },
+      { label: 'Plastic bottle', value: 'plastic' }
+    ],
+    labSpecifications: {
+      'Boiling Point': '118Â°C (1013 hPa)',
+      'CAS': '64-19-7',
+      'Chemical Name of Material': 'Acetic Acid, glacial',
+      'Color': 'Colorless',
+      'Melting Point': '17Â°C',
+      'Molecular Formula': 'Hâ‚ƒCCOCH',
+      'Molecular Weight (g/mol)': '60.05',
+      'Percent Purity': '99.5-100.05%',
+      'Packaging': 'Clear glass bottle, PVC-coated',
+      'Synonym': 'Methanecarboxylic acid, Glacial acetic acid, Vinegar acid, Ethanoic acid',
+      'Grade': 'Multi-Compendial/NF',
+      'Unit Size': 'Each'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '3265534', type: 'Certificate of Analysis', date: 'Dec 18, 2025', catalogNumbers: '9526-33, 952633', url: 'https://documents.thermofisher.com/TFS-Assets/certificate/VIL/COA/COA_9526-33_12182025093046_3286524_1.pdf' },
+        { lotNumber: '22L1562004', type: 'Certificate of Analysis', date: 'Dec 13, 2023', catalogNumbers: '9526-33', url: 'https://documents.thermofisher.com/TFS-Assets/BPD/certificate/Certificate-of-Analysis/9526%20CoA.pdf' },
+        { lotNumber: '0000274970', type: 'Certificate of Analysis', date: 'Dec 13, 2023', catalogNumbers: '9526-33', url: 'https://documents.thermofisher.com/TFS-Assets/BPD/certificate/Certificate-of-Analysis/9526%20CoA.1.pdf' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Acetic Acid Glacial', url: 'https://documents.thermofisher.com/TFS-Assets/BPD/SDS/9526%20SDS.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - Acetic Acid', url: 'https://documents.thermofisher.com/TFS-Assets/BPD/Datasheets/9526%20Datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: 'https://documents.thermofisher.com/TFS-Assets/BPD/brochures/research-rou-production-gmp-chemical-sourcing-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 101,
+    slug: 'hydrochloric-acid-37-percent',
+    name: 'Hydrochloric Acid (HCl) 37% Laboratory Grade Solution',
+    form: 'Liquid',
+    brand: 'Merck KGaA',
+    category: 'laboratory-chemicals',
+    subCategory: 'General Laboratory Chemicals',
+    image: '/jellybee_gummies.png',
+    price: 120.00,
+    rating: 4.7,
+    reviewCount: 32,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'acid'],
+    stock: 15,
+    description: 'Laboratory-grade hydrochloric acid solution for analytical and general laboratory use.',
+    quantities: [
+      { label: '500 mL', value: '500ml', price: 120.00 },
+      { label: '2.5 L', value: '2.5l', price: 280.00 },
+      { label: '15 L', value: '15l', price: 1100.00 }
+    ],
+    packaging: [
+      { label: 'Plastic bottle with acid-resistant cap', value: 'plastic-cap', default: true },
+      { label: 'Glass bottle', value: 'glass' },
+      { label: 'HDPE bottle', value: 'hdpe' }
+    ],
+    labSpecifications: {
+      'CAS': '7732-18-5',
+      'Chemical Name': 'Hydrochloric Acid',
+      'Color': 'Colorless to light yellow',
+      'Concentration': '37% w/w',
+      'Density': '1.18-1.19 g/cmÂ³',
+      'Molecular Formula': 'HCl',
+      'Packaging': 'Plastic bottle with acid-resistant cap',
+      'Purity': '>99%',
+      'Storage': 'Cool, well-ventilated area'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '5847291', type: 'Certificate of Analysis', date: 'Nov 20, 2025', catalogNumbers: '7732-18-5', url: '/docs/certificates/hcl-5847291-coa.pdf' },
+        { lotNumber: '4926105', type: 'Certificate of Analysis', date: 'Oct 15, 2025', catalogNumbers: '7732-18-5' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Hydrochloric Acid 37%', url: '/docs/sds/hcl-37-sds.pdf', lastUpdated: 'Nov 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - HCl Solution', url: '/docs/datasheets/hcl-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 102,
+    slug: 'sodium-chloride-nacl-crystal',
+    name: 'Sodium Chloride (NaCl) Crystal Laboratory Grade 500g',
+    form: 'Solid',
+    brand: 'CDH Fine Chemical',
+    category: 'laboratory-chemicals',
+    subCategory: 'Salts',
+    image: '/jellybee_gummies.png',
+    price: 45.00,
+    rating: 4.9,
+    reviewCount: 87,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'salt'],
+    stock: 60,
+    description: 'High-purity sodium chloride crystals suitable for laboratory analysis and preparation of solutions.',
+    quantities: [
+      { label: '500 g', value: '500g', price: 45.00 },
+      { label: '1 kg', value: '1kg', price: 80.00 },
+      { label: '5 kg', value: '5kg', price: 350.00 },
+      { label: '25 kg', value: '25kg', price: 1500.00 }
+    ],
+    packaging: [
+      { label: 'Plastic container', value: 'plastic', default: true },
+      { label: 'Glass bottle', value: 'glass' },
+      { label: 'Kraft paper bag', value: 'kraft-bag' }
+    ],
+    labSpecifications: {
+      'CAS': '7647-14-5',
+      'Chemical Name': 'Sodium Chloride',
+      'Color': 'White',
+      'Molecular Formula': 'NaCl',
+      'Molecular Weight': '58.44 g/mol',
+      'Percent Purity': '99.5%',
+      'Crystal Form': 'Crystalline',
+      'Density': '2.16 g/cmÂ³',
+      'Melting Point': '801Â°C',
+      'Packaging': 'Plastic container'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '6124789', type: 'Certificate of Analysis', date: 'Dec 22, 2025', catalogNumbers: '7647-14-5', url: '/docs/certificates/nacl-6124789-coa.pdf' },
+        { lotNumber: '5893421', type: 'Certificate of Analysis', date: 'Nov 18, 2025', catalogNumbers: '7647-14-5' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Sodium Chloride', url: '/docs/sds/nacl-sds.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - NaCl Crystals', url: '/docs/datasheets/nacl-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 103,
+    slug: 'methanol-hplc-grade',
+    name: 'Methanol HPLC Grade 99.8% Pure 1L',
+    form: 'Liquid',
+    brand: 'Thermo Fisher Scientific',
+    category: 'laboratory-chemicals',
+    subCategory: 'HPLC & Analytical Grade Solvents',
+    image: '/jellybee_gummies.png',
+    price: 89.00,
+    rating: 4.8,
+    reviewCount: 56,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'solvent', 'hplc'],
+    stock: 30,
+    description: 'High-purity HPLC-grade methanol for chromatography and analytical applications.',
+    quantities: [
+      { label: '1 L', value: '1l', price: 89.00 },
+      { label: '4 L', value: '4l', price: 320.00 },
+      { label: '20 L', value: '20l', price: 1400.00 }
+    ],
+    packaging: [
+      { label: 'Amber glass bottle', value: 'amber-glass', default: true },
+      { label: 'Clear glass bottle', value: 'clear-glass' },
+      { label: 'HDPE bottle', value: 'hdpe' }
+    ],
+    labSpecifications: {
+      'CAS': '67-56-1',
+      'Chemical Name': 'Methanol',
+      'Grade': 'HPLC Grade',
+      'Purity': '99.8%',
+      'Boiling Point': '64.7Â°C',
+      'Molecular Formula': 'CHâ‚ƒOH',
+      'Molecular Weight': '32.04 g/mol',
+      'Density': '0.791 g/cmÂ³ at 20Â°C',
+      'Packaging': '1L amber glass bottle',
+      'Storage': 'Room temperature, away from light'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '7462183', type: 'Certificate of Analysis', date: 'Dec 10, 2025', catalogNumbers: '67-56-1', url: '/docs/certificates/methanol-7462183-coa.pdf' },
+        { lotNumber: '6839512', type: 'Certificate of Analysis', date: 'Nov 05, 2025', catalogNumbers: '67-56-1' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Methanol HPLC Grade', url: '/docs/sds/methanol-hplc-sds.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - Methanol HPLC', url: '/docs/datasheets/methanol-hplc-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 104,
+    slug: 'potassium-chloride-kcl',
+    name: 'Potassium Chloride (KCl) 99.5% Pure Crystals 250g',
+    form: 'Solid',
+    brand: 'Loba Chemie',
+    category: 'laboratory-chemicals',
+    subCategory: 'Salts',
+    image: '/jellybee_gummies.png',
+    price: 55.00,
+    rating: 4.7,
+    reviewCount: 43,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'salt'],
+    stock: 40,
+    description: 'Pure potassium chloride crystals for laboratory use and analytical work.',
+    quantities: [
+      { label: '250 g', value: '250g', price: 55.00 },
+      { label: '500 g', value: '500g', price: 95.00 },
+      { label: '1 kg', value: '1kg', price: 170.00 },
+      { label: '5 kg', value: '5kg', price: 750.00 }
+    ],
+    packaging: [
+      { label: 'Plastic container', value: 'plastic', default: true },
+      { label: 'Glass bottle', value: 'glass' },
+      { label: 'Kraft paper bag', value: 'kraft-bag' }
+    ],
+    labSpecifications: {
+      'CAS': '7447-40-7',
+      'Chemical Name': 'Potassium Chloride',
+      'Color': 'White',
+      'Molecular Formula': 'KCl',
+      'Molecular Weight': '74.55 g/mol',
+      'Purity': '99.5%',
+      'Melting Point': '770Â°C',
+      'Density': '1.98 g/cmÂ³',
+      'Crystal Form': 'Crystalline powder',
+      'Packaging': 'Plastic container'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '8156734', type: 'Certificate of Analysis', date: 'Dec 05, 2025', catalogNumbers: '7447-40-7', url: '/docs/certificates/kcl-8156734-coa.pdf' },
+        { lotNumber: '7529441', type: 'Certificate of Analysis', date: 'Oct 30, 2025', catalogNumbers: '7447-40-7' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Potassium Chloride', url: '/docs/sds/kcl-sds.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - KCl Crystals', url: '/docs/datasheets/kcl-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 105,
+    slug: 'sodium-hydroxide-naoh-pellets',
+    name: 'Sodium Hydroxide (NaOH) 98% Pellets Laboratory Grade 500g',
+    form: 'Solid',
+    brand: 'HiMedia Laboratories',
+    category: 'laboratory-chemicals',
+    subCategory: 'General Laboratory Chemicals',
+    image: '/jellybee_gummies.png',
+    price: 62.00,
+    rating: 4.8,
+    reviewCount: 51,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'base'],
+    stock: 35,
+    description: 'High-purity sodium hydroxide pellets for laboratory applications and standard preparation.',
+    quantities: [
+      { label: '500 g', value: '500g', price: 62.00 },
+      { label: '1 kg', value: '1kg', price: 110.00 },
+      { label: '5 kg', value: '5kg', price: 480.00 }
+    ],
+    packaging: [
+      { label: 'Plastic container with desiccant', value: 'plastic-desiccant', default: true },
+      { label: 'Glass bottle with desiccant', value: 'glass-desiccant' },
+      { label: 'Kraft paper bag', value: 'kraft-bag' }
+    ],
+    labSpecifications: {
+      'CAS': '1310-73-2',
+      'Chemical Name': 'Sodium Hydroxide',
+      'Color': 'White',
+      'Molecular Formula': 'NaOH',
+      'Molecular Weight': '40.00 g/mol',
+      'Purity': '98%',
+      'Melting Point': '318Â°C',
+      'Density': '2.13 g/cmÂ³',
+      'Form': 'Pellets',
+      'Packaging': 'Plastic container with desiccant'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '9284756', type: 'Certificate of Analysis', date: 'Dec 15, 2025', catalogNumbers: '1310-73-2', url: '/docs/certificates/naoh-9284756-coa.pdf' },
+        { lotNumber: '8673920', type: 'Certificate of Analysis', date: 'Nov 25, 2025', catalogNumbers: '1310-73-2' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Sodium Hydroxide Pellets', url: '/docs/sds/naoh-sds.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - NaOH Pellets', url: '/docs/datasheets/naoh-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  },
+  {
+    id: 106,
+    slug: 'acetone-99-5-percent',
+    name: 'Acetone (CHâ‚ƒCOCHâ‚ƒ) 99.5% Pure 500ml',
+    form: 'Liquid',
+    brand: 'Sisco Research Laboratories (SRL)',
+    category: 'laboratory-chemicals',
+    subCategory: 'Solvents',
+    image: '/jellybee_gummies.png',
+    price: 38.00,
+    rating: 4.6,
+    reviewCount: 39,
+    badges: ['CHEMICAL'],
+    tags: ['lab', 'chemical', 'solvent'],
+    stock: 45,
+    description: 'Pure acetone solvent for laboratory cleaning, extraction, and analytical procedures.',
+    quantities: [
+      { label: '500 mL', value: '500ml', price: 38.00 },
+      { label: '1 L', value: '1l', price: 65.00 },
+      { label: '4 L', value: '4l', price: 240.00 },
+      { label: '20 L', value: '20l', price: 1000.00 }
+    ],
+    packaging: [
+      { label: 'Amber glass bottle', value: 'amber-glass', default: true },
+      { label: 'Clear glass bottle', value: 'clear-glass' },
+      { label: 'HDPE plastic bottle', value: 'hdpe' }
+    ],
+    labSpecifications: {
+      'CAS': '67-64-1',
+      'Chemical Name': 'Acetone',
+      'Boiling Point': '56Â°C',
+      'Color': 'Colorless',
+      'Density': '0.791 g/cmÂ³',
+      'Melting Point': '-95Â°C',
+      'Molecular Formula': 'Câ‚ƒHâ‚†O',
+      'Molecular Weight': '58.08 g/mol',
+      'Purity': '99.5%',
+      'Packaging': '500ml amber glass bottle',
+      'Flash Point': '-20Â°C'
+    },
+    documents: {
+      certificates: [
+        { lotNumber: '7684329', type: 'Certificate of Analysis', date: 'Dec 08, 2025', catalogNumbers: '67-64-1', url: '/docs/certificates/acetone-7684329-coa.pdf' },
+        { lotNumber: '6951084', type: 'Certificate of Analysis', date: 'Nov 12, 2025', catalogNumbers: '67-64-1' }
+      ],
+      sds: [
+        { title: 'Safety Data Sheet - Acetone 99.5%', url: '/docs/sds/acetone-sds.pdf', lastUpdated: 'Dec 2025' }
+      ],
+      datasheets: [
+        { title: 'Product Datasheet - Acetone', url: '/docs/datasheets/acetone-datasheet.pdf' }
+      ],
+      brochures: [
+        { title: 'Brochure: Chemical products and services', url: '/docs/brochures/chemical-products-brochure.pdf' }
+      ]
+    },
+    isLabChemical: true
+  }
 ]
+

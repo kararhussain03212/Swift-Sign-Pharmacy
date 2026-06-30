@@ -85,12 +85,12 @@ const SecondaryNav = () => {
       <div className="bg-white hidden sm:block relative z-30"
            style={{ borderBottom: '1px solid #e5e5e5' }}>
         <div className="max-w-[1450px] mx-auto px-2 sm:px-3 md:px-3 lg:px-4">
-          <div className="flex items-center justify-between gap-1 sm:gap-1.5 overflow-x-auto scrollbar-hide flex-nowrap" style={{ minHeight: '40px' }}>
+          <div className="flex items-center justify-between gap-1 sm:gap-1.5 flex-nowrap" style={{ minHeight: '40px' }}>
 
             {/* Main Links - Desktop only (tablet shows license info instead) */}
             <div className="hidden lg:flex items-center gap-0 min-w-0" style={{ flex: 1 }}>
               {navItems.map((item, i) => (
-                <div key={item.name} className="relative group h-full flex items-center min-w-0">
+                <div key={item.name} className="relative group/nav h-full flex items-center min-w-0">
                   <Link
                     to={item.to}
                     className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
@@ -105,21 +105,22 @@ const SecondaryNav = () => {
                   >
                     {item.name}
                     {item.subCategories && item.subCategories.length > 0 && (
-                      <ChevronDown size={11} className={`opacity-40 group-hover:opacity-100 transition-all cursor-pointer ${openSubcategory === item.slug ? 'rotate-180' : ''}`} onClick={(e) => { e.preventDefault(); setOpenSubcategory(openSubcategory === item.slug ? null : item.slug) }} />
+                      <ChevronDown size={11} className={`opacity-40 group-hover/nav:opacity-100 transition-all cursor-pointer ${openSubcategory === item.slug ? 'rotate-180' : ''}`} onClick={(e) => { e.preventDefault(); setOpenSubcategory(openSubcategory === item.slug ? null : item.slug) }} />
                     )}
 
                     {/* Active indicator underline on hover */}
                     <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary
-                                     scale-x-0 group-hover:scale-x-100
+                                     scale-x-0 group-hover/nav:scale-x-100
                                      transition-transform duration-[150ms] origin-left" />
                   </Link>
 
                   {/* Dropdown Menu */}
                   {item.subCategories && item.subCategories.length > 0 && (
-                    <div className={`absolute top-full left-0 bg-white shadow-card-hover border border-gray-100
-                                    rounded-b-xl py-2 min-w-[220px] max-h-[70vh] overflow-y-auto
-                                    transition-all duration-200 z-50
-                                    ${openSubcategory === item.slug ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0'}`}>
+                    <div className={`absolute top-full left-0 bg-white shadow-card-hover border border-gray-100 rounded-b-xl
+                                    py-2 min-w-[220px] max-h-[70vh] overflow-y-auto
+                                    transition-all duration-200 z-[999]
+                                    ${openSubcategory === item.slug ? 'opacity-100 visible translate-y-0 pointer-events-auto' : 'opacity-0 invisible translate-y-2 pointer-events-none group-hover/nav:opacity-100 group-hover/nav:visible group-hover/nav:translate-y-0 group-hover/nav:pointer-events-auto'}`}>
+
                       {/* "View All" link for Diseases */}
                       {item.slug === 'diseases' && (
                         <Link to="/diseases" className="block px-4 py-2 text-[12px] font-bold text-primary hover:bg-primary-light border-b border-gray-100 mb-1">

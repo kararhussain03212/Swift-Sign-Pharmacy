@@ -6,6 +6,7 @@ import { products } from '../data/products'
 import useCartStore from '../store/cartStore'
 import useWishlistStore from '../store/wishlistStore'
 import ProductCard from '../components/ui/ProductCard'
+import ProductDocuments from '../components/ProductDocuments'
 
 const ProductDetail = () => {
   const { slug } = useParams()
@@ -17,6 +18,10 @@ const ProductDetail = () => {
 
   const [imageState, setImageState] = useState({ slug: '', src: '' })
   const [quantityState, setQuantityState] = useState({ slug: '', value: 1 })
+  const [selectedQuantity, setSelectedQuantity] = useState(product?.quantities?.[0]?.value || null)
+  const [selectedPackaging, setSelectedPackaging] = useState(
+    product?.packaging?.find(p => p.default)?.value || product?.packaging?.[0]?.value || null
+  )
 
   const activeImage = imageState.slug === slug ? imageState.src : (product?.image ?? '')
   const quantity = quantityState.slug === slug ? quantityState.value : 1
@@ -26,6 +31,9 @@ const ProductDetail = () => {
     slug,
     value: typeof v === 'function' ? v(s.slug === slug ? s.value : 1) : v,
   }))
+
+  const selectedQuantityPrice = product?.quantities?.find(q => q.value === selectedQuantity)?.price || product?.price
+  const selectedQuantityLabel = product?.quantities?.find(q => q.value === selectedQuantity)?.label || ''
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -66,6 +74,8 @@ const ProductDetail = () => {
               ? 'Vitamins & Supplements'
               : product.category === 'skincare'
               ? 'Personal Care'
+              : product.category === 'laboratory-chemicals'
+              ? 'Laboratory Chemicals'
               : product.category}
           </span>
           <span>/</span>
@@ -126,30 +136,34 @@ const ProductDetail = () => {
           <div className="flex flex-col">
 
             {/* Rating and Stock */}
-            <div className="flex items-center gap-3 flex-wrap">
-              <div className="flex items-center text-yellow-400">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Star key={i} size={14} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} className="text-yellow-400" />
-                ))}
+            {!product.isLabChemical && (
+              <div className="flex items-center gap-3 flex-wrap">
+                <div className="flex items-center text-yellow-400">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} size={14} fill={i < Math.floor(product.rating) ? 'currentColor' : 'none'} className="text-yellow-400" />
+                  ))}
+                </div>
+                <span className="text-[12px] text-gray-500 font-semibold">({product.reviewCount || 0} Reviews)</span>
+                <span className="bg-primary-light text-primary text-[10px] font-bold px-3 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
+                  In Stock
+                </span>
               </div>
-              <span className="text-[12px] text-gray-500 font-semibold">({product.reviewCount || 0} Reviews)</span>
-              <span className="bg-primary-light text-primary text-[10px] font-bold px-3 py-0.5 rounded-full border border-primary/20 uppercase tracking-wider">
-                In Stock
-              </span>
-            </div>
+            )}
 
             {/* Title & Brand */}
             <h1 className="font-heading text-gray-900 text-xl sm:text-2xl md:text-[32px] leading-tight mt-3">
               {product.name}
             </h1>
-            <p className="text-[12px] sm:text-[13px] text-gray-500 font-medium mt-1">
-              Net Weight: {product.weight || '50g'}
-            </p>
+            {!product.isLabChemical && (
+              <p className="text-[12px] sm:text-[13px] text-gray-500 font-medium mt-1">
+                Net Weight: {product.weight || '50g'}
+              </p>
+            )}
 
             {/* Price */}
             <div className="flex items-baseline gap-3 mt-4">
               <span className="text-2xl sm:text-3xl font-bold text-[#111111]">
-                ${(product.salePrice ?? product.price).toFixed(2)}
+                ${(selectedQuantityPrice || product.salePrice || product.price).toFixed(2)}
               </span>
               {product.salePrice && (
                 <>
@@ -163,26 +177,89 @@ const ProductDetail = () => {
               )}
             </div>
 
+            {/* Quantity Selection for Lab Chemicals */}
+            {product.isLabChemical && product.quantities && product.quantities.length > 0 && (
+              <div className="py-4 border-b border-gray-100">
+                <h3 className="text-sm font-bold text-gray-900 mb-3">Quantity:</h3>
+                <div className="flex flex-wrap gap-2">
+                  {product.quantities.map(qty => (
+                    <button
+                      key={qty.value}
+                      onClick={() => setSelectedQuantity(qty.value)}
+                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border-2 ${
+                        selectedQuantity === qty.value
+                          ? 'border-primary bg-primary-light text-primary'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      {qty.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Packaging Selection for Lab Chemicals */}
+            {product.isLabChemical && product.packaging && product.packaging.length > 0 && (
+              <div className="py-4 border-b border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-sm font-bold text-gray-900">Packaging:</h3>
+                  {product.packaging.length > 2 && (
+                    <a href="#" className="text-primary text-sm font-semibold hover:underline">
+                      View all
+                    </a>
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {product.packaging.map(pkg => (
+                    <button
+                      key={pkg.value}
+                      onClick={() => setSelectedPackaging(pkg.value)}
+                      className={`px-3 py-2 rounded-full text-sm font-semibold transition-all border-2 ${
+                        selectedPackaging === pkg.value
+                          ? 'border-primary bg-primary-light text-primary'
+                          : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300'
+                      }`}
+                    >
+                      {pkg.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Product Meta */}
             <div className="flex flex-col gap-2.5 py-4 my-4 border-t border-b border-gray-100 text-[13px] sm:text-[14px]">
               {product.brand && (
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-gray-900">Manufacturer:</span>
+                  <span className="font-bold text-gray-900">{product.isLabChemical ? 'Manufacturer:' : 'Brand:'}</span>
                   <span className="font-medium text-gray-600 capitalize">
                     {product.brand}
                   </span>
                 </div>
               )}
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-gray-900">Form:</span>
-                <span className="font-medium text-gray-600 capitalize">
-                  {product.form || product.specifications?.['Product Form'] || 'Not specified'}
-                </span>
-              </div>
-              <div>
-                <span className="font-bold text-gray-900">SKU#: </span>
-                <span className="font-medium text-gray-600">{product.sku || '258780'}</span>
-              </div>
+              {!product.isLabChemical && (
+                <>
+                  <div className="flex items-center gap-2">
+                    <span className="font-bold text-gray-900">Form:</span>
+                    <span className="font-medium text-gray-600 capitalize">
+                      {product.form || product.specifications?.['Product Form'] || 'Not specified'}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-gray-900">SKU#: </span>
+                    <span className="font-medium text-gray-600">{product.sku || '258780'}</span>
+                  </div>
+                </>
+              )}
+              {product.isLabChemical && product.form && (
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-gray-900">Form:</span>
+                  <span className="font-medium text-gray-600 capitalize">
+                    {product.form}
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Quantity + Add to Cart */}
@@ -281,6 +358,39 @@ const ProductDetail = () => {
             )}
           </div>
         </div>
+
+        {/* Laboratory Specifications Section */}
+        {product.isLabChemical && product.labSpecifications && Object.keys(product.labSpecifications).length > 0 && (
+          <div className="mt-12 sm:mt-16">
+            <div className="border-b border-gray-200 pb-4 mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-heading font-extrabold text-gray-900">Specifications</h2>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm sm:text-base">
+                <tbody>
+                  {Object.entries(product.labSpecifications).map(([key, value]) => (
+                    value && value.toString().trim() !== '' && (
+                      <tr key={key} className="border-b border-gray-100">
+                        <td className="py-3 px-4 font-bold text-gray-900 bg-gray-50 w-32 sm:w-40">
+                          {key}
+                        </td>
+                        <td className="py-3 px-4 text-gray-600">
+                          {value}
+                        </td>
+                      </tr>
+                    )
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+
+        {/* Documents & Downloads Section */}
+        {product.isLabChemical && product.documents && (
+          <ProductDocuments documents={product.documents} />
+        )}
 
         {/* You May Also Like */}
         <div className="mt-12 sm:mt-16 border-t border-gray-100 pt-8 sm:pt-12">

@@ -8,6 +8,7 @@ import SearchDropdown from '../modals/SearchDropdown'
 import LocationSelector from '../modals/LocationSelector'
 import { VscPercentage } from "react-icons/vsc"
 import { getEstimatedDeliveryDays } from '../../data/locations'
+import { getSiteSettings, resolveUploadUrl } from '../../services/headerApi'
 
 const navLinks = [
   { label: 'Home',          to: '/' },
@@ -15,6 +16,14 @@ const navLinks = [
   { label: 'Store Locator', to: '/store-locator' },
   { label: 'Contact',       to: '/contact' },
 ]
+
+const FALLBACK_SITE_SETTINGS = {
+  site_name: 'Arion Pharmacy',
+  logo_url: null,
+  hot_deals_link: '/shop?deals=true',
+  hot_deals_enabled: 1,
+  country: 'Pakistan',
+}
 
 const Header = () => {
   const [searchQuery, setSearchQuery] = useState('')
@@ -27,13 +36,25 @@ const Header = () => {
 
   const { items: cartItems } = useCartStore()
   const { location } = useLocationStore()
+  const [siteSettings, setSiteSettings] = useState(null)
 
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
+  const resolvedSettings = siteSettings ?? FALLBACK_SITE_SETTINGS
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10)
     window.addEventListener('scroll', onScroll)
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    let active = true
+    getSiteSettings()
+      .then((data) => active && setSiteSettings(data ? { ...FALLBACK_SITE_SETTINGS, ...data } : FALLBACK_SITE_SETTINGS))
+      .catch(() => active && setSiteSettings(FALLBACK_SITE_SETTINGS))
+    return () => {
+      active = false
+    }
   }, [])
 
   // Prevent background scrolling when sidebar is open
@@ -77,10 +98,18 @@ const Header = () => {
 
           {/* ── LOGO (Center on mobile, left on desktop) ──────────────── */}
           <Link to="/" className="flex items-center gap-1.5 group flex-1 sm:flex-shrink-0 justify-center sm:justify-start">
-            <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-4xl lg:text-3xl"
-                  style={{ letterSpacing: '-0.5px' }}>
-              Logo Here
-            </span>
+            {resolvedSettings.logo_url ? (
+              <img
+                src={resolveUploadUrl(resolvedSettings.logo_url)}
+                alt={resolvedSettings.site_name}
+                className="h-8 sm:h-9 md:h-12 lg:h-10 w-auto object-contain"
+              />
+            ) : (
+              <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-4xl lg:text-3xl"
+                    style={{ letterSpacing: '-0.5px' }}>
+                {resolvedSettings.site_name}
+              </span>
+            )}
           </Link>
 
           {/* ── SEARCH BAR (Left-aligned next to logo, desktop only) ──── */}
@@ -133,27 +162,29 @@ const Header = () => {
           </div>
 
           {/* ── HOT DEALS (Centered in remaining space) ──────────────── */}
-          <div className="hidden md:flex flex-1 justify-center">
-            <Link
-              to="/shop?deals=true"
-              className="flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
-              style={{
-                fontSize: 'clamp(10px, 1.5vw, 15px)',
-                backgroundColor: '#FF0000',
-                boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
-                letterSpacing: '0.5px',
-              }}
-            >
-              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
-                            transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
-                   style={{ width: '200%' }} />
-              <div className="relative z-10 flex items-center gap-2">
-                {/* <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} /> */}
-                <span>Hot Deals</span>
-                <span className="inline-block animate-pulse">🔥</span>
-              </div>
-            </Link>
-          </div>
+          {Number(resolvedSettings.hot_deals_enabled) === 1 && (
+            <div className="hidden md:flex flex-1 justify-center">
+              <Link
+                to={resolvedSettings.hot_deals_link || '/shop?deals=true'}
+                className="flex items-center gap-1.5 px-3 lg:px-4 py-2 rounded-full text-white font-bold hover:scale-105 transition-all whitespace-nowrap relative overflow-hidden group"
+                style={{
+                  fontSize: 'clamp(10px, 1.5vw, 15px)',
+                  backgroundColor: '#FF0000',
+                  boxShadow: '0 4px 15px rgba(255, 0, 0, 0.4)',
+                  letterSpacing: '0.5px',
+                }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent
+                              transform translate-x-full group-hover:translate-x-0 transition-transform duration-700 group-hover:duration-500"
+                     style={{ width: '200%' }} />
+                <div className="relative z-10 flex items-center gap-2">
+                  {/* <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} /> */}
+                  <span>Hot Deals</span>
+                  <span className="inline-block animate-pulse">🔥</span>
+                </div>
+              </Link>
+            </div>
+          )}
 
           {/* ── RIGHT ICONS ──────────────────────────────── */}
           <div className="flex items-center gap-2 sm:gap-3 md:gap-4 ml-auto flex-shrink-0">
@@ -171,10 +202,10 @@ const Header = () => {
             <div className="hidden lg:flex flex-col items-center justify-center cursor-pointer hover:opacity-80 transition-opacity">
               <img
                 src="https://upload.wikimedia.org/wikipedia/commons/3/32/Flag_of_Pakistan.svg"
-                alt="Pakistan"
+                alt={resolvedSettings.country}
                 className="w-[28px] h-[18px] object-cover rounded-[2px] shadow-sm mb-1"
               />
-              <span className="text-[9px] font-bold text-gray-700 leading-none">Pakistan</span>
+              <span className="text-[9px] font-bold text-gray-700 leading-none">{resolvedSettings.country}</span>
             </div>
 
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />

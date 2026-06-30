@@ -17,7 +17,7 @@ export const categories = [
   },
   {
     id: 2,
-    name: 'Vitamins & Supplements',
+    name: 'Vitamins',
     slug: 'vitamins',
     showInNav: true,
     image: '/generic_vitamin_bottle.png',
@@ -121,6 +121,23 @@ export const categories = [
     showInNav: true,
     image: '/jellybee_gummies.png',
     subCategories: []
+  },
+  {
+    id: 11,
+    name: 'Laboratory Chemicals',
+    slug: 'laboratory-chemicals',
+    showInNav: true,
+    image: '/jellybee_gummies.png',
+    subCategories: [
+      { name: 'General Laboratory Chemicals', slug: 'general-laboratory-chemicals' },
+      { name: 'Salts', slug: 'salts' },
+      { name: 'Solvents', slug: 'solvents' },
+      { name: 'Buffers & Reagents', slug: 'buffers-reagents' },
+      { name: 'Indicators & Stains', slug: 'indicators-stains' },
+      { name: 'Microbiology Media', slug: 'microbiology-media' },
+      { name: 'HPLC & Analytical Grade Solvents', slug: 'hplc-analytical-solvents' },
+      { name: 'Diagnostic & Hospital Lab Chemicals', slug: 'diagnostic-hospital-chemicals' }
+    ]
   }
 ]
 

@@ -4,13 +4,18 @@ declare(strict_types=1);
 
 use Backend\Controllers\AboutController;
 use Backend\Controllers\AddressController;
+use Backend\Controllers\AnnouncementBarController;
 use Backend\Controllers\BlogController;
+use Backend\Controllers\CategoryController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\HeroController;
+use Backend\Controllers\LocationController;
+use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
 use Backend\Controllers\ProductPageController;
 use Backend\Controllers\SettingController;
+use Backend\Controllers\SiteSettingController;
 use Backend\Controllers\TestimonialController;
 use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
@@ -25,6 +30,11 @@ require_once __DIR__ . '/../controllers/ContactController.php';
 require_once __DIR__ . '/../controllers/CommitmentItemController.php';
 require_once __DIR__ . '/../controllers/AboutController.php';
 require_once __DIR__ . '/../controllers/AddressController.php';
+require_once __DIR__ . '/../controllers/AnnouncementBarController.php';
+require_once __DIR__ . '/../controllers/SiteSettingController.php';
+require_once __DIR__ . '/../controllers/NavLinkController.php';
+require_once __DIR__ . '/../controllers/CategoryController.php';
+require_once __DIR__ . '/../controllers/LocationController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -60,4 +70,11 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/addresses/{id}', [AddressController::class, 'show'], [[AuthMiddleware::class, 'requireAuth']]);
     $router->put('/api/addresses/{id}', [AddressController::class, 'update'], [[AuthMiddleware::class, 'requireAuth']]);
     $router->delete('/api/addresses/{id}', [AddressController::class, 'destroy'], [[AuthMiddleware::class, 'requireAuth']]);
+
+    // Arion Pharmacy — Header module (separate arion_pharmacy database)
+    $router->get('/api/public/announcement-bar', [AnnouncementBarController::class, 'publicIndex']);
+    $router->get('/api/public/site-settings', [SiteSettingController::class, 'publicIndex']);
+    $router->get('/api/public/nav-links', [NavLinkController::class, 'publicIndex']);
+    $router->get('/api/public/categories', [CategoryController::class, 'publicIndex']);
+    $router->get('/api/public/locations', [LocationController::class, 'publicIndex']);
 }

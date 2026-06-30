@@ -3,15 +3,20 @@
 declare(strict_types=1);
 
 use Backend\Controllers\AboutController;
+use Backend\Controllers\AnnouncementBarController;
 use Backend\Controllers\BlogController;
+use Backend\Controllers\CategoryController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
 use Backend\Controllers\HeroController;
+use Backend\Controllers\LocationController;
+use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
 use Backend\Controllers\ProductPageController;
 use Backend\Controllers\SettingController;
+use Backend\Controllers\SiteSettingController;
 use Backend\Controllers\TestimonialController;
 use Backend\Controllers\UploadController;
 use Backend\Controllers\UserController;
@@ -31,6 +36,11 @@ require_once __DIR__ . '/../controllers/DashboardController.php';
 require_once __DIR__ . '/../controllers/ContactController.php';
 require_once __DIR__ . '/../controllers/AboutController.php';
 require_once __DIR__ . '/../controllers/CustomerAddressController.php';
+require_once __DIR__ . '/../controllers/AnnouncementBarController.php';
+require_once __DIR__ . '/../controllers/SiteSettingController.php';
+require_once __DIR__ . '/../controllers/NavLinkController.php';
+require_once __DIR__ . '/../controllers/CategoryController.php';
+require_once __DIR__ . '/../controllers/LocationController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -142,4 +152,32 @@ function registerAdminRoutes(Router $router): void
     $router->get('/api/admin/customers', [CustomerAddressController::class, 'index'], $mw);
     $router->get('/api/admin/customers/{id}', [CustomerAddressController::class, 'show'], $mw);
     $router->delete('/api/admin/addresses/{id}', [CustomerAddressController::class, 'deleteAddress'], $mw);
+
+    // Arion Pharmacy — Header module (separate arion_pharmacy database)
+    $router->get('/api/admin/announcement-bar', [AnnouncementBarController::class, 'index'], $mw);
+    $router->get('/api/admin/announcement-bar/{id}', [AnnouncementBarController::class, 'show'], $mw);
+    $router->post('/api/admin/announcement-bar', [AnnouncementBarController::class, 'store'], $mw);
+    $router->put('/api/admin/announcement-bar/{id}', [AnnouncementBarController::class, 'update'], $mw);
+    $router->delete('/api/admin/announcement-bar/{id}', [AnnouncementBarController::class, 'destroy'], $mw);
+
+    $router->get('/api/admin/site-settings', [SiteSettingController::class, 'index'], $mw);
+    $router->put('/api/admin/site-settings', [SiteSettingController::class, 'update'], $mw);
+
+    $router->get('/api/admin/nav-links', [NavLinkController::class, 'index'], $mw);
+    $router->get('/api/admin/nav-links/{id}', [NavLinkController::class, 'show'], $mw);
+    $router->post('/api/admin/nav-links', [NavLinkController::class, 'store'], $mw);
+    $router->put('/api/admin/nav-links/{id}', [NavLinkController::class, 'update'], $mw);
+    $router->delete('/api/admin/nav-links/{id}', [NavLinkController::class, 'destroy'], $mw);
+
+    $router->get('/api/admin/categories', [CategoryController::class, 'index'], $mw);
+    $router->get('/api/admin/categories/{id}', [CategoryController::class, 'show'], $mw);
+    $router->post('/api/admin/categories', [CategoryController::class, 'store'], $mw);
+    $router->put('/api/admin/categories/{id}', [CategoryController::class, 'update'], $mw);
+    $router->delete('/api/admin/categories/{id}', [CategoryController::class, 'destroy'], $mw);
+
+    $router->get('/api/admin/locations', [LocationController::class, 'index'], $mw);
+    $router->get('/api/admin/locations/{id}', [LocationController::class, 'show'], $mw);
+    $router->post('/api/admin/locations', [LocationController::class, 'store'], $mw);
+    $router->put('/api/admin/locations/{id}', [LocationController::class, 'update'], $mw);
+    $router->delete('/api/admin/locations/{id}', [LocationController::class, 'destroy'], $mw);
 }

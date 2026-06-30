@@ -20,7 +20,16 @@ abstract class BaseModel
 
     public function __construct()
     {
-        $this->pdo = Database::connection();
+        $this->pdo = $this->connection();
+    }
+
+    /**
+     * Overridable so subclasses can target a different database
+     * (see ArionBaseModel, which points to the Arion Pharmacy database).
+     */
+    protected function connection(): PDO
+    {
+        return Database::connection();
     }
 
     public function all(array $query = [], bool $onlyActive = false): array

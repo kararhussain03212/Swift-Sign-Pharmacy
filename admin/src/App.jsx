@@ -30,6 +30,11 @@ import ProblemCardForm from "./pages/about/ProblemCardForm";
 import CoreValueList from "./pages/about/CoreValueList";
 import CoreValueForm from "./pages/about/CoreValueForm";
 import CustomerAddresses from "./pages/addresses/CustomerAddresses";
+import AnnouncementBarList from "./pages/header/AnnouncementBarList";
+import HeaderSiteSettings from "./pages/header/HeaderSiteSettings";
+import NavLinkList from "./pages/header/NavLinkList";
+import CategoryList from "./pages/header/CategoryList";
+import LocationList from "./pages/header/LocationList";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -459,6 +464,13 @@ export default function App() {
               </ProtectedPage>
             }
           />
+
+          {/* Arion Pharmacy — Header module (create/edit handled via modals on each list page) */}
+          <Route path="/header/announcement-bar" element={<ProtectedPage><AnnouncementBarList /></ProtectedPage>} />
+          <Route path="/header/site-settings"    element={<ProtectedPage><HeaderSiteSettings /></ProtectedPage>} />
+          <Route path="/header/nav-links"        element={<ProtectedPage><NavLinkList /></ProtectedPage>} />
+          <Route path="/header/categories"       element={<ProtectedPage><CategoryList /></ProtectedPage>} />
+          <Route path="/header/locations"        element={<ProtectedPage><LocationList /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
