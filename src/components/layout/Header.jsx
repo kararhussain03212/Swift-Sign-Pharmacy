@@ -77,7 +77,7 @@ const Header = () => {
 
           {/* ── LOGO (Center on mobile, left on desktop) ──────────────── */}
           <Link to="/" className="flex items-center gap-1.5 group flex-1 sm:flex-shrink-0 justify-center sm:justify-start">
-            <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-3xl lg:text-3xl"
+            <span className="font-bold text-gray-900 tracking-tight text-base sm:text-lg md:text-4xl lg:text-3xl"
                   style={{ letterSpacing: '-0.5px' }}>
               Logo Here
             </span>

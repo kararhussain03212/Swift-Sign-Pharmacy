@@ -43,10 +43,10 @@ const Navbar = () => {
 
           {/* ── CATEGORIES DROPDOWN ─────────────────────────────────── */}
           <div className="relative group flex items-center h-full flex-shrink-0">
-            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 lg:px-5 py-1.5 lg:py-3 rounded-full font-bold text-[8px] sm:text-[9px] lg:text-base hover:bg-[#073B45] transition-all duration-200 ease-in-out transform hover:shadow-lg flex-shrink-0">
+            <button className="flex items-center gap-1 bg-[#0FAFB8] text-white px-2 sm:px-2.5 md:px-4 lg:px-5 py-1.5 md:py-2.5 lg:py-3 rounded-full font-bold text-[8px] sm:text-[9px] md:text-[15px] lg:text-base hover:bg-[#073B45] transition-all duration-200 ease-in-out transform hover:shadow-lg flex-shrink-0">
               <Menu size={14} className="sm:hidden" />
-              <Menu size={15} className="hidden sm:block lg:hidden" />
-              <Menu size={20} className="hidden lg:block" />
+              <Menu size={15} className="hidden sm:block md:hidden" />
+              <Menu size={20} className="hidden md:block" />
               <span className="hidden xs:inline">Categories</span>
             </button>
 
@@ -135,11 +135,11 @@ const Navbar = () => {
           <Link
             to="/asaan-order"
             className="flex items-center gap-0.5 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
-                       px-1.5 sm:px-3 py-0.5 lg:py-2 rounded-full font-bold text-[7px] sm:text-[8px] lg:text-sm transition-colors flex-shrink-0"
+                       px-1.5 sm:px-3 md:px-4 py-0.5 md:py-2 lg:py-2 rounded-full font-bold text-[7px] sm:text-[8px] md:text-[13px] lg:text-sm transition-colors flex-shrink-0"
           >
             <FileUp size={10} className="sm:hidden" strokeWidth={2.5} />
-            <FileUp size={11} className="hidden sm:block lg:hidden" strokeWidth={2.5} />
-            <FileUp size={14} className="hidden lg:block" strokeWidth={2.5} />
+            <FileUp size={11} className="hidden sm:block md:hidden" strokeWidth={2.5} />
+            <FileUp size={14} className="hidden md:block" strokeWidth={2.5} />
             <span className="hidden sm:inline">PRESCRIPTION</span>
             <span className="sm:hidden">Rx</span>
           </Link>
