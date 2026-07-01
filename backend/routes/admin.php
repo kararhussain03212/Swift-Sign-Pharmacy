@@ -12,8 +12,13 @@ use Backend\Controllers\ContactFaqController;
 use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
+use Backend\Controllers\FeaturedBrandController;
 use Backend\Controllers\HeroController;
 use Backend\Controllers\HeroBannerController;
+use Backend\Controllers\HomepageCarePlanBannerController;
+use Backend\Controllers\HomepageHeroBannerController;
+use Backend\Controllers\HomepagePromoCardController;
+use Backend\Controllers\TrustBadgeController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
@@ -55,6 +60,11 @@ require_once __DIR__ . '/../controllers/StoreBranchController.php';
 require_once __DIR__ . '/../controllers/StoreNetworkStatController.php';
 require_once __DIR__ . '/../controllers/StoreLocatorContentController.php';
 require_once __DIR__ . '/../controllers/StoreGalleryController.php';
+require_once __DIR__ . '/../controllers/HomepageHeroBannerController.php';
+require_once __DIR__ . '/../controllers/HomepagePromoCardController.php';
+require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
+require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
+require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -239,4 +249,36 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/store-locator/gallery', [StoreGalleryController::class, 'store'], $mw);
     $router->put('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'update'], $mw);
     $router->delete('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'destroy'], $mw);
+
+    // Homepage — Hero Banner (singleton) + images
+    $router->get('/api/admin/homepage/hero-banner', [HomepageHeroBannerController::class, 'index'], $mw);
+    $router->put('/api/admin/homepage/hero-banner', [HomepageHeroBannerController::class, 'update'], $mw);
+    $router->post('/api/admin/homepage/hero-banner/images', [HomepageHeroBannerController::class, 'storeImage'], $mw);
+    $router->put('/api/admin/homepage/hero-banner/images/{id}', [HomepageHeroBannerController::class, 'updateImage'], $mw);
+    $router->delete('/api/admin/homepage/hero-banner/images/{id}', [HomepageHeroBannerController::class, 'destroyImage'], $mw);
+
+    // Homepage — Promo Cards
+    $router->get('/api/admin/homepage/promo-cards', [HomepagePromoCardController::class, 'index'], $mw);
+    $router->get('/api/admin/homepage/promo-cards/{id}', [HomepagePromoCardController::class, 'show'], $mw);
+    $router->post('/api/admin/homepage/promo-cards', [HomepagePromoCardController::class, 'store'], $mw);
+    $router->put('/api/admin/homepage/promo-cards/{id}', [HomepagePromoCardController::class, 'update'], $mw);
+    $router->delete('/api/admin/homepage/promo-cards/{id}', [HomepagePromoCardController::class, 'destroy'], $mw);
+
+    // Homepage — Care Plan Banner (singleton)
+    $router->get('/api/admin/homepage/care-plan-banner', [HomepageCarePlanBannerController::class, 'index'], $mw);
+    $router->put('/api/admin/homepage/care-plan-banner', [HomepageCarePlanBannerController::class, 'update'], $mw);
+
+    // Homepage — Featured Brands
+    $router->get('/api/admin/homepage/featured-brands', [FeaturedBrandController::class, 'index'], $mw);
+    $router->get('/api/admin/homepage/featured-brands/{id}', [FeaturedBrandController::class, 'show'], $mw);
+    $router->post('/api/admin/homepage/featured-brands', [FeaturedBrandController::class, 'store'], $mw);
+    $router->put('/api/admin/homepage/featured-brands/{id}', [FeaturedBrandController::class, 'update'], $mw);
+    $router->delete('/api/admin/homepage/featured-brands/{id}', [FeaturedBrandController::class, 'destroy'], $mw);
+
+    // Homepage — Trust Badges
+    $router->get('/api/admin/homepage/trust-badges', [TrustBadgeController::class, 'index'], $mw);
+    $router->get('/api/admin/homepage/trust-badges/{id}', [TrustBadgeController::class, 'show'], $mw);
+    $router->post('/api/admin/homepage/trust-badges', [TrustBadgeController::class, 'store'], $mw);
+    $router->put('/api/admin/homepage/trust-badges/{id}', [TrustBadgeController::class, 'update'], $mw);
+    $router->delete('/api/admin/homepage/trust-badges/{id}', [TrustBadgeController::class, 'destroy'], $mw);
 }

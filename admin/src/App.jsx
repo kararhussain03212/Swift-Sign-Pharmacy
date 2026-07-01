@@ -24,6 +24,14 @@ import ContactInfoCardList from "./pages/contact/ContactInfoCardList";
 import ContactInfoCardForm from "./pages/contact/ContactInfoCardForm";
 import ContactFaqList from "./pages/contact/ContactFaqList";
 import ContactFaqForm from "./pages/contact/ContactFaqForm";
+import HomepageHeroBannerForm from "./pages/homepage/HomepageHeroBannerForm";
+import PromoCardList from "./pages/homepage/PromoCardList";
+import PromoCardForm from "./pages/homepage/PromoCardForm";
+import CarePlanBannerForm from "./pages/homepage/CarePlanBannerForm";
+import FeaturedBrandList from "./pages/homepage/FeaturedBrandList";
+import FeaturedBrandForm from "./pages/homepage/FeaturedBrandForm";
+import TrustBadgeList from "./pages/homepage/TrustBadgeList";
+import TrustBadgeForm from "./pages/homepage/TrustBadgeForm";
 import HeroSectionAdmin from "./pages/about/HeroSectionAdmin";
 import StorySectionAdmin from "./pages/about/StorySectionAdmin";
 import MissionSectionAdmin from "./pages/about/MissionSectionAdmin";
@@ -448,6 +456,19 @@ export default function App() {
           <Route path="/contact-faqs"                 element={<ProtectedPage><ContactFaqList /></ProtectedPage>} />
           <Route path="/contact-faqs/new"             element={<ProtectedPage><ContactFaqForm /></ProtectedPage>} />
           <Route path="/contact-faqs/edit/:id"        element={<ProtectedPage><ContactFaqForm /></ProtectedPage>} />
+
+          {/* Homepage Promo Sections */}
+          <Route path="/homepage-hero-banner"         element={<ProtectedPage><HomepageHeroBannerForm /></ProtectedPage>} />
+          <Route path="/homepage-promo-cards"         element={<ProtectedPage><PromoCardList /></ProtectedPage>} />
+          <Route path="/homepage-promo-cards/new"     element={<ProtectedPage><PromoCardForm /></ProtectedPage>} />
+          <Route path="/homepage-promo-cards/edit/:id" element={<ProtectedPage><PromoCardForm /></ProtectedPage>} />
+          <Route path="/homepage-care-plan"           element={<ProtectedPage><CarePlanBannerForm /></ProtectedPage>} />
+          <Route path="/featured-brands"              element={<ProtectedPage><FeaturedBrandList /></ProtectedPage>} />
+          <Route path="/featured-brands/new"          element={<ProtectedPage><FeaturedBrandForm /></ProtectedPage>} />
+          <Route path="/featured-brands/edit/:id"     element={<ProtectedPage><FeaturedBrandForm /></ProtectedPage>} />
+          <Route path="/trust-badges"                 element={<ProtectedPage><TrustBadgeList /></ProtectedPage>} />
+          <Route path="/trust-badges/new"             element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
+          <Route path="/trust-badges/edit/:id"        element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
 
           {/* About Us Management */}
           <Route path="/about/hero"    element={<ProtectedPage><HeroSectionAdmin /></ProtectedPage>} />

@@ -11,8 +11,12 @@ use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\ContactFaqController;
 use Backend\Controllers\ContactInfoCardController;
+use Backend\Controllers\FeaturedBrandController;
 use Backend\Controllers\HeroController;
 use Backend\Controllers\HeroBannerController;
+use Backend\Controllers\HomepageCarePlanBannerController;
+use Backend\Controllers\HomepageHeroBannerController;
+use Backend\Controllers\HomepagePromoCardController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
@@ -24,6 +28,7 @@ use Backend\Controllers\StoreGalleryController;
 use Backend\Controllers\StoreLocatorContentController;
 use Backend\Controllers\StoreNetworkStatController;
 use Backend\Controllers\TestimonialController;
+use Backend\Controllers\TrustBadgeController;
 use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
 
@@ -49,6 +54,11 @@ require_once __DIR__ . '/../controllers/StoreBranchController.php';
 require_once __DIR__ . '/../controllers/StoreNetworkStatController.php';
 require_once __DIR__ . '/../controllers/StoreLocatorContentController.php';
 require_once __DIR__ . '/../controllers/StoreGalleryController.php';
+require_once __DIR__ . '/../controllers/HomepageHeroBannerController.php';
+require_once __DIR__ . '/../controllers/HomepagePromoCardController.php';
+require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
+require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
+require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -102,4 +112,11 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/store-locator/stats', [StoreNetworkStatController::class, 'publicIndex']);
     $router->get('/api/public/store-locator/content', [StoreLocatorContentController::class, 'publicIndex']);
     $router->get('/api/public/store-locator/gallery', [StoreGalleryController::class, 'publicIndex']);
+
+    // Homepage promo sections
+    $router->get('/api/public/homepage/hero-banner', [HomepageHeroBannerController::class, 'publicIndex']);
+    $router->get('/api/public/homepage/promo-cards', [HomepagePromoCardController::class, 'publicIndex']);
+    $router->get('/api/public/homepage/care-plan-banner', [HomepageCarePlanBannerController::class, 'publicIndex']);
+    $router->get('/api/public/homepage/featured-brands', [FeaturedBrandController::class, 'publicIndex']);
+    $router->get('/api/public/homepage/trust-badges', [TrustBadgeController::class, 'publicIndex']);
 }

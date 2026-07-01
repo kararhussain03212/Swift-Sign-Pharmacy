@@ -52,6 +52,12 @@ export const getContactInfoCards = () => getJson('/public/contact/info-cards')
 export const getContactFaqs = () => getJson('/public/contact/faqs')
 export const submitContactMessage = (payload) => postJsonBody('/public/contact', payload)
 
+export const getHomepageHeroBanner = () => getJson('/public/homepage/hero-banner')
+export const getHomepagePromoCards = () => getJson('/public/homepage/promo-cards')
+export const getHomepageCarePlanBanner = () => getJson('/public/homepage/care-plan-banner')
+export const getFeaturedBrands = () => getJson('/public/homepage/featured-brands')
+export const getTrustBadges = () => getJson('/public/homepage/trust-badges')
+
 export const getStoreBranches = (area) => getJson(`/public/store-locator/branches${area ? `?area=${encodeURIComponent(area)}` : ''}`)
 export const getStoreNetworkStats = () => getJson('/public/store-locator/stats')
 export const getStoreLocatorContent = () => getJson('/public/store-locator/content')

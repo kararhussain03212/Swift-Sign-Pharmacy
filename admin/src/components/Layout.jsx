@@ -53,6 +53,13 @@ const NAV = [
   { path: "/store-locator/stats",         label: "Network Stats", child: true, childGroup: "storeLocator" },
   { path: "/store-locator/content",       label: "Page Content",  child: true, childGroup: "storeLocator" },
   { path: "/store-locator/gallery",       label: "Gallery",       child: true, childGroup: "storeLocator" },
+  // Homepage
+  { path: "/homepage-hero-banner", label: "Homepage", group: "homepage" },
+  { path: "/homepage-hero-banner",   label: "Hero Banner",       child: true, childGroup: "homepage" },
+  { path: "/homepage-promo-cards",   label: "Promo Cards",       child: true, childGroup: "homepage" },
+  { path: "/homepage-care-plan",     label: "Care Plan Banner",  child: true, childGroup: "homepage" },
+  { path: "/featured-brands",        label: "Featured Brands",   child: true, childGroup: "homepage" },
+  { path: "/trust-badges",           label: "Trust Badges",      child: true, childGroup: "homepage" },
 ];
 
 const PAGE_TITLES = {
@@ -74,6 +81,14 @@ const PAGE_TITLES = {
   "/contact-info-cards/new":         "Add Info Card",
   "/contact-faqs":                   "Contact FAQs",
   "/contact-faqs/new":               "Add FAQ",
+  "/homepage-hero-banner":           "Homepage Hero Banner",
+  "/homepage-promo-cards":           "Homepage Promo Cards",
+  "/homepage-promo-cards/new":       "Add Promo Card",
+  "/homepage-care-plan":             "Care Plan Banner",
+  "/featured-brands":                "Featured Brands",
+  "/featured-brands/new":            "Add Brand",
+  "/trust-badges":                   "Trust Badges",
+  "/trust-badges/new":               "Add Trust Badge",
   "/settings/navbar":                "Navbar Settings",
   "/settings/home":                  "Home Settings",
   "/settings/home-about":            "Home - Our Story",
@@ -131,6 +146,7 @@ export default function Layout({ children }) {
   const [headerManual,     setHeaderManual]      = useState(false);
   const [storeLocatorManual, setStoreLocatorManual] = useState(false);
   const [contactUsManual,   setContactUsManual]     = useState(false);
+  const [homepageManual,    setHomepageManual]      = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -149,6 +165,12 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/contact-info-cards")
     || location.pathname.startsWith("/contact-faqs")
     || location.pathname.startsWith("/contact-messages");
+  const homepageOpen = homepageManual
+    || location.pathname.startsWith("/homepage-hero-banner")
+    || location.pathname.startsWith("/homepage-promo-cards")
+    || location.pathname.startsWith("/homepage-care-plan")
+    || location.pathname.startsWith("/featured-brands")
+    || location.pathname.startsWith("/trust-badges");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -181,6 +203,9 @@ export default function Layout({ children }) {
     if (location.pathname.startsWith("/store-locator/gallery/edit"))  return "Edit Gallery Image";
     if (location.pathname.startsWith("/contact-info-cards/edit"))     return "Edit Info Card";
     if (location.pathname.startsWith("/contact-faqs/edit"))           return "Edit FAQ";
+    if (location.pathname.startsWith("/homepage-promo-cards/edit"))   return "Edit Promo Card";
+    if (location.pathname.startsWith("/featured-brands/edit"))        return "Edit Brand";
+    if (location.pathname.startsWith("/trust-badges/edit"))           return "Edit Trust Badge";
     if (location.pathname.startsWith("/sliders/edit"))           return "Edit Hero Slide";
     if (location.pathname.startsWith("/products/edit"))          return "Edit Product";
     if (location.pathname.startsWith("/commitment/edit"))        return "Edit Commitment Item";
@@ -371,6 +396,33 @@ export default function Layout({ children }) {
                   {contactUsOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "contactUs").map((e) => (
+                        <Link
+                          key={e.label}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Homepage dropdown */
+            if (item.group === "homepage") {
+              const active = homepageOpen;
+              return (
+                <div key="homepage-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setHomepageManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${homepageOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {homepageOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "homepage").map((e) => (
                         <Link
                           key={e.label}
                           to={e.path}
