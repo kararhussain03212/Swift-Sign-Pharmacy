@@ -20,6 +20,10 @@ import BlogForm from "./pages/blog/BlogForm";
 import UserManagement from "./pages/users/UserManagement";
 import ContactMessages from "./pages/contact/ContactMessages";
 import ContactPageSettings from "./pages/contact/ContactPageSettings";
+import ContactInfoCardList from "./pages/contact/ContactInfoCardList";
+import ContactInfoCardForm from "./pages/contact/ContactInfoCardForm";
+import ContactFaqList from "./pages/contact/ContactFaqList";
+import ContactFaqForm from "./pages/contact/ContactFaqForm";
 import HeroSectionAdmin from "./pages/about/HeroSectionAdmin";
 import StorySectionAdmin from "./pages/about/StorySectionAdmin";
 import MissionSectionAdmin from "./pages/about/MissionSectionAdmin";
@@ -438,6 +442,12 @@ export default function App() {
               </ProtectedPage>
             }
           />
+          <Route path="/contact-info-cards"          element={<ProtectedPage><ContactInfoCardList /></ProtectedPage>} />
+          <Route path="/contact-info-cards/new"       element={<ProtectedPage><ContactInfoCardForm /></ProtectedPage>} />
+          <Route path="/contact-info-cards/edit/:id"  element={<ProtectedPage><ContactInfoCardForm /></ProtectedPage>} />
+          <Route path="/contact-faqs"                 element={<ProtectedPage><ContactFaqList /></ProtectedPage>} />
+          <Route path="/contact-faqs/new"             element={<ProtectedPage><ContactFaqForm /></ProtectedPage>} />
+          <Route path="/contact-faqs/edit/:id"        element={<ProtectedPage><ContactFaqForm /></ProtectedPage>} />
 
           {/* About Us Management */}
           <Route path="/about/hero"    element={<ProtectedPage><HeroSectionAdmin /></ProtectedPage>} />

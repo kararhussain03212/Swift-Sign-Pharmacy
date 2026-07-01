@@ -73,6 +73,8 @@ final class ContactController extends BaseController
             $errors['message'] = 'Message is required.';
         } elseif (mb_strlen($message) < 10) {
             $errors['message'] = 'Message must be at least 10 characters.';
+        } elseif (mb_strlen($message) > 500) {
+            $errors['message'] = 'Message must not exceed 500 characters.';
         }
 
         if ($errors !== []) {
@@ -81,12 +83,13 @@ final class ContactController extends BaseController
 
         $model = new ContactMessage();
         $model->create([
-            'name'    => trim((string) ($payload['name'] ?? '')),
-            'email'   => $email,
-            'phone'   => trim((string) ($payload['phone'] ?? '')),
-            'subject' => trim((string) ($payload['subject'] ?? '')),
-            'message' => $message,
-            'status'  => 'unread',
+            'name'                     => trim((string) ($payload['name'] ?? '')),
+            'email'                    => $email,
+            'phone'                    => trim((string) ($payload['phone'] ?? '')),
+            'subject'                  => trim((string) ($payload['subject'] ?? '')),
+            'message'                  => $message,
+            'subscribed_to_newsletter' => !empty($payload['newsletter']) ? 1 : 0,
+            'status'                   => 'unread',
         ]);
 
         Response::success(null, 'Message sent successfully');

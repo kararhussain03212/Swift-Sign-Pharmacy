@@ -10,7 +10,7 @@ final class ContactMessage extends BaseModel
 {
     protected string $table = 'contact_messages';
     protected array $fillable = [
-        'name', 'email', 'phone', 'subject', 'message', 'status',
+        'name', 'email', 'phone', 'subject', 'message', 'subscribed_to_newsletter', 'status',
     ];
 
     protected function defaultOrderBy(): string

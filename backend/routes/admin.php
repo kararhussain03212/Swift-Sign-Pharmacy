@@ -8,6 +8,8 @@ use Backend\Controllers\BlogController;
 use Backend\Controllers\CategoryController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
+use Backend\Controllers\ContactFaqController;
+use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
 use Backend\Controllers\HeroController;
@@ -40,6 +42,8 @@ require_once __DIR__ . '/../controllers/UploadController.php';
 require_once __DIR__ . '/../controllers/UserController.php';
 require_once __DIR__ . '/../controllers/DashboardController.php';
 require_once __DIR__ . '/../controllers/ContactController.php';
+require_once __DIR__ . '/../controllers/ContactInfoCardController.php';
+require_once __DIR__ . '/../controllers/ContactFaqController.php';
 require_once __DIR__ . '/../controllers/AboutController.php';
 require_once __DIR__ . '/../controllers/CustomerAddressController.php';
 require_once __DIR__ . '/../controllers/AnnouncementBarController.php';
@@ -127,6 +131,20 @@ function registerAdminRoutes(Router $router): void
     $router->get('/api/admin/contact', [ContactController::class, 'index'], $mw);
     $router->patch('/api/admin/contact/{id}/read', [ContactController::class, 'markRead'], $mw);
     $router->delete('/api/admin/contact/{id}', [ContactController::class, 'destroy'], $mw);
+
+    // Contact — Info Cards
+    $router->get('/api/admin/contact/info-cards', [ContactInfoCardController::class, 'index'], $mw);
+    $router->get('/api/admin/contact/info-cards/{id}', [ContactInfoCardController::class, 'show'], $mw);
+    $router->post('/api/admin/contact/info-cards', [ContactInfoCardController::class, 'store'], $mw);
+    $router->put('/api/admin/contact/info-cards/{id}', [ContactInfoCardController::class, 'update'], $mw);
+    $router->delete('/api/admin/contact/info-cards/{id}', [ContactInfoCardController::class, 'destroy'], $mw);
+
+    // Contact — FAQs
+    $router->get('/api/admin/contact/faqs', [ContactFaqController::class, 'index'], $mw);
+    $router->get('/api/admin/contact/faqs/{id}', [ContactFaqController::class, 'show'], $mw);
+    $router->post('/api/admin/contact/faqs', [ContactFaqController::class, 'store'], $mw);
+    $router->put('/api/admin/contact/faqs/{id}', [ContactFaqController::class, 'update'], $mw);
+    $router->delete('/api/admin/contact/faqs/{id}', [ContactFaqController::class, 'destroy'], $mw);
 
     // About Us — single-record sections
     $router->get('/api/admin/about/hero',        [AboutController::class, 'adminGetHero'],       $mw);

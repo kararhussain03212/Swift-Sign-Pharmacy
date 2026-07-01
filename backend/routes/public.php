@@ -9,6 +9,8 @@ use Backend\Controllers\BlogController;
 use Backend\Controllers\CategoryController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
+use Backend\Controllers\ContactFaqController;
+use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\HeroController;
 use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\LocationController;
@@ -33,6 +35,8 @@ require_once __DIR__ . '/../controllers/TestimonialController.php';
 require_once __DIR__ . '/../controllers/BlogController.php';
 require_once __DIR__ . '/../controllers/SettingController.php';
 require_once __DIR__ . '/../controllers/ContactController.php';
+require_once __DIR__ . '/../controllers/ContactInfoCardController.php';
+require_once __DIR__ . '/../controllers/ContactFaqController.php';
 require_once __DIR__ . '/../controllers/CommitmentItemController.php';
 require_once __DIR__ . '/../controllers/AboutController.php';
 require_once __DIR__ . '/../controllers/AddressController.php';
@@ -63,6 +67,8 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/settings', [SettingController::class, 'publicIndex']);
     $router->get('/api/public/contact-page',  [ContactController::class, 'publicContactPage']);
     $router->post('/api/public/contact', [ContactController::class, 'store']);
+    $router->get('/api/public/contact/info-cards', [ContactInfoCardController::class, 'publicIndex']);
+    $router->get('/api/public/contact/faqs', [ContactFaqController::class, 'publicIndex']);
     $router->get('/api/public/product-page', [ProductPageController::class, 'publicPage']);
 
     // About Us

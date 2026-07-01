@@ -164,6 +164,7 @@ export default function ContactMessages() {
                         <div className="space-y-2 text-sm">
                           {msg.phone && <p className="text-[var(--admin-muted)]"><strong className="text-white">Phone:</strong> {msg.phone}</p>}
                           <p className="text-[var(--admin-muted)]"><strong className="text-white">Subject:</strong> {msg.subject}</p>
+                          <p className="text-[var(--admin-muted)]"><strong className="text-white">Newsletter:</strong> {Number(msg.subscribed_to_newsletter) ? "Subscribed" : "Not subscribed"}</p>
                           <p className="whitespace-pre-wrap text-[var(--admin-muted)]"><strong className="text-white">Message:</strong><br />{msg.message}</p>
                           <p className="text-xs text-[var(--admin-muted)]">
                             Received: {msg.created_at ? new Date(msg.created_at).toLocaleString("en-PK") : "—"}

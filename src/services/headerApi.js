@@ -24,6 +24,21 @@ async function postJson(path) {
   return json.data
 }
 
+async function postJsonBody(path, body) {
+  const res = await fetch(`${getApiBase()}${path}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok || !json.success) {
+    const error = new Error(json.error || `Request failed: ${res.status}`)
+    error.fields = json.fields
+    throw error
+  }
+  return json.data
+}
+
 export const getAnnouncementBar = () => getJson('/public/announcement-bar')
 export const getSiteSettings = () => getJson('/public/site-settings')
 export const getNavLinks = () => getJson('/public/nav-links')
@@ -31,6 +46,11 @@ export const getCategories = () => getJson('/public/categories')
 export const getLocations = () => getJson('/public/locations')
 export const getHeroSlides = () => getJson('/public/hero-slides')
 export const getBlogSettings = () => getJson('/public/blog/settings')
+
+export const getContactPageContent = () => getJson('/public/contact-page')
+export const getContactInfoCards = () => getJson('/public/contact/info-cards')
+export const getContactFaqs = () => getJson('/public/contact/faqs')
+export const submitContactMessage = (payload) => postJsonBody('/public/contact', payload)
 
 export const getStoreBranches = (area) => getJson(`/public/store-locator/branches${area ? `?area=${encodeURIComponent(area)}` : ''}`)
 export const getStoreNetworkStats = () => getJson('/public/store-locator/stats')

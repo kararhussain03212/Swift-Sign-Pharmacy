@@ -1,11 +1,9 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import React from 'react'
-import { Link } from 'react-router-dom'
 import toast from 'react-hot-toast'
 import clsx from 'clsx'
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3'
 import {
-  ChevronRight,
   Phone,
   Mail,
   MapPin,
@@ -24,37 +22,51 @@ import {
   UserPlus
 } from 'lucide-react'
 import { FaFacebookF, FaInstagram, FaYoutube, FaTiktok, FaWhatsapp } from 'react-icons/fa'
-import { contactInfo, licenseInfo } from '../data/contactInfo'
+import { getContactPageContent, getContactInfoCards, getContactFaqs, submitContactMessage } from '../services/headerApi'
 
-const faqs = [
-  {
-    q: 'How do I track my order?',
-    a: 'Once your order is dispatched, you will receive a tracking number via email and SMS. Use it on our Track Order page or the courier website to follow your delivery in real time.',
-  },
-  {
-    q: "Can I return a product if I'm not satisfied?",
-    a: 'Yes. We offer a 30-day hassle-free return policy on most products. Items must be unused, sealed, and in original packaging. Contact us and we\'ll arrange the pickup at no cost to you.',
-  },
-  {
-    q: 'Do you require a prescription for medicines?',
-    a: 'Prescription medicines are clearly marked on the product page. You will be prompted to upload a valid prescription at checkout for those products. Our pharmacists verify every prescription within 2 hours.',
-  },
-  {
-    q: 'How long does delivery take?',
-    a: 'Standard delivery takes 2–4 business days. Express delivery (next-day) is available in major cities. Free shipping is available on orders above $50. Same-day delivery is available in select areas.',
-  },
-  {
-    q: 'Are all products genuine and certified?',
-    a: 'Absolutely. Every product on DCare is sourced directly from certified manufacturers and authorized distributors. We carry the DRAP certification for all pharmaceutical products and conduct regular quality audits.',
-  },
-  {
-    q: 'Can I speak with a pharmacist online?',
-    a: 'Yes! Our licensed pharmacists are available 9am–9pm Monday to Saturday via live chat and phone. Just click the chat button or call our helpline. Emergency consultations are available outside of business hours.',
-  },
+const DEFAULT_BUSINESS_NAME = 'Arion Pharmacy'
+
+const ICON_MAP = { phone: Phone, mail: Mail, 'map-pin': MapPin, clock: Clock }
+const ICON_STYLES = [
+  { bg: 'bg-green-50', clr: 'text-primary' },
+  { bg: 'bg-blue-50', clr: 'text-primary' },
+  { bg: 'bg-orange-50', clr: 'text-orange-500' },
+  { bg: 'bg-purple-50', clr: 'text-purple-500' },
 ]
+
+const FALLBACK_CONTENT = {
+  form_eyebrow: 'GET IN TOUCH',
+  hero_heading: "Let's Talk Health",
+  hero_description: 'Have questions about medicines, products, or your order? Our expert pharmacists are here to help you.',
+  form_title: 'Send Us a Message',
+  form_subtext: 'Fill out the form below and our team will respond within 24 hours.',
+  newsletter_checkbox_label: 'Subscribe to our health newsletter for tips, deals, and updates.',
+  submit_button_text: 'Send Message',
+  name_label: 'Full Name', name_placeholder: 'John Doe',
+  email_label: 'Email Address', email_placeholder: 'you@example.com',
+  phone_label: 'Phone Number', phone_placeholder: '+92 311 000 0000',
+  subject_label: 'Subject', subject_placeholder: 'e.g. Order Inquiry',
+  message_label: 'Message', message_placeholder: 'Tell us how we can help you...',
+  location_card_heading: 'Our Location',
+  save_contact_button_text: 'Save Contact',
+  call_action_label: 'Call', sms_action_label: 'SMS', email_action_label: 'Email',
+  whatsapp_action_label: 'WhatsApp', website_action_label: 'Website', location_action_label: 'Location',
+  follow_us_heading: 'Follow Us',
+  faq_eyebrow: 'FAQ',
+  faq_heading: 'Frequently Asked Questions',
+  faq_subtext: 'Quick answers to the most common questions.',
+}
 
 const Contact = () => {
   const { executeRecaptcha } = useGoogleReCaptcha()
+
+  const [content, setContent] = useState(null)
+  const [infoCards, setInfoCards] = useState([])
+  const [faqs, setFaqs] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [cardsFailed, setCardsFailed] = useState(false)
+  const [faqsFailed, setFaqsFailed] = useState(false)
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -68,33 +80,55 @@ const Contact = () => {
   const [isSuccess, setIsSuccess]       = useState(false)
   const [openFaq, setOpenFaq]           = useState(null)
 
-  const handleCopy = (text, label) => {
-    navigator.clipboard.writeText(text)
-    toast.success(`${label} copied!`, { duration: 2000 })
-  }
+  useEffect(() => {
+    let cancelled = false
+
+    Promise.allSettled([getContactPageContent(), getContactInfoCards(), getContactFaqs()]).then(
+      ([contentRes, cardsRes, faqsRes]) => {
+        if (cancelled) return
+        if (contentRes.status === 'fulfilled') setContent(contentRes.value)
+        if (cardsRes.status === 'fulfilled') setInfoCards(cardsRes.value || [])
+        else setCardsFailed(true)
+        if (faqsRes.status === 'fulfilled') setFaqs(faqsRes.value || [])
+        else setFaqsFailed(true)
+        setLoading(false)
+      }
+    )
+
+    return () => { cancelled = true }
+  }, [])
+
+  const c = { ...FALLBACK_CONTENT, ...(content || {}) }
+  const hoursCard = infoCards.find(card => card.icon_key === 'clock')
+  const hoursSummary = hoursCard ? hoursCard.value_text.split('\n')[0] : ''
 
   const handleSaveContact = () => {
-    const textContent = `Contact Details:
-${contactInfo.businessName}
+    const businessName = c.vcard_business_name || DEFAULT_BUSINESS_NAME
+    const lines = [
+      'BEGIN:VCARD',
+      'VERSION:3.0',
+      `FN:${businessName}`,
+      c.phone_number ? `TEL;TYPE=WORK,VOICE:${c.phone_number}` : null,
+      c.email ? `EMAIL:${c.email}` : null,
+      c.address ? `ADR;TYPE=WORK:;;${c.address.replace(/,/g, '\\,')};;;;` : null,
+      'END:VCARD',
+    ].filter(Boolean)
 
-Phone: ${contactInfo.phone}
-Email: ${contactInfo.email}
-Address: ${contactInfo.address.full}`
-
-    const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' })
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/vcard;charset=utf-8' })
     const url = URL.createObjectURL(blob)
     const link = document.createElement('a')
     link.href = url
-    link.download = `${contactInfo.businessName.replace(/\s+/g, '_')}_Contact.txt`
+    link.download = `${businessName.replace(/\s+/g, '_')}_Contact.vcf`
     link.click()
     URL.revokeObjectURL(url)
     toast.success('Contact saved!', { duration: 2000 })
   }
 
   const handleChange = e => {
-    setFormData(p => ({ ...p, [e.target.name]: e.target.value }))
-    if (formErrors[e.target.name]) {
-      setFormErrors(p => ({ ...p, [e.target.name]: '' }))
+    const { name, value } = e.target
+    setFormData(p => ({ ...p, [name]: value }))
+    if (formErrors[name]) {
+      setFormErrors(p => ({ ...p, [name]: '' }))
     }
   }
 
@@ -123,31 +157,84 @@ Address: ${contactInfo.address.full}`
       return
     }
 
-    if (!executeRecaptcha) {
-      toast.error('reCAPTCHA is not ready. Please try again.', { duration: 3000 })
-      return
-    }
-
     setIsSubmitting(true)
     try {
-      // Execute reCAPTCHA
-      const token = await executeRecaptcha('contact_form')
+      if (executeRecaptcha) {
+        await executeRecaptcha('contact_form')
+      }
 
-      // Simulate sending form data (in production, send to backend with token)
-      // Your backend should verify the token with Google
-      await new Promise(r => setTimeout(r, 1800))
+      await submitContactMessage({
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        subject: formData.subject.trim(),
+        message: formData.message.trim(),
+        newsletter: formData.newsletter,
+      })
 
       setIsSuccess(true)
       toast.success('Message sent successfully! 🎉', { duration: 4000 })
-      // Reset form
       setFormData({ name: '', email: '', phone: '', subject: '', message: '', newsletter: false })
     } catch (error) {
       console.error('Error:', error)
-      toast.error('Failed to send message. Please try again.', { duration: 3000 })
+      if (error?.fields) {
+        setFormErrors(error.fields)
+      } else {
+        toast.error(error?.message || 'Failed to send message. Please try again.', { duration: 3000 })
+      }
     } finally {
       setIsSubmitting(false)
     }
   }
+
+  const toTelDigits = value => String(value || '').replace(/[^\d+]/g, '')
+
+  const callHref = (() => {
+    const digits = toTelDigits(c.call_action_link || c.phone_number)
+    return digits ? `tel:${digits}` : null
+  })()
+
+  const smsHref = (() => {
+    const digits = toTelDigits(c.sms_action_link || c.phone_number)
+    return digits ? `sms:${digits}` : null
+  })()
+
+  const emailHref = (() => {
+    const value = (c.email_action_link || c.email || '').trim()
+    if (!value) return null
+    if (value.startsWith('mailto:')) return value
+    return `mailto:${value}`
+  })()
+
+  const whatsappHref = (() => {
+    const value = (c.whatsapp_action_link || c.whatsapp_number || '').trim()
+    if (!value) return null
+    if (/^https?:\/\//i.test(value)) return value
+    const digits = value.replace(/\D/g, '')
+    return digits ? `https://wa.me/${digits}` : null
+  })()
+
+  const websiteHref = c.website_action_link || c.website_url || null
+
+  const locationHref = c.location_action_link
+    || c.google_map_url
+    || (c.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : null)
+
+  const quickActions = [
+    { label: c.call_action_label,     icon: <Phone size={20} fill="currentColor" />, href: callHref },
+    { label: c.sms_action_label,      icon: <MessageSquare size={20} fill="currentColor" />, href: smsHref },
+    { label: c.email_action_label,    icon: <Mail size={20} />, href: emailHref },
+    { label: c.whatsapp_action_label, icon: <FaWhatsapp size={22} />, href: whatsappHref, external: true },
+    { label: c.website_action_label,  icon: <Globe size={20} />, href: websiteHref, external: true },
+    { label: c.location_action_label, icon: <MapPin size={20} />, href: locationHref, external: true },
+  ]
+
+  const socialLinks = [
+    { name: 'Facebook',  icon: <FaFacebookF size={15} />,  href: c.facebook_url },
+    { name: 'Instagram', icon: <FaInstagram size={15} />,  href: c.instagram_url },
+    { name: 'YouTube',   icon: <FaYoutube size={15} />,    href: c.youtube_url },
+    { name: 'TikTok',    icon: <FaTiktok size={15} />,     href: c.tiktok_url },
+  ].filter(s => s.href)
 
   return (
     <main>
@@ -223,40 +310,15 @@ Address: ${contactInfo.address.full}`
 
         {/* Inner */}
         <div className="max-w-[1280px] mx-auto px-5 text-center relative z-10">
-
-         
-
-          {/* Heading */}
           <h1
             className="font-heading font-extrabold text-white mb-3"
             style={{ fontSize: 'clamp(28px, 5vw, 48px)', lineHeight: 1.15 }}
           >
-            Let&rsquo;s{' '}
-            <span style={{ color: '#EAFBFC' }}>Talk Health</span>
+            {c.hero_heading}
           </h1>
-
-          {/* Subtext */}
           <p className="text-white/60 max-w-xl mx-auto text-[15px] leading-relaxed">
-            Have questions about medicines, products, or your order?
-            Our expert pharmacists are here to help you.
+            {c.hero_description}
           </p>
-
-          {/* Quick contact pills */}
-          {/* <div className="flex flex-wrap items-center justify-center gap-3">
-            {[
-              { icon: <Phone size={14} />,  text: '234-867-7867',     href: 'tel:+2348677867' },
-              { icon: <Mail size={14} />,   text: 'hello@swiftsign.com',  href: 'mailto:hello@swiftsign.com' },
-              { icon: <Clock size={14} />,  text: 'Mon–Sat, 9am–9pm', href: null },
-            ].map(item => (
-              <a
-                key={item.text}
-                href={item.href || '#'}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm text-white text-[13px] font-medium px-4 py-2 rounded-full border border-white/20 transition-all"
-              >
-                {item.icon} {item.text}
-              </a>
-            ))}
-          </div> */}
         </div>
       </section>
 
@@ -264,60 +326,40 @@ Address: ${contactInfo.address.full}`
           INFO CARDS ROW
       ═══════════════════════════════════════ */}
       <div className="max-w-[1280px] mx-auto px-4 sm:px-5 mt-10 sm:mt-12 relative z-10">
-        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-          {[
-            {
-              icon:    <Phone size={24} />,
-              iconBg:  'bg-green-50',
-              iconClr: 'text-primary',
-              title:   'Call Us',
-              lines:   [contactInfo.phone],
-              sub:     contactInfo.hours.summary,
-            },
-            {
-              icon:    <Mail size={24} />,
-              iconBg:  'bg-blue-50',
-              iconClr: 'text-primary',
-              title:   'Email Us',
-              lines:   [contactInfo.email],
-              sub:     contactInfo.responseTime,
-            },
-            {
-              icon:    <MapPin size={24} />,
-              iconBg:  'bg-orange-50',
-              iconClr: 'text-orange-500',
-              title:   'Visit Us',
-              lines:   [contactInfo.address.street, `${contactInfo.address.area}, ${contactInfo.address.city}, ${contactInfo.address.country}`],
-              sub:     'Open for walk-ins',
-            },
-            {
-              icon:    <Clock size={24} />,
-              iconBg:  'bg-purple-50',
-              iconClr: 'text-purple-500',
-              title:   'Working Hours',
-              lines:   [contactInfo.hours.weekday, contactInfo.hours.weekend],
-              sub:     contactInfo.hours.holidays,
-            },
-          ].map((card, i) => (
-            <div
-              key={i}
-              className="bg-white rounded-2xl shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 p-5 group cursor-default flex flex-col items-center text-center"
-            >
-              <div className={`w-12 h-12 ${card.iconBg} ${card.iconClr} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                {card.icon}
-              </div>
-              <h3 className="font-heading font-bold text-gray-900 text-[14px] mb-2">
-                {card.title}
-              </h3>
-              {card.lines.map(line => (
-                <p key={line} className="text-[13px] font-semibold text-gray-700 leading-snug">
-                  {line}
-                </p>
-              ))}
-              <p className="text-[11px] text-gray-400 mt-1.5">{card.sub}</p>
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-card p-5 h-40 animate-pulse" />
+            ))}
+          </div>
+        ) : cardsFailed && infoCards.length === 0 ? null : (
+          <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            {infoCards.map((card, i) => {
+              const Icon = ICON_MAP[card.icon_key] || Phone
+              const style = ICON_STYLES[i % ICON_STYLES.length]
+              const lines = String(card.value_text || '').split('\n')
+              return (
+                <div
+                  key={card.id}
+                  className="bg-white rounded-2xl shadow-card hover:shadow-card-hover hover:-translate-y-1 transition-all duration-200 p-5 group cursor-default flex flex-col items-center text-center"
+                >
+                  <div className={`w-12 h-12 ${style.bg} ${style.clr} rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                    <Icon size={24} />
+                  </div>
+                  <h3 className="font-heading font-bold text-gray-900 text-[14px] mb-2">
+                    {card.title}
+                  </h3>
+                  {lines.map((line, li) => (
+                    <p key={li} className="text-[13px] font-semibold text-gray-700 leading-snug">
+                      {line}
+                    </p>
+                  ))}
+                  {card.note_text ? <p className="text-[11px] text-gray-400 mt-1.5">{card.note_text}</p> : null}
+                </div>
+              )
+            })}
+          </div>
+        )}
       </div>
 
       {/* ═══════════════════════════════════════
@@ -332,16 +374,16 @@ Address: ${contactInfo.address.full}`
             {/* Form header */}
             <div className="mb-8">
               <span className="inline-flex items-center gap-2 text-[12px] font-bold text-primary bg-primary-light px-3 py-1.5 rounded-full mb-4">
-                <MessageCircle size={13} /> GET IN TOUCH
+                <MessageCircle size={13} /> {c.form_eyebrow}
               </span>
               <h2
                 className="font-heading font-extrabold text-gray-900 mb-2"
                 style={{ fontSize: 'clamp(22px, 3vw, 30px)' }}
               >
-                Send Us a Message
+                {c.form_title}
               </h2>
               <p className="text-gray-500 text-[14px]">
-                Fill out the form below and our team will respond within 24 hours.
+                {c.form_subtext}
               </p>
             </div>
 
@@ -380,7 +422,7 @@ Address: ${contactInfo.address.full}`
                   {/* Full Name */}
                   <div>
                     <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-                      Full Name <span className="text-red-500">*</span>
+                      {c.name_label} <span className="text-red-500">*</span>
                     </label>
                     <div className={clsx(
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
@@ -394,7 +436,7 @@ Address: ${contactInfo.address.full}`
                         name="name"
                         value={formData.name}
                         onChange={handleChange}
-                        placeholder="John Doe"
+                        placeholder={c.name_placeholder}
                         className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent"
                       />
                     </div>
@@ -408,7 +450,7 @@ Address: ${contactInfo.address.full}`
                   {/* Email */}
                   <div>
                     <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-                      Email Address <span className="text-red-500">*</span>
+                      {c.email_label} <span className="text-red-500">*</span>
                     </label>
                     <div className={clsx(
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
@@ -422,7 +464,7 @@ Address: ${contactInfo.address.full}`
                         name="email"
                         value={formData.email}
                         onChange={handleChange}
-                        placeholder="you@example.com"
+                        placeholder={c.email_placeholder}
                         className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent"
                       />
                     </div>
@@ -440,7 +482,7 @@ Address: ${contactInfo.address.full}`
                   {/* Phone */}
                   <div>
                     <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-                      Phone Number
+                      {c.phone_label}
                     </label>
                     <div className="flex items-center border border-gray-200 rounded-xl overflow-hidden focus-within:border-primary focus-within: transition-all bg-white">
                       <Phone size={16} className="ml-3.5 text-gray-400 flex-shrink-0" />
@@ -449,7 +491,7 @@ Address: ${contactInfo.address.full}`
                         name="phone"
                         value={formData.phone}
                         onChange={handleChange}
-                        placeholder="+92 311 000 0000"
+                        placeholder={c.phone_placeholder}
                         className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent"
                       />
                     </div>
@@ -458,7 +500,7 @@ Address: ${contactInfo.address.full}`
                   {/* Subject */}
                   <div>
                     <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-                      Subject <span className="text-red-500">*</span>
+                      {c.subject_label} <span className="text-red-500">*</span>
                     </label>
                     <div className={clsx(
                       'flex items-center border rounded-xl overflow-hidden transition-all duration-200',
@@ -472,7 +514,7 @@ Address: ${contactInfo.address.full}`
                         name="subject"
                         value={formData.subject}
                         onChange={handleChange}
-                        placeholder="e.g. Order Inquiry"
+                        placeholder={c.subject_placeholder}
                         className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent"
                       />
                     </div>
@@ -487,7 +529,7 @@ Address: ${contactInfo.address.full}`
                 {/* Message */}
                 <div>
                   <label className="block text-[13px] font-semibold text-gray-700 mb-1.5">
-                    Message <span className="text-red-500">*</span>
+                    {c.message_label} <span className="text-red-500">*</span>
                   </label>
                   <div className={clsx(
                     'flex border rounded-xl overflow-hidden transition-all',
@@ -502,7 +544,7 @@ Address: ${contactInfo.address.full}`
                       onChange={handleChange}
                       rows={5}
                       maxLength={500}
-                      placeholder="Tell us how we can help you..."
+                      placeholder={c.message_placeholder}
                       className="flex-1 px-3 py-3 text-[14px] text-gray-800 outline-none bg-transparent resize-none"
                     />
                   </div>
@@ -534,7 +576,7 @@ Address: ${contactInfo.address.full}`
                     {formData.newsletter && <Check size={12} className="text-white" />}
                   </div>
                   <span className="text-[13px] text-gray-600 leading-relaxed">
-                    Subscribe to our health newsletter for tips, deals, and updates.
+                    {c.newsletter_checkbox_label}
                   </span>
                 </label>
 
@@ -569,7 +611,7 @@ Address: ${contactInfo.address.full}`
                     </>
                   ) : (
                     <>
-                      <Send size={16} /> Send Message
+                      <Send size={16} /> {c.submit_button_text}
                     </>
                   )}
                 </button>
@@ -582,35 +624,36 @@ Address: ${contactInfo.address.full}`
           <div className="space-y-5">
 
             {/* MAP EMBED */}
-            <div
-              className="rounded-2xl overflow-hidden border border-gray-100 shadow-card"
-              style={{ height: '320px' }}
-            >
-              <iframe
-                src={contactInfo.mapsEmbed}
-                width="100%"
-                height="100%"
-                style={{ border: 0 }}
-                allowFullScreen
-                loading="lazy"
-                title={`${contactInfo.businessName} Location`}
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
+            {c.map_embed_url && (
+              <div
+                className="rounded-2xl overflow-hidden border border-gray-100 shadow-card"
+                style={{ height: '320px' }}
+              >
+                <iframe
+                  src={c.map_embed_url}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0 }}
+                  allowFullScreen
+                  loading="lazy"
+                  title={`${c.vcard_business_name || DEFAULT_BUSINESS_NAME} Location`}
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            )}
 
             {/* STORE INFO CARD */}
             <div className="bg-white rounded-2xl border border-gray-100 shadow-card p-5">
               <h3 className="font-heading font-bold text-gray-900 text-[20px] mb-4 flex items-center gap-2">
-                {/* <MapPin size={25} className="text-primary" /> */}
-                 Our Location
+                {c.location_card_heading}
               </h3>
               <div className="space-y-3">
                 {[
-                  { icon: <MapPin size={23} />,  label: 'Address', value: contactInfo.address.full },
-                  { icon: <Phone size={23} />,   label: 'Phone',   value: contactInfo.phone },
-                  { icon: <Mail size={23} />,    label: 'Email',   value: contactInfo.email },
-                  { icon: <Clock size={23} />,   label: 'Hours',   value: contactInfo.hours.weekday },
-                ].map(item => (
+                  { icon: <MapPin size={23} />,  label: 'Address', value: c.address },
+                  { icon: <Phone size={23} />,   label: 'Phone',   value: c.phone_number },
+                  { icon: <Mail size={23} />,    label: 'Email',   value: c.email },
+                  { icon: <Clock size={23} />,   label: 'Hours',   value: hoursSummary },
+                ].filter(item => item.value).map(item => (
                   <div
                     key={item.label}
                     className="flex items-start gap-3 py-2.5 border-b border-gray-50 last:border-0"
@@ -633,95 +676,54 @@ Address: ${contactInfo.address.full}`
                 onClick={handleSaveContact}
                 className="w-full bg-[#0FAFB8] text-white py-3.5 rounded-[24px] flex items-center justify-center gap-2 font-medium text-[15px] mb-8 hover:bg-[#073B45] transition-colors"
               >
-                <UserPlus size={18} /> Save Contact
+                <UserPlus size={18} /> {c.save_contact_button_text}
               </button>
 
               <div className="grid grid-cols-3 gap-y-8 w-full text-center">
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.phone, 'Phone number')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <Phone size={20} fill="currentColor" />
+                {quickActions.map(action => (
+                  <div key={action.label} className="flex flex-col items-center gap-2">
+                    {action.href ? (
+                      <a
+                        href={action.href}
+                        target={action.external ? '_blank' : undefined}
+                        rel={action.external ? 'noopener noreferrer' : undefined}
+                        className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                      >
+                        {action.icon}
+                      </a>
+                    ) : (
+                      <div className="w-[50px] h-[50px] bg-gray-200 rounded-full flex items-center justify-center text-gray-400 shadow-sm">
+                        {action.icon}
+                      </div>
+                    )}
+                    <span className="text-[13px] text-gray-900 font-medium">{action.label}</span>
                   </div>
-                  <span className="text-[13px] text-gray-900 font-medium">Call</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.phone, 'SMS number')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <MessageSquare size={20} fill="currentColor" />
-                  </div>
-                  <span className="text-[13px] text-gray-900 font-medium">SMS</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.email, 'Email address')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <Mail size={20} />
-                  </div>
-                  <span className="text-[13px] text-gray-900 font-medium">Email</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.whatsapp, 'WhatsApp number')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <FaWhatsapp size={22} />
-                  </div>
-                  <span className="text-[13px] text-gray-900 font-medium">WhatsApp</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.website, 'Website URL')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <Globe size={20} />
-                  </div>
-                  <span className="text-[13px] text-gray-900 font-medium">Website</span>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                  <div
-                    onClick={() => handleCopy(contactInfo.address.full, 'Address')}
-                    className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
-                  >
-                    <MapPin size={20} />
-                  </div>
-                  <span className="text-[13px] text-gray-900 font-medium">Location</span>
-                </div>
+                ))}
               </div>
             </div>
 
-             {/* SOCIAL LINKS CARD */}
-             <div
-               className="rounded-2xl p-6 flex items-center justify-between text-white shadow-card hover:shadow-card-hover transition-shadow duration-200"
-              //  style={{ background: '#2C4C38' }}
-             >
-               <span className="font-heading font-extrabold uppercase tracking-[0.15em] text-[13px] text-black">
-                 Follow Us
-               </span>
-               <div className="flex items-center gap-2.5">
-                 {[
-                   { name: 'Facebook',  icon: <FaFacebookF size={15} />,  href: contactInfo.social.facebook },
-                   { name: 'Instagram', icon: <FaInstagram size={15} />,  href: contactInfo.social.instagram },
-                   { name: 'YouTube',   icon: <FaYoutube size={15} />,    href: contactInfo.social.youtube },
-                   { name: 'TikTok',    icon: <FaTiktok size={15} />,     href: contactInfo.social.tiktok },
-                 ].map(s => (
-                   <a
-                     key={s.name}
-                     href={s.href}
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="w-10 h-10 rounded-xl border border-[#073B45] flex items-center justify-center text-[#073B45] hover:bg-[#073B45] hover:text-white transition-all duration-200"
-                     title={s.name}
-                   >
-                     {s.icon}
-                   </a>
-                 ))}
-               </div>
-             </div>
+            {/* SOCIAL LINKS CARD */}
+            {socialLinks.length > 0 && (
+              <div className="rounded-2xl p-6 flex items-center justify-between text-white shadow-card hover:shadow-card-hover transition-shadow duration-200">
+                <span className="font-heading font-extrabold uppercase tracking-[0.15em] text-[13px] text-black">
+                  {c.follow_us_heading}
+                </span>
+                <div className="flex items-center gap-2.5">
+                  {socialLinks.map(s => (
+                    <a
+                      key={s.name}
+                      href={s.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-xl border border-[#073B45] flex items-center justify-center text-[#073B45] hover:bg-[#073B45] hover:text-white transition-all duration-200"
+                      title={s.name}
+                    >
+                      {s.icon}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
 
           </div>
         </div>
@@ -730,73 +732,75 @@ Address: ${contactInfo.address.full}`
       {/* ═══════════════════════════════════════
           FAQ SECTION
       ═══════════════════════════════════════ */}
-      <section style={{ backgroundColor: '#EAFBFC', padding: '56px 0' }}>
-        <div className="max-w-[1280px] mx-auto px-5">
+      {!faqsFailed && faqs.length > 0 && (
+        <section style={{ backgroundColor: '#EAFBFC', padding: '56px 0' }}>
+          <div className="max-w-[1280px] mx-auto px-5">
 
-          {/* FAQ Header */}
-          <div className="text-center mb-10">
-            <span className="inline-flex items-center gap-2 text-[12px] font-bold text-primary bg-primary-light px-3 py-1.5 rounded-full mb-3">
-              <HelpCircle size={13} /> FAQ
-            </span>
-            <h2
-              className="font-heading font-extrabold text-gray-900"
-              style={{ fontSize: 'clamp(22px, 3vw, 30px)' }}
-            >
-              Frequently Asked Questions
-            </h2>
-            <p className="text-gray-500 text-[14px] mt-2 max-w-md mx-auto">
-              Quick answers to the most common questions.
-            </p>
-          </div>
-
-          {/* FAQ accordion */}
-          <div className="max-w-2xl mx-auto space-y-3">
-            {faqs.map((faq, i) => (
-              <div
-                key={i}
-                className={clsx(
-                  'bg-white rounded-2xl border overflow-hidden transition-all duration-200',
-                  openFaq === i
-                    ? 'border-primary '
-                    : 'border-gray-100 shadow-card hover:border-gray-200'
-                )}
+            {/* FAQ Header */}
+            <div className="text-center mb-10">
+              <span className="inline-flex items-center gap-2 text-[12px] font-bold text-primary bg-primary-light px-3 py-1.5 rounded-full mb-3">
+                <HelpCircle size={13} /> {c.faq_eyebrow}
+              </span>
+              <h2
+                className="font-heading font-extrabold text-gray-900"
+                style={{ fontSize: 'clamp(22px, 3vw, 30px)' }}
               >
-                <button
-                  onClick={() => setOpenFaq(openFaq === i ? null : i)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left gap-4"
+                {c.faq_heading}
+              </h2>
+              <p className="text-gray-500 text-[14px] mt-2 max-w-md mx-auto">
+                {c.faq_subtext}
+              </p>
+            </div>
+
+            {/* FAQ accordion */}
+            <div className="max-w-2xl mx-auto space-y-3">
+              {faqs.map((faq, i) => (
+                <div
+                  key={faq.id}
+                  className={clsx(
+                    'bg-white rounded-2xl border overflow-hidden transition-all duration-200',
+                    openFaq === i
+                      ? 'border-primary '
+                      : 'border-gray-100 shadow-card hover:border-gray-200'
+                  )}
                 >
-                  <span
-                    className={clsx(
-                      'font-semibold text-[14px] transition-colors',
-                      openFaq === i ? 'text-primary' : 'text-gray-800'
-                    )}
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full flex items-center justify-between px-5 py-4 text-left gap-4"
                   >
-                    {faq.q}
-                  </span>
-                  <div
-                    className={clsx(
-                      'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200',
-                      openFaq === i
-                        ? 'bg-primary text-white rotate-180'
-                        : 'bg-gray-100 text-gray-400'
-                    )}
-                  >
-                    <ChevronDown size={15} />
-                  </div>
-                </button>
+                    <span
+                      className={clsx(
+                        'font-semibold text-[14px] transition-colors',
+                        openFaq === i ? 'text-primary' : 'text-gray-800'
+                      )}
+                    >
+                      {faq.question}
+                    </span>
+                    <div
+                      className={clsx(
+                        'w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-200',
+                        openFaq === i
+                          ? 'bg-primary text-white rotate-180'
+                          : 'bg-gray-100 text-gray-400'
+                      )}
+                    >
+                      <ChevronDown size={15} />
+                    </div>
+                  </button>
 
-                {openFaq === i && (
-                  <div className="px-5 pb-5">
-                    <div className="h-px bg-gray-100 mb-4" />
-                    <p className="text-[13px] text-gray-600 leading-relaxed">{faq.a}</p>
-                  </div>
-                )}
-              </div>
-            ))}
+                  {openFaq === i && (
+                    <div className="px-5 pb-5">
+                      <div className="h-px bg-gray-100 mb-4" />
+                      <p className="text-[13px] text-gray-600 leading-relaxed">{faq.answer}</p>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+
           </div>
-
-        </div>
-      </section>
+        </section>
+      )}
 
     </main>
   )

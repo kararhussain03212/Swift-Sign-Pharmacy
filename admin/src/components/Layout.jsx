@@ -33,7 +33,12 @@ const NAV = [
   // Other Settings
   { path: "/settings/product",  label: "Product Page" },
   { path: "/settings/blog",     label: "Blog Page" },
-  { path: "/contact-settings",  label: "Contact Page" },
+  // Contact Page
+  { path: "/contact-settings", label: "Contact Page", group: "contactUs" },
+  { path: "/contact-settings",    label: "Page Content", child: true, childGroup: "contactUs" },
+  { path: "/contact-info-cards",  label: "Info Cards",   child: true, childGroup: "contactUs" },
+  { path: "/contact-faqs",        label: "FAQs",         child: true, childGroup: "contactUs" },
+  { path: "/contact-messages",    label: "Submissions",  child: true, childGroup: "contactUs" },
   // Arion Pharmacy — Header module
   { path: "/header", label: "Header", group: "header" },
   { path: "/header/announcement-bar", label: "Announcement Bar", child: true, childGroup: "header" },
@@ -65,6 +70,10 @@ const PAGE_TITLES = {
   "/testimonials/new":               "Add Testimonial",
   "/contact-messages":               "Contact Messages",
   "/contact-settings":               "Contact Page Settings",
+  "/contact-info-cards":             "Contact Info Cards",
+  "/contact-info-cards/new":         "Add Info Card",
+  "/contact-faqs":                   "Contact FAQs",
+  "/contact-faqs/new":               "Add FAQ",
   "/settings/navbar":                "Navbar Settings",
   "/settings/home":                  "Home Settings",
   "/settings/home-about":            "Home - Our Story",
@@ -121,6 +130,7 @@ export default function Layout({ children }) {
   const [aboutManual,      setAboutManual]       = useState(false);
   const [headerManual,     setHeaderManual]      = useState(false);
   const [storeLocatorManual, setStoreLocatorManual] = useState(false);
+  const [contactUsManual,   setContactUsManual]     = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -134,6 +144,11 @@ export default function Layout({ children }) {
   const aboutOpen  = aboutManual  || location.pathname.startsWith("/about/");
   const headerOpen = headerManual || location.pathname.startsWith("/header/");
   const storeLocatorOpen = storeLocatorManual || location.pathname.startsWith("/store-locator/");
+  const contactUsOpen = contactUsManual
+    || location.pathname === "/contact-settings"
+    || location.pathname.startsWith("/contact-info-cards")
+    || location.pathname.startsWith("/contact-faqs")
+    || location.pathname.startsWith("/contact-messages");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -164,6 +179,8 @@ export default function Layout({ children }) {
     if (PAGE_TITLES[location.pathname]) return PAGE_TITLES[location.pathname];
     if (location.pathname.startsWith("/store-locator/branches/edit")) return "Edit Branch";
     if (location.pathname.startsWith("/store-locator/gallery/edit"))  return "Edit Gallery Image";
+    if (location.pathname.startsWith("/contact-info-cards/edit"))     return "Edit Info Card";
+    if (location.pathname.startsWith("/contact-faqs/edit"))           return "Edit FAQ";
     if (location.pathname.startsWith("/sliders/edit"))           return "Edit Hero Slide";
     if (location.pathname.startsWith("/products/edit"))          return "Edit Product";
     if (location.pathname.startsWith("/commitment/edit"))        return "Edit Commitment Item";
@@ -329,6 +346,33 @@ export default function Layout({ children }) {
                       {NAV.filter((e) => e.child && e.childGroup === "storeLocator").map((e) => (
                         <Link
                           key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Contact Page dropdown */
+            if (item.group === "contactUs") {
+              const active = contactUsOpen;
+              return (
+                <div key="contact-us-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setContactUsManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${contactUsOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {contactUsOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "contactUs").map((e) => (
+                        <Link
+                          key={e.label}
                           to={e.path}
                           onClick={closeSidebar}
                           className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
