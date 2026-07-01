@@ -14,7 +14,7 @@ const MobileBottomNav = () => {
     .map(cat => ({
       name: cat.name,
       slug: cat.slug,
-      to: `/shop?category=${cat.slug}`,
+      to: `/shop/${cat.slug}`,
       subCategories: cat.subCategories || []
     }))
 
@@ -128,10 +128,10 @@ const MobileBottomNav = () => {
                         const subName = typeof sub === 'object' ? sub.name : sub
                         const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
                         const isViewAll = subSlug.startsWith('all-')
-                        let subTo = `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                        let subTo = `/shop/${item.slug}/${encodeURIComponent(subSlug)}`
 
                         if (isViewAll) {
-                          subTo = `/shop?category=${item.slug}`
+                          subTo = `/shop/${item.slug}`
                         }
 
                         return (

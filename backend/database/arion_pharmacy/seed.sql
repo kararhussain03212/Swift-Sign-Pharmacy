@@ -10,8 +10,8 @@ INSERT IGNORE INTO `announcement_bar` (`id`, `text`, `icon`, `is_active`, `sort_
 (4, 'Limited Period Offer: Get up to 10% off + extra 15% off on medicines & more offers.', NULL, 1, 4);
 
 -- Site settings (single row)
-INSERT IGNORE INTO `site_settings` (`id`, `logo_url`, `site_name`, `hot_deals_link`, `hot_deals_enabled`, `country`, `license_number`) VALUES
-(1, NULL, 'Arion Pharmacy', '/shop?deals=true', 1, 'Pakistan', '2659-A/2014-PC');
+INSERT IGNORE INTO `site_settings` (`id`, `logo_url`, `site_name`, `hot_deals_link`, `hot_deals_text`, `hot_deals_enabled`, `prescription_link`, `prescription_text`, `prescription_enabled`, `country`, `license_number`) VALUES
+(1, NULL, 'Arion Pharmacy', '/shop/deals', 'Hot Deals', 1, '/asaan-order', 'Prescription', 1, 'Pakistan', '2659-A/2014-PC');
 
 -- Nav links (Navbar.jsx primary links)
 INSERT IGNORE INTO `nav_links` (`id`, `label`, `url`, `sort_order`, `is_active`) VALUES
@@ -21,25 +21,9 @@ INSERT IGNORE INTO `nav_links` (`id`, `label`, `url`, `sort_order`, `is_active`)
 (4, 'Store Locator', '/store-locator', 4, 1),
 (5, 'Contact', '/contact', 5, 1);
 
--- Categories (top-level)
-INSERT IGNORE INTO `categories` (`id`, `name`, `slug`, `parent_id`, `icon_url`, `sort_order`, `is_active`) VALUES
-(1, 'Diseases', 'diseases', NULL, NULL, 1, 1),
-(2, 'Medicines', 'medicines', NULL, NULL, 2, 1),
-(3, 'Vitamins & Supplements', 'vitamins-supplements', NULL, NULL, 3, 1),
-(4, 'Personal Care', 'personal-care', NULL, NULL, 4, 1),
-(5, 'Baby Care', 'baby-care', NULL, NULL, 5, 1),
-(6, 'Lifestyle & Fitness', 'lifestyle-fitness', NULL, NULL, 6, 1),
-(7, 'Organic', 'organic', NULL, NULL, 7, 1),
-(8, 'Healthcare Device', 'healthcare-device', NULL, NULL, 8, 1),
-(9, 'Obesity', 'obesity', NULL, NULL, 9, 1);
-
--- Categories (sample subcategories)
-INSERT IGNORE INTO `categories` (`id`, `name`, `slug`, `parent_id`, `icon_url`, `sort_order`, `is_active`) VALUES
-(10, 'Prescription Medicines', 'prescription-medicines', 2, NULL, 1, 1),
-(11, 'Over the Counter (OTC)', 'otc', 2, NULL, 2, 1),
-(12, 'Pain Relief', 'pain-relief', 2, NULL, 3, 1),
-(13, 'Oral Hygiene', 'oral-hygiene', 4, NULL, 1, 1),
-(14, 'Skin Care', 'skin-care', 4, NULL, 2, 1);
+-- Categories: seeded separately by backend/seeds/seed_categories.php, which is the
+-- single source of truth (mirrors src/data/categories.js, including subcategories).
+-- Run it after this file: php backend/seeds/seed_categories.php
 
 -- Locations (placeholder + sample cities)
 INSERT IGNORE INTO `locations` (`id`, `name`, `is_active`) VALUES
@@ -47,3 +31,7 @@ INSERT IGNORE INTO `locations` (`id`, `name`, `is_active`) VALUES
 (2, 'Islamabad', 1),
 (3, 'Lahore', 1),
 (4, 'Karachi', 1);
+
+-- Hero banner slides: seeded separately by backend/seeds/seed_hero_slides.php, which is
+-- the single source of truth (mirrors the slides previously hardcoded in HeroBanner.jsx).
+-- Run it after this file: php backend/seeds/seed_hero_slides.php

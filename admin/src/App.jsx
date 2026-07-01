@@ -35,6 +35,8 @@ import HeaderSiteSettings from "./pages/header/HeaderSiteSettings";
 import NavLinkList from "./pages/header/NavLinkList";
 import CategoryList from "./pages/header/CategoryList";
 import LocationList from "./pages/header/LocationList";
+import HeroSlideList from "./pages/header/HeroSlideList";
+import HeroSlideForm from "./pages/header/HeroSlideForm";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -471,6 +473,9 @@ export default function App() {
           <Route path="/header/nav-links"        element={<ProtectedPage><NavLinkList /></ProtectedPage>} />
           <Route path="/header/categories"       element={<ProtectedPage><CategoryList /></ProtectedPage>} />
           <Route path="/header/locations"        element={<ProtectedPage><LocationList /></ProtectedPage>} />
+          <Route path="/header/hero-slides"           element={<ProtectedPage><HeroSlideList /></ProtectedPage>} />
+          <Route path="/header/hero-slides/new"       element={<ProtectedPage><HeroSlideForm /></ProtectedPage>} />
+          <Route path="/header/hero-slides/edit/:id"  element={<ProtectedPage><HeroSlideForm /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

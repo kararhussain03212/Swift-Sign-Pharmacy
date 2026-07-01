@@ -1,7 +1,5 @@
 import { Fragment, useEffect, useState } from "react";
 import { createCategory, deleteCategory, getCategoriesNested, updateCategory } from "../../api/categoryApi";
-import { uploadImage } from "../../api/uploadApi";
-import { getBackendRoot } from "../../api/runtimeApi";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
 
@@ -17,8 +15,6 @@ const blankDraft = (nextOrder) => ({
   parent_id: "",
   sort_order: nextOrder,
   is_active: true,
-  iconFile: null,
-  iconPreview: "",
   slugTouched: false,
 });
 
@@ -84,8 +80,6 @@ export default function CategoryList() {
       parent_id: item.parent_id ?? "",
       sort_order: Number(item.sort_order ?? 1),
       is_active: item.is_active === 1 || item.is_active === true,
-      iconFile: null,
-      iconPreview: item.icon_url || "",
       slugTouched: true,
     });
   };
@@ -109,13 +103,6 @@ export default function CategoryList() {
         sort_order: Number(draft.sort_order || 1),
         is_active: draft.is_active ? 1 : 0,
       };
-
-      if (draft.iconFile) {
-        const oldPath = editingId !== "new" && draft.iconPreview ? draft.iconPreview.replace(/^.*\/uploads\//, "") : "";
-        payload.icon_url = await uploadImage(draft.iconFile, "icons", oldPath);
-      } else if (draft.iconPreview) {
-        payload.icon_url = draft.iconPreview.replace(/.*\/uploads\//, "");
-      }
 
       if (editingId === "new") await createCategory(payload);
       else await updateCategory(editingId, payload);
@@ -153,13 +140,6 @@ export default function CategoryList() {
     } catch {
       setError("Delete failed.");
     }
-  };
-
-  const resolveIcon = (value) => {
-    if (!value) return "";
-    if (value.startsWith("blob:") || /^https?:\/\//i.test(value)) return value;
-    const root = getBackendRoot();
-    return value.startsWith("/") ? `${root}${value}` : `${root}/uploads/${value}`;
   };
 
   const inputCls =
@@ -318,25 +298,6 @@ export default function CategoryList() {
                               </select>
                             </div>
 
-                            <div>
-                              <label className="mb-1 block text-xs text-[var(--arion-muted)]">Icon (optional)</label>
-                              <div className="flex items-center gap-2">
-                                {draft.iconPreview && (
-                                  <img src={resolveIcon(draft.iconPreview)} alt="" className="h-9 w-9 rounded-md object-cover" />
-                                )}
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => {
-                                    const file = e.target.files?.[0];
-                                    if (!file) return;
-                                    setField("iconFile", file);
-                                    setField("iconPreview", URL.createObjectURL(file));
-                                  }}
-                                  className="text-xs text-[var(--arion-ink)] file:mr-2 file:rounded-md file:border-0 file:bg-[var(--arion-cyan)] file:px-2.5 file:py-1.5 file:text-xs file:text-white"
-                                />
-                              </div>
-                            </div>
                           </div>
                         </td>
                       </tr>

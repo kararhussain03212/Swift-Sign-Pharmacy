@@ -21,7 +21,7 @@ const buildNavItems = () => {
     .map(cat => ({
       name: cat.name,
       slug: cat.slug,
-      to: `/shop?category=${cat.slug}`,
+      to: `/shop/${cat.slug}`,
       subCategories: cat.subCategories || []
     }))
 
@@ -93,7 +93,7 @@ const SecondaryNav = () => {
                 <div key={item.name} className="relative group/nav h-full flex items-center min-w-0">
                   <Link
                     to={item.to}
-                    className="flex items-center gap-0.5 sm:gap-1 text-gray-600 hover:text-primary
+                    className="flex items-center gap-0.5 sm:gap-1 text-red-600 hover:text-red-700
                                transition-colors duration-[150ms] whitespace-nowrap relative overflow-hidden text-ellipsis min-w-0 max-w-full"
                     style={{
                       fontSize: 'clamp(10px, 1vw, 13px)',
@@ -109,7 +109,7 @@ const SecondaryNav = () => {
                     )}
 
                     {/* Active indicator underline on hover */}
-                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary
+                    <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-red-600
                                      scale-x-0 group-hover/nav:scale-x-100
                                      transition-transform duration-[150ms] origin-left" />
                   </Link>
@@ -133,7 +133,7 @@ const SecondaryNav = () => {
                         const isViewAll = subSlug.startsWith('all-')
                         let subTo = item.slug === 'diseases'
                           ? `/shop?diseaseCategory=${encodeURIComponent(subSlug)}`
-                          : `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                          : `/shop/${item.slug}/${encodeURIComponent(subSlug)}`
 
                         // If it's an "All ..." button, go to /shop with no filters (show all products)
                         if (isViewAll) {

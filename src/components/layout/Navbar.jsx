@@ -21,7 +21,7 @@ const FALLBACK_NAV_ITEMS = [
     .map(cat => ({
       name: cat.name,
       slug: cat.slug,
-      to: `/shop?category=${cat.slug}`,
+      to: `/shop/${cat.slug}`,
       subCategories: cat.subCategories || []
     }))
 ]
@@ -40,7 +40,7 @@ const mergeNavItems = (apiCategories) => {
       return {
         name: apiRow?.name || cat.name,
         slug: cat.slug,
-        to: `/shop?category=${cat.slug}`,
+        to: `/shop/${cat.slug}`,
         subCategories: apiChildren.length > 0 ? apiChildren : (cat.subCategories || []),
       }
     })
@@ -142,7 +142,7 @@ const Navbar = () => {
                           {item.subCategories.map(sub => {
                             const subName = typeof sub === 'object' ? sub.name : sub
                             const subSlug = typeof sub === 'object' ? sub.slug : sub.toLowerCase().replace(/[^a-z0-9]+/g, '-')
-                            const subTo = `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                            const subTo = `/shop/${item.slug}/${encodeURIComponent(subSlug)}`
 
                             return (
                               <Link
@@ -163,7 +163,7 @@ const Navbar = () => {
                             const isViewAll = subSlug.startsWith('all-')
                             let subTo = item.slug === 'diseases'
                               ? `/shop?diseaseCategory=${encodeURIComponent(subSlug)}`
-                              : `/shop?category=${item.slug}&subCategory=${encodeURIComponent(subSlug)}`
+                              : `/shop/${item.slug}/${encodeURIComponent(subSlug)}`
 
                             if (isViewAll) {
                               subTo = `/shop`

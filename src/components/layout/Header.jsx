@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import { Search, User, ShoppingCart, X, Menu, ChevronRight, MapPin } from 'lucide-react'
+import { Search, User, ShoppingCart, X, Menu, ChevronRight, MapPin, Heart } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useLocationStore from '../../store/locationStore'
+import useWishlistStore from '../../store/wishlistStore'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
 import LocationSelector from '../modals/LocationSelector'
@@ -20,8 +21,12 @@ const navLinks = [
 const FALLBACK_SITE_SETTINGS = {
   site_name: 'Arion Pharmacy',
   logo_url: null,
-  hot_deals_link: '/shop?deals=true',
+  hot_deals_link: '/shop/deals',
+  hot_deals_text: 'Hot Deals',
   hot_deals_enabled: 1,
+  prescription_link: '/asaan-order',
+  prescription_text: 'Prescription',
+  prescription_enabled: 1,
   country: 'Pakistan',
 }
 
@@ -36,6 +41,7 @@ const Header = () => {
 
   const { items: cartItems } = useCartStore()
   const { location } = useLocationStore()
+  const { items: wishlistItems } = useWishlistStore()
   const [siteSettings, setSiteSettings] = useState(null)
 
   const cartCount = cartItems.reduce((sum, i) => sum + i.quantity, 0)
@@ -215,6 +221,22 @@ const Header = () => {
               <User size={24} strokeWidth={1.75} />
             </button>
 
+            {/* Wishlist (lg+) */}
+            <Link
+              to="/wishlist"
+              className="hidden lg:flex text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
+              aria-label="Wishlist"
+            >
+              <Heart className="w-[20px] h-[20px]" strokeWidth={1.75} />
+              {wishlistItems.length > 0 && (
+                <span className="absolute top-0 right-0 flex items-center justify-center
+                                 text-white font-bold rounded-full animate-pulse-glow"
+                      style={{ width: '15px', height: '15px', fontSize: '9px', backgroundColor: '#0FAFB8' }}>
+                  {wishlistItems.length}
+                </span>
+              )}
+            </Link>
+
             {/* Cart */}
             <button
               className="relative text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
@@ -343,11 +365,11 @@ const Header = () => {
           {/* Bottom Actions */}
           <div className="mt-auto p-5 border-t border-gray-100 bg-gray-50">
             <Link
-              to="/asaan-order"
+              to={resolvedSettings.prescription_link || '/asaan-order'}
               onClick={() => setIsMobileSidebarOpen(false)}
               className="flex items-center justify-center gap-2 bg-[#0FAFB8] text-white w-full py-3 rounded-xl font-bold text-sm hover:bg-[#0a9aa5] transition-colors"
             >
-              Upload Prescription
+              {resolvedSettings.prescription_text || 'Prescription'}
             </Link>
           </div>
         </div>

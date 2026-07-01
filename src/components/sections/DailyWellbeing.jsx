@@ -8,7 +8,7 @@ import SectionHeader from '../ui/SectionHeader'
 const DailyWellbeing = () => {
   const prevRef = useRef(null)
   const nextRef = useRef(null)
-  const comboProducts = products.filter(p => p.tags.includes('combo'))
+  const comboProducts = products.filter(p => p.category === 'lifestyle-fitness')
 
   return (
     <section className="bg-primary-light mt-8 sm:mt-10 py-8 sm:py-10">

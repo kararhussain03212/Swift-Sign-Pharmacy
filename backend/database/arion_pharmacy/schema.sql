@@ -1,6 +1,6 @@
 -- Arion Pharmacy — Header module schema
 -- Database: arion_pharmacy
--- Tables: announcement_bar, site_settings, nav_links, categories, locations
+-- Tables: announcement_bar, site_settings, nav_links, categories, locations, hero_slides
 
 CREATE DATABASE IF NOT EXISTS `arion_pharmacy` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE `arion_pharmacy`;
@@ -20,7 +20,11 @@ CREATE TABLE IF NOT EXISTS `site_settings` (
     `logo_url`          VARCHAR(500) DEFAULT NULL,
     `site_name`         VARCHAR(180) NOT NULL DEFAULT 'Arion Pharmacy',
     `hot_deals_link`    VARCHAR(500) DEFAULT NULL,
+    `hot_deals_text`    VARCHAR(180) DEFAULT 'Hot Deals',
     `hot_deals_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+    `prescription_link`    VARCHAR(500) DEFAULT '/asaan-order',
+    `prescription_text` VARCHAR(180) DEFAULT 'Prescription',
+    `prescription_enabled` TINYINT(1) NOT NULL DEFAULT 1,
     `country`           VARCHAR(120) DEFAULT NULL,
     `license_number`    VARCHAR(120) DEFAULT NULL,
     `created_at`        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -42,7 +46,6 @@ CREATE TABLE IF NOT EXISTS `categories` (
     `name`       VARCHAR(180) NOT NULL,
     `slug`       VARCHAR(180) NOT NULL,
     `parent_id`  INT UNSIGNED DEFAULT NULL,
-    `icon_url`   VARCHAR(500) DEFAULT NULL,
     `sort_order` SMALLINT NOT NULL DEFAULT 0,
     `is_active`  TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -58,4 +61,19 @@ CREATE TABLE IF NOT EXISTS `locations` (
     `is_active`  TINYINT(1) NOT NULL DEFAULT 1,
     `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `hero_slides` (
+    `id`             INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `heading`        VARCHAR(255) NOT NULL,
+    `firsttext`      VARCHAR(255) DEFAULT NULL,
+    `secondtext`     VARCHAR(255) DEFAULT NULL,
+    `image`          VARCHAR(500) DEFAULT NULL,
+    `heading_color`  VARCHAR(20) DEFAULT '#1a365d',
+    `subtext_color`  VARCHAR(20) DEFAULT '#2c5282',
+    `centered`       TINYINT(1) NOT NULL DEFAULT 0,
+    `sort_order`     SMALLINT NOT NULL DEFAULT 0,
+    `is_active`      TINYINT(1) NOT NULL DEFAULT 1,
+    `created_at`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at`     DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

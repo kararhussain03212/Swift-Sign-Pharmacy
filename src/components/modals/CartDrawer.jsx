@@ -83,7 +83,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                       {item.name}
                     </p>
                     <p className="text-primary text-[13px] font-bold mt-0.5">
-                      ${(item.salePrice ?? item.price).toFixed(2)}
+                      ₨{(item.salePrice ?? item.price).toFixed(0)}
                     </p>
                     {/* Qty controls */}
                     <div className="flex items-center gap-1.5 mt-1.5">
@@ -128,7 +128,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
             <div className="flex items-center justify-between">
               <span className="text-sm text-gray-500">Subtotal</span>
               <span className="font-bold text-gray-900 text-lg">
-                ${total.toFixed(2)}
+                ₨{total.toFixed(0)}
               </span>
             </div>
             <p className="text-[11px] text-gray-400 text-center">
@@ -140,7 +140,7 @@ const CartDrawer = ({ isOpen, onClose }) => {
                          rounded-full py-3 text-sm transition-all 
                          hover:shadow-lg hover:-translate-y-0.5"
             >
-              Checkout · ${total.toFixed(2)}
+              Checkout · ₨{total.toFixed(0)}
             </button>
             <button
               onClick={() => { onClose(); navigate('/shop') }}

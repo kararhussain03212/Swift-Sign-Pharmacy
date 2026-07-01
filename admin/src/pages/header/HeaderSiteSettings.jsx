@@ -6,8 +6,12 @@ import ImageUpload from "../../components/ImageUpload";
 
 const getInitialForm = () => ({
   site_name: "Arion Pharmacy",
-  hot_deals_link: "/shop?deals=true",
+  hot_deals_link: "/shop/deals",
+  hot_deals_text: "Hot Deals",
   hot_deals_enabled: true,
+  prescription_link: "/asaan-order",
+  prescription_text: "Prescription",
+  prescription_enabled: true,
   country: "",
   license_number: "",
   logoFile: null,
@@ -31,8 +35,12 @@ export default function HeaderSiteSettings() {
         const item = res.data?.data ?? {};
         setForm({
           site_name: item.site_name || "Arion Pharmacy",
-          hot_deals_link: item.hot_deals_link || "/shop?deals=true",
+          hot_deals_link: item.hot_deals_link || "/shop/deals",
+          hot_deals_text: item.hot_deals_text || "Hot Deals",
           hot_deals_enabled: item.hot_deals_enabled === 1 || item.hot_deals_enabled === true,
+          prescription_link: item.prescription_link || "/asaan-order",
+          prescription_text: item.prescription_text || "Prescription",
+          prescription_enabled: item.prescription_enabled === 1 || item.prescription_enabled === true,
           country: item.country || "",
           license_number: item.license_number || "",
           logoFile: null,
@@ -56,7 +64,11 @@ export default function HeaderSiteSettings() {
       const payload = {
         site_name: form.site_name.trim() || "Arion Pharmacy",
         hot_deals_link: form.hot_deals_link.trim(),
+        hot_deals_text: form.hot_deals_text.trim() || "Hot Deals",
         hot_deals_enabled: form.hot_deals_enabled ? 1 : 0,
+        prescription_link: form.prescription_link.trim(),
+        prescription_text: form.prescription_text.trim() || "Prescription",
+        prescription_enabled: form.prescription_enabled ? 1 : 0,
         country: form.country.trim(),
         license_number: form.license_number.trim(),
       };
@@ -128,9 +140,15 @@ export default function HeaderSiteSettings() {
           </div>
         </div>
 
-        <div>
-          <label className={labelCls}>Hot Deals Link</label>
-          <input value={form.hot_deals_link} onChange={(e) => setField("hot_deals_link", e.target.value)} className={inputCls} placeholder="/shop?deals=true" />
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelCls}>Hot Deals Link</label>
+            <input value={form.hot_deals_link} onChange={(e) => setField("hot_deals_link", e.target.value)} className={inputCls} placeholder="/shop/deals" />
+          </div>
+          <div>
+            <label className={labelCls}>Hot Deals Button Text</label>
+            <input value={form.hot_deals_text} onChange={(e) => setField("hot_deals_text", e.target.value)} className={inputCls} placeholder="Hot Deals" />
+          </div>
         </div>
 
         <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--arion-muted)]">
@@ -141,6 +159,27 @@ export default function HeaderSiteSettings() {
             className="h-4 w-4"
           />
           Show "Hot Deals" button in header
+        </label>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className={labelCls}>Prescription Button Link</label>
+            <input value={form.prescription_link} onChange={(e) => setField("prescription_link", e.target.value)} className={inputCls} placeholder="/asaan-order" />
+          </div>
+          <div>
+            <label className={labelCls}>Prescription Button Text</label>
+            <input value={form.prescription_text} onChange={(e) => setField("prescription_text", e.target.value)} className={inputCls} placeholder="Prescription" />
+          </div>
+        </div>
+
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--arion-muted)]">
+          <input
+            type="checkbox"
+            checked={form.prescription_enabled}
+            onChange={(e) => setField("prescription_enabled", e.target.checked)}
+            className="h-4 w-4"
+          />
+          Show "Prescription" button in header
         </label>
 
         <div className="sticky bottom-4 flex justify-end pt-2">

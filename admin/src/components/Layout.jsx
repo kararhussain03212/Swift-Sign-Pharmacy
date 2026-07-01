@@ -41,6 +41,7 @@ const NAV = [
   { path: "/header/nav-links",        label: "Nav Links",        child: true, childGroup: "header" },
   { path: "/header/categories",       label: "Categories",       child: true, childGroup: "header" },
   { path: "/header/locations",        label: "Locations",        child: true, childGroup: "header" },
+  { path: "/header/hero-slides",      label: "Hero Banner",      child: true, childGroup: "header" },
 ];
 
 const PAGE_TITLES = {
@@ -76,6 +77,8 @@ const PAGE_TITLES = {
   "/header/nav-links":               "Nav Links",
   "/header/categories":              "Categories",
   "/header/locations":               "Locations",
+  "/header/hero-slides":             "Hero Banner",
+  "/header/hero-slides/new":         "Add Hero Slide",
 };
 
 /* nav-link class helpers */

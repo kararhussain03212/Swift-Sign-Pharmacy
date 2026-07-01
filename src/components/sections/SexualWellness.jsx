@@ -8,7 +8,7 @@ import SectionHeader from '../ui/SectionHeader'
 const SexualWellness = () => {
   const prevRef = useRef(null)
   const nextRef = useRef(null)
-  const trendingProducts = products.filter(p => p.tags.includes('trending'))
+  const trendingProducts = products.filter(p => p.category === 'sexual-wellness')
 
   return (
     <section className="max-w-[1450px] mx-auto px-4 sm:px-5 mt-8 sm:mt-10">

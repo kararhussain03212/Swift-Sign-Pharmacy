@@ -48,7 +48,7 @@ const ProductCard = ({ product, onQuickView }) => {
       onClick={() => navigate(`/product/${product.slug}`)}
       className="bg-white rounded-2xl border border-gray-100 overflow-hidden
                  shadow-card hover:shadow-card-hover hover:-translate-y-1
-                 transition-all duration-300 cursor-pointer group relative flex flex-col"
+                 transition-all duration-300 cursor-pointer group relative flex flex-col h-full"
     >
       {/* Discount badge */}
       {discount > 0 && (
@@ -98,7 +98,7 @@ const ProductCard = ({ product, onQuickView }) => {
         <p className="text-[9px] sm:text-[10px] text-text/60 font-medium">{product.brand}</p>
 
         {/* Name */}
-        <p className="text-xs sm:text-[13px] font-semibold text-text line-clamp-2
+        <p className="text-xs sm:text-[13px] font-semibold text-text line-clamp-2 min-h-[32px] sm:min-h-[37px]
                       leading-[1.35] sm:leading-[1.45] group-hover:text-primary transition-colors">
           {product.name}
         </p>
@@ -109,11 +109,11 @@ const ProductCard = ({ product, onQuickView }) => {
         {/* Price */}
         <div className="flex items-center gap-1.5 mt-auto pt-0.5 sm:pt-1">
           <span className="text-sm sm:text-[15px] font-bold text-primary">
-            ${(product.salePrice ?? product.price).toFixed(2)}
+            ₨{(product.salePrice ?? product.price).toFixed(0)}
           </span>
           {product.salePrice && (
             <span className="text-[9px] sm:text-[11px] text-text/50 line-through">
-              ${product.price.toFixed(2)}
+              ₨{product.price.toFixed(0)}
             </span>
           )}
         </div>

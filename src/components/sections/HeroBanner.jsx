@@ -1,13 +1,16 @@
+import { useEffect, useState } from 'react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Pagination, EffectFade } from 'swiper/modules'
+import { getHeroSlides, resolveUploadUrl } from '../../services/headerApi'
 
-const slides = [
+const DEFAULT_BG = '#eef6f5'
+
+const FALLBACK_SLIDES = [
   {
     id: 1,
     heading: 'Your Trusted Pharmacy, Online',
     firsttext: 'Bringing the store experience',
     secondtext: 'to your screen',
-    bgGradient: 'linear-gradient(to right, #f6f3eb, #a5d8d8)',
     headingColor: '#1a365d',
     subtextColor: '#2c5282',
     centered: false,
@@ -17,7 +20,6 @@ const slides = [
     heading: 'Free Pharmacist Support',
     firsttext: 'Upload your prescription and get expert',
     secondtext: 'guidance before ordering',
-    bgGradient: 'linear-gradient(to right, #f4f9f9, #bde0e0)',
     headingColor: '#1a365d',
     subtextColor: '#2c5282',
     centered: false,
@@ -27,7 +29,6 @@ const slides = [
     heading: 'Same Day Delivery',
     firsttext: 'Urgent delivery currently only available',
     secondtext: 'in Islamabad',
-    bgGradient: 'linear-gradient(to right, #f0fdf4, #a7f3d0)',
     headingColor: '#1a365d',
     subtextColor: '#2c5282',
     centered: false,
@@ -37,14 +38,40 @@ const slides = [
     heading: 'Fast & Reliable Delivery',
     firsttext: 'On-time delivery you',
     secondtext: 'can count on',
-    bgGradient: 'linear-gradient(to right, #f0fdf4, #a7f3d0)',
     headingColor: '#1a365d',
     subtextColor: '#2c5282',
     centered: false,
   },
 ]
 
+const mapSlide = (row) => ({
+  id: row.id,
+  heading: row.heading,
+  firsttext: row.firsttext,
+  secondtext: row.secondtext,
+  image: row.image ? resolveUploadUrl(row.image) : null,
+  headingColor: row.heading_color || '#1a365d',
+  subtextColor: row.subtext_color || '#2c5282',
+  centered: Number(row.centered) === 1,
+})
+
 const HeroBanner = () => {
+  const [slides, setSlides] = useState(FALLBACK_SLIDES)
+
+  useEffect(() => {
+    let active = true
+    getHeroSlides()
+      .then((data) => {
+        if (!active) return
+        const rows = Array.isArray(data) ? data.filter((row) => Number(row.is_active) === 1) : []
+        if (rows.length > 0) setSlides(rows.map(mapSlide))
+      })
+      .catch(() => {})
+    return () => {
+      active = false
+    }
+  }, [])
+
   return (
     <section className="hero-swiper relative">
       <Swiper
@@ -58,8 +85,14 @@ const HeroBanner = () => {
         {slides.map(slide => (
           <SwiperSlide key={slide.id}>
             <div
-              className="relative overflow-hidden"
-              style={{ background: slide.bgGradient, minHeight: 'clamp(280px, 45vw, 580px)' }}
+              className="relative overflow-hidden bg-cover bg-center"
+              style={{
+                backgroundImage: slide.image
+                  ? `url(${slide.image})`
+                  : undefined,
+                backgroundColor: slide.image ? undefined : DEFAULT_BG,
+                minHeight: 'clamp(280px, 45vw, 580px)',
+              }}
             >
               <div
                 className="max-w-[1450px] mx-auto px-4 sm:px-6 h-full flex items-center"

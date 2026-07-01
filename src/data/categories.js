@@ -33,7 +33,7 @@ export const categories = [
   {
     id: 3,
     name: 'Personal Care',
-    slug: 'personalCare',
+    slug: 'personal-care',
     showInNav: true,
     image: '/generic_serum_dropper.png',
     subCategories: [
@@ -46,7 +46,7 @@ export const categories = [
   {
     id: 4,
     name: 'Baby Care',
-    slug: 'babyCare',
+    slug: 'baby-care',
     showInNav: true,
     image: '/generic_baby_care.png',
     subCategories: [
@@ -112,7 +112,14 @@ export const categories = [
     slug: 'obesity',
     showInNav: true,
     image: '/jellybee_gummies.png',
-    subCategories: []
+    subCategories: [
+      { name: 'Weight Loss Supplements', slug: 'weight-loss-supplements' },
+      { name: 'Fat Burners', slug: 'fat-burners' },
+      { name: 'Appetite Suppressants', slug: 'appetite-suppressants' },
+      { name: 'Metabolism Boosters', slug: 'metabolism-boosters' },
+      { name: 'Diet Plans & Programs', slug: 'diet-plans-programs' },
+      { name: 'Fitness Equipment', slug: 'fitness-equipment' }
+    ]
   },
   {
     id: 10,

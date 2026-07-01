@@ -1,16 +1,19 @@
 import { useState, useEffect } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 import { products } from '../data/products'
 import { categories } from '../data/categories'
 import ProductCard from '../components/ui/ProductCard'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
 
 const Shop = () => {
+  const { category: categoryPathParam, subCategory: subCategoryPathParam } = useParams()
   const [searchParams] = useSearchParams()
-  const dealsParam = searchParams.get('deals') === 'true'
-  const subCategoryParam = searchParams.get('subCategory')
+  const dealsParamQuery = searchParams.get('deals') === 'true'
+  const dealsParamPath = categoryPathParam === 'deals'
+  const dealsParam = dealsParamQuery || dealsParamPath
+  const subCategoryParam = subCategoryPathParam || null
   const diseaseCategoryParam = searchParams.get('diseaseCategory')
-  const categoryParam = searchParams.get('category') || 'all'
+  const categoryParam = (categoryPathParam && categoryPathParam !== 'deals') ? categoryPathParam : 'all'
 
   const [selectedCategory, setSelectedCategory] = useState(categoryParam)
   const [searchQuery, setSearchQuery] = useState('')
@@ -18,16 +21,16 @@ const Shop = () => {
   const [showFilters, setShowFilters] = useState(false)
 
   useEffect(() => {
-    setSelectedCategory(searchParams.get('category') || 'all')
+    setSelectedCategory(categoryPathParam || 'all')
     setSearchQuery('')
-  }, [searchParams])
+  }, [categoryPathParam, subCategoryPathParam])
 
   const activeLabel = dealsParam
     ? '🔥 Hot Deals'
     : diseaseCategoryParam
     ? `Disease: ${decodeURIComponent(diseaseCategoryParam).replace(/-/g, ' ')}`
     : subCategoryParam
-    ? `Sub-Category: ${decodeURIComponent(subCategoryParam)}`
+    ? `Sub-Category: ${subCategoryParam}`
     : null
 
   const toSlug = str => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || ''
@@ -35,7 +38,7 @@ const Shop = () => {
   const filtered = products
     .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
     .filter(p => !dealsParam || p.salePrice)
-    .filter(p => !subCategoryParam || toSlug(p.subCategory) === decodeURIComponent(subCategoryParam))
+    .filter(p => !subCategoryParam || toSlug(p.subCategory) === subCategoryParam)
     .filter(p => !diseaseCategoryParam || toSlug(p.diseaseCategory) === diseaseCategoryParam)
     .filter(p =>
       searchQuery === '' ||

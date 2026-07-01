@@ -11,6 +11,7 @@ use Backend\Controllers\ContactController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
 use Backend\Controllers\HeroController;
+use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
@@ -24,6 +25,7 @@ use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
 
 require_once __DIR__ . '/../controllers/HeroController.php';
+require_once __DIR__ . '/../controllers/HeroBannerController.php';
 require_once __DIR__ . '/../controllers/ProductController.php';
 require_once __DIR__ . '/../controllers/ProductPageController.php';
 require_once __DIR__ . '/../controllers/TestimonialController.php';
@@ -180,4 +182,10 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/locations', [LocationController::class, 'store'], $mw);
     $router->put('/api/admin/locations/{id}', [LocationController::class, 'update'], $mw);
     $router->delete('/api/admin/locations/{id}', [LocationController::class, 'destroy'], $mw);
+
+    $router->get('/api/admin/hero-slides', [HeroBannerController::class, 'index'], $mw);
+    $router->get('/api/admin/hero-slides/{id}', [HeroBannerController::class, 'show'], $mw);
+    $router->post('/api/admin/hero-slides', [HeroBannerController::class, 'store'], $mw);
+    $router->put('/api/admin/hero-slides/{id}', [HeroBannerController::class, 'update'], $mw);
+    $router->delete('/api/admin/hero-slides/{id}', [HeroBannerController::class, 'destroy'], $mw);
 }

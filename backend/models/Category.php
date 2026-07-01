@@ -9,7 +9,7 @@ require_once __DIR__ . '/ArionBaseModel.php';
 final class Category extends ArionBaseModel
 {
     protected string $table = 'categories';
-    protected array $fillable = ['name', 'slug', 'parent_id', 'icon_url', 'sort_order', 'is_active'];
+    protected array $fillable = ['name', 'slug', 'parent_id', 'sort_order', 'is_active'];
 
     protected function defaultOrderBy(): string
     {

@@ -10,6 +10,7 @@ use Backend\Controllers\CategoryController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\HeroController;
+use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
@@ -21,6 +22,7 @@ use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
 
 require_once __DIR__ . '/../controllers/HeroController.php';
+require_once __DIR__ . '/../controllers/HeroBannerController.php';
 require_once __DIR__ . '/../controllers/ProductController.php';
 require_once __DIR__ . '/../controllers/ProductPageController.php';
 require_once __DIR__ . '/../controllers/TestimonialController.php';
@@ -77,4 +79,5 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/nav-links', [NavLinkController::class, 'publicIndex']);
     $router->get('/api/public/categories', [CategoryController::class, 'publicIndex']);
     $router->get('/api/public/locations', [LocationController::class, 'publicIndex']);
+    $router->get('/api/public/hero-slides', [HeroBannerController::class, 'publicIndex']);
 }

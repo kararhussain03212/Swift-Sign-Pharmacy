@@ -22,6 +22,7 @@ export const getSiteSettings = () => getJson('/public/site-settings')
 export const getNavLinks = () => getJson('/public/nav-links')
 export const getCategories = () => getJson('/public/categories')
 export const getLocations = () => getJson('/public/locations')
+export const getHeroSlides = () => getJson('/public/hero-slides')
 
 export const resolveUploadUrl = (path) => {
   if (!path) return ''

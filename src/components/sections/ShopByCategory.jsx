@@ -8,7 +8,7 @@ const ShopByCategory = () => {
       <SectionHeader title="Shop by Category" />
       <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2 sm:gap-3">
         {categories.map(cat => (
-          <Link key={cat.id} to={`/shop?category=${cat.slug}`}>
+          <Link key={cat.id} to={`/shop/${cat.slug}`}>
             <div
               className="bg-white border border-gray-100 rounded-xl p-2 sm:p-3
                          flex flex-col items-center text-center cursor-pointer

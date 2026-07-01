@@ -37,7 +37,9 @@ function App() {
         <div className="flex-1">
           <Routes>
             <Route path="/"                  element={<Home />}          />
-            <Route path="/shop"              element={<Shop />}          />
+            <Route path="/shop"                          element={<Shop />} />
+            <Route path="/shop/:category"                element={<Shop />} />
+            <Route path="/shop/:category/:subCategory"   element={<Shop />} />
             <Route path="/product/:slug"     element={<ProductDetail />} />
             <Route path="/cart"              element={<Cart />}          />
             <Route path="/wishlist"          element={<Wishlist />}      />

@@ -10,7 +10,9 @@ final class SiteSetting extends ArionBaseModel
 {
     protected string $table = 'site_settings';
     protected array $fillable = [
-        'logo_url', 'site_name', 'hot_deals_link',
-        'hot_deals_enabled', 'country', 'license_number',
+        'logo_url', 'site_name',
+        'hot_deals_link', 'hot_deals_text', 'hot_deals_enabled',
+        'prescription_link', 'prescription_text', 'prescription_enabled',
+        'country', 'license_number',
     ];
 }
