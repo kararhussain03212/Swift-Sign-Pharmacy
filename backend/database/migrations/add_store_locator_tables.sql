@@ -1,0 +1,55 @@
+-- Store Locator module — branches, network stats, page content, gallery
+USE `arion_pharmacy`;
+
+CREATE TABLE IF NOT EXISTS `store_branches` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(150) NOT NULL,
+  `address` VARCHAR(255) NOT NULL,
+  `area` VARCHAR(150) NOT NULL,
+  `city` VARCHAR(100) NOT NULL,
+  `latitude` DECIMAL(10,7) NOT NULL,
+  `longitude` DECIMAL(10,7) NOT NULL,
+  `phone` VARCHAR(30) DEFAULT NULL,
+  `hours_display` VARCHAR(150) NOT NULL,
+  `detail_slug` VARCHAR(220) NOT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `sort_order` INT NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `uq_detail_slug` (`detail_slug`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `store_network_stats` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `value` VARCHAR(20) NOT NULL,
+  `label` VARCHAR(100) NOT NULL,
+  `sort_order` INT NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `store_locator_content` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `page_title` VARCHAR(150) NOT NULL,
+  `page_subtitle` TEXT NOT NULL,
+  `network_eyebrow` VARCHAR(100) NOT NULL,
+  `network_heading` VARCHAR(200) NOT NULL,
+  `network_paragraph` TEXT NOT NULL,
+  `outlets_eyebrow` VARCHAR(100) NOT NULL,
+  `outlets_heading` VARCHAR(200) NOT NULL,
+  `outlets_paragraph` TEXT NOT NULL,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `store_gallery_images` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `image_url` VARCHAR(500) NOT NULL,
+  `alt_text` VARCHAR(255) DEFAULT NULL,
+  `sort_order` INT NOT NULL DEFAULT 0,
+  `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

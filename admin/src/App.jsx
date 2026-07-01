@@ -37,6 +37,12 @@ import CategoryList from "./pages/header/CategoryList";
 import LocationList from "./pages/header/LocationList";
 import HeroSlideList from "./pages/header/HeroSlideList";
 import HeroSlideForm from "./pages/header/HeroSlideForm";
+import StoreBranchList from "./pages/storeLocator/StoreBranchList";
+import StoreBranchForm from "./pages/storeLocator/StoreBranchForm";
+import StoreNetworkStatList from "./pages/storeLocator/StoreNetworkStatList";
+import StoreLocatorContentForm from "./pages/storeLocator/StoreLocatorContentForm";
+import StoreGalleryList from "./pages/storeLocator/StoreGalleryList";
+import StoreGalleryForm from "./pages/storeLocator/StoreGalleryForm";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -476,6 +482,15 @@ export default function App() {
           <Route path="/header/hero-slides"           element={<ProtectedPage><HeroSlideList /></ProtectedPage>} />
           <Route path="/header/hero-slides/new"       element={<ProtectedPage><HeroSlideForm /></ProtectedPage>} />
           <Route path="/header/hero-slides/edit/:id"  element={<ProtectedPage><HeroSlideForm /></ProtectedPage>} />
+
+          <Route path="/store-locator/branches"          element={<ProtectedPage><StoreBranchList /></ProtectedPage>} />
+          <Route path="/store-locator/branches/new"       element={<ProtectedPage><StoreBranchForm /></ProtectedPage>} />
+          <Route path="/store-locator/branches/edit/:id"  element={<ProtectedPage><StoreBranchForm /></ProtectedPage>} />
+          <Route path="/store-locator/stats"              element={<ProtectedPage><StoreNetworkStatList /></ProtectedPage>} />
+          <Route path="/store-locator/content"             element={<ProtectedPage><StoreLocatorContentForm /></ProtectedPage>} />
+          <Route path="/store-locator/gallery"             element={<ProtectedPage><StoreGalleryList /></ProtectedPage>} />
+          <Route path="/store-locator/gallery/new"         element={<ProtectedPage><StoreGalleryForm /></ProtectedPage>} />
+          <Route path="/store-locator/gallery/edit/:id"    element={<ProtectedPage><StoreGalleryForm /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

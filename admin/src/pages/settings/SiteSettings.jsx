@@ -175,6 +175,7 @@ const textFieldConfig = [
   { key: "blog_hero_title_accent",   section: "blog" },
   { key: "blog_hero_description",    section: "blog" },
   { key: "blog_search_placeholder",  section: "blog" },
+  { key: "blog_button_text",         section: "blog" },
   { key: "seo_home_meta_description", section: "home.seo" },
   { key: "seo_about_meta_description", section: "about.seo" },
   { key: "seo_product_meta_description", section: "product.seo" },

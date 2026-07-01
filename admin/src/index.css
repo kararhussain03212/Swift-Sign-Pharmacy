@@ -118,6 +118,34 @@ a {
   color: rgba(255, 255, 255, 0.85);
 }
 
+.admin-quill .ql-color,
+.admin-quill .ql-background {
+  display: flex;
+}
+
+.admin-quill .ql-picker-label {
+  background: var(--admin-card);
+  border-radius: 0.4rem;
+}
+
+.admin-quill .ql-picker-options {
+  background: var(--admin-card-elevated);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.4rem;
+  padding: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.5rem;
+}
+
+.admin-quill .ql-picker-item {
+  border-radius: 0.3rem;
+  cursor: pointer;
+  border: 1px solid var(--admin-border);
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
 .admin-calendar-panel.p-datepicker {
   font-size: 0.82rem;
   width: 18rem;

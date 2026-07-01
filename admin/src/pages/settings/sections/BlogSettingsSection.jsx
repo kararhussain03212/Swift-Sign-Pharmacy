@@ -6,6 +6,9 @@ const labelClass = "pt-1 text-sm font-semibold text-[var(--admin-ink)]";
 const rowClass =
   "grid grid-cols-1 gap-2 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-card-elevated)] p-3 md:grid-cols-[220px_1fr] md:items-start";
 
+const HEADING_MAX = 255;
+const BUTTON_MAX = 50;
+
 function Field({ label, hint, children }) {
   return (
     <div className={rowClass}>
@@ -18,11 +21,20 @@ function Field({ label, hint, children }) {
   );
 }
 
+function CharCount({ value, max }) {
+  const len = String(value || "").length;
+  return (
+    <p className={`mt-1 text-right text-[11px] ${len > max ? "text-red-400" : "text-[var(--admin-muted)]"}`}>
+      {len}/{max}
+    </p>
+  );
+}
+
 export default function BlogSettingsSection({ form, setField, toImageUrl, uploadToSetting }) {
   return (
     <div className="space-y-3">
       {/* ── Hero Text ────────────────────────────────── */}
-      <h3 className="text-xs font-semibold uppercase tracking-widest text-[var(--admin-muted)]">
+      <h3 className="pt-2 text-xs font-semibold uppercase tracking-widest text-[var(--admin-muted)]">
         Hero Section
       </h3>
 
@@ -36,33 +48,35 @@ export default function BlogSettingsSection({ form, setField, toImageUrl, upload
         />
       </Field>
 
-      <Field label="Hero Title" hint="First part of the large heading">
+      <Field label="Heading" hint="Main hero heading shown on the Articles page">
         <input
           type="text"
           value={form.blog_hero_title || ""}
-          onChange={(e) => setField("blog_hero_title", e.target.value)}
+          onChange={(e) => setField("blog_hero_title", e.target.value.slice(0, HEADING_MAX))}
           className={inputClass}
-          placeholder="Nourish Your Mind &"
+          placeholder="Health Articles & Wellness Tips"
+          maxLength={HEADING_MAX}
         />
+        <CharCount value={form.blog_hero_title} max={HEADING_MAX} />
       </Field>
 
-      <Field label="Title Accent" hint="Highlighted word(s) rendered in the accent colour">
+      <Field label="Title Accent" hint="Optional — highlighted word(s) rendered in a lighter shade">
         <input
           type="text"
           value={form.blog_hero_title_accent || ""}
           onChange={(e) => setField("blog_hero_title_accent", e.target.value)}
           className={inputClass}
-          placeholder="Body"
+          placeholder="Optional"
         />
       </Field>
 
-      <Field label="Description" hint="Subtitle paragraph below the heading">
+      <Field label="Subheading" hint="Subtitle paragraph below the heading">
         <textarea
           rows={3}
           value={form.blog_hero_description || ""}
           onChange={(e) => setField("blog_hero_description", e.target.value)}
           className={inputClass}
-          placeholder="Explore healthy living, natural nutrition…"
+          placeholder="Expert-written guides on medicine, nutrition, skincare, and living your healthiest life."
         />
       </Field>
 
@@ -72,8 +86,20 @@ export default function BlogSettingsSection({ form, setField, toImageUrl, upload
           value={form.blog_search_placeholder || ""}
           onChange={(e) => setField("blog_search_placeholder", e.target.value)}
           className={inputClass}
-          placeholder="Search articles, topics, ingredients..."
+          placeholder="Search articles..."
         />
+      </Field>
+
+      <Field label="Button Text" hint="Label on the search button">
+        <input
+          type="text"
+          value={form.blog_button_text || ""}
+          onChange={(e) => setField("blog_button_text", e.target.value.slice(0, BUTTON_MAX))}
+          className={inputClass}
+          placeholder="Search"
+          maxLength={BUTTON_MAX}
+        />
+        <CharCount value={form.blog_button_text} max={BUTTON_MAX} />
       </Field>
 
       {/* ── Hero Image ────────────────────────────────── */}

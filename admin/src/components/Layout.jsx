@@ -42,6 +42,12 @@ const NAV = [
   { path: "/header/categories",       label: "Categories",       child: true, childGroup: "header" },
   { path: "/header/locations",        label: "Locations",        child: true, childGroup: "header" },
   { path: "/header/hero-slides",      label: "Hero Banner",      child: true, childGroup: "header" },
+  // Store Locator
+  { path: "/store-locator", label: "Store Locator", group: "storeLocator" },
+  { path: "/store-locator/branches",      label: "Branches",      child: true, childGroup: "storeLocator" },
+  { path: "/store-locator/stats",         label: "Network Stats", child: true, childGroup: "storeLocator" },
+  { path: "/store-locator/content",       label: "Page Content",  child: true, childGroup: "storeLocator" },
+  { path: "/store-locator/gallery",       label: "Gallery",       child: true, childGroup: "storeLocator" },
 ];
 
 const PAGE_TITLES = {
@@ -79,6 +85,12 @@ const PAGE_TITLES = {
   "/header/locations":               "Locations",
   "/header/hero-slides":             "Hero Banner",
   "/header/hero-slides/new":         "Add Hero Slide",
+  "/store-locator/branches":         "Store Locator — Branches",
+  "/store-locator/branches/new":     "Add Branch",
+  "/store-locator/stats":            "Store Locator — Network Stats",
+  "/store-locator/content":          "Store Locator — Page Content",
+  "/store-locator/gallery":          "Store Locator — Gallery",
+  "/store-locator/gallery/new":      "Add Gallery Image",
 };
 
 /* nav-link class helpers */
@@ -108,6 +120,7 @@ export default function Layout({ children }) {
   const [homeManual,       setHomeManual]        = useState(false);
   const [aboutManual,      setAboutManual]       = useState(false);
   const [headerManual,     setHeaderManual]      = useState(false);
+  const [storeLocatorManual, setStoreLocatorManual] = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -120,6 +133,7 @@ export default function Layout({ children }) {
   const homeOpen   = homeManual   || location.pathname.startsWith("/settings/home");
   const aboutOpen  = aboutManual  || location.pathname.startsWith("/about/");
   const headerOpen = headerManual || location.pathname.startsWith("/header/");
+  const storeLocatorOpen = storeLocatorManual || location.pathname.startsWith("/store-locator/");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -148,6 +162,8 @@ export default function Layout({ children }) {
 
   const pageTitle = useMemo(() => {
     if (PAGE_TITLES[location.pathname]) return PAGE_TITLES[location.pathname];
+    if (location.pathname.startsWith("/store-locator/branches/edit")) return "Edit Branch";
+    if (location.pathname.startsWith("/store-locator/gallery/edit"))  return "Edit Gallery Image";
     if (location.pathname.startsWith("/sliders/edit"))           return "Edit Hero Slide";
     if (location.pathname.startsWith("/products/edit"))          return "Edit Product";
     if (location.pathname.startsWith("/commitment/edit"))        return "Edit Commitment Item";
@@ -284,6 +300,33 @@ export default function Layout({ children }) {
                   {headerOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "header").map((e) => (
+                        <Link
+                          key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Store Locator dropdown */
+            if (item.group === "storeLocator") {
+              const active = location.pathname.startsWith("/store-locator/");
+              return (
+                <div key="store-locator-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setStoreLocatorManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${storeLocatorOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {storeLocatorOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "storeLocator").map((e) => (
                         <Link
                           key={e.path}
                           to={e.path}

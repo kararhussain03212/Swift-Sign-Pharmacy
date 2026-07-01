@@ -104,6 +104,25 @@ final class BlogController extends BaseCrudController
         Response::success($post, 'Fetched successfully');
     }
 
+    public function publicLike(array $params): void
+    {
+        $slug = (string) ($params['slug'] ?? '');
+        if ($slug === '') {
+            Response::error('Invalid slug', 422);
+        }
+
+        $model = new BlogPost();
+        $post = $model->findBySlug($slug);
+        if (!$post || !($post['is_published'] ?? 0)) {
+            Response::error('Blog post not found', 404);
+        }
+
+        $likes = $model->incrementLikes((int) $post['id']);
+        Cache::clearAll();
+
+        Response::success(['likes_count' => $likes], 'Liked');
+    }
+
     public function publicSearch(array $params = []): void
     {
         $q = trim((string) ($this->query()['q'] ?? ''));

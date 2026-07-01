@@ -37,6 +37,7 @@ export default {
       fontFamily: {
         sans:    ['Inter', 'sans-serif'],
         heading: ['Inter', 'sans-serif'],
+        serif:   ['Lora', 'Georgia', 'serif'],
       },
       fontSize: {
         'token-sm':  ['12px', { lineHeight: '18px' }],

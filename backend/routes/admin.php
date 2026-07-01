@@ -18,6 +18,10 @@ use Backend\Controllers\ProductController;
 use Backend\Controllers\ProductPageController;
 use Backend\Controllers\SettingController;
 use Backend\Controllers\SiteSettingController;
+use Backend\Controllers\StoreBranchController;
+use Backend\Controllers\StoreGalleryController;
+use Backend\Controllers\StoreLocatorContentController;
+use Backend\Controllers\StoreNetworkStatController;
 use Backend\Controllers\TestimonialController;
 use Backend\Controllers\UploadController;
 use Backend\Controllers\UserController;
@@ -43,6 +47,10 @@ require_once __DIR__ . '/../controllers/SiteSettingController.php';
 require_once __DIR__ . '/../controllers/NavLinkController.php';
 require_once __DIR__ . '/../controllers/CategoryController.php';
 require_once __DIR__ . '/../controllers/LocationController.php';
+require_once __DIR__ . '/../controllers/StoreBranchController.php';
+require_once __DIR__ . '/../controllers/StoreNetworkStatController.php';
+require_once __DIR__ . '/../controllers/StoreLocatorContentController.php';
+require_once __DIR__ . '/../controllers/StoreGalleryController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -188,4 +196,29 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/hero-slides', [HeroBannerController::class, 'store'], $mw);
     $router->put('/api/admin/hero-slides/{id}', [HeroBannerController::class, 'update'], $mw);
     $router->delete('/api/admin/hero-slides/{id}', [HeroBannerController::class, 'destroy'], $mw);
+
+    // Store Locator — Branches
+    $router->get('/api/admin/store-locator/branches', [StoreBranchController::class, 'index'], $mw);
+    $router->get('/api/admin/store-locator/branches/{id}', [StoreBranchController::class, 'show'], $mw);
+    $router->post('/api/admin/store-locator/branches', [StoreBranchController::class, 'store'], $mw);
+    $router->put('/api/admin/store-locator/branches/{id}', [StoreBranchController::class, 'update'], $mw);
+    $router->delete('/api/admin/store-locator/branches/{id}', [StoreBranchController::class, 'destroy'], $mw);
+
+    // Store Locator — Network Stats
+    $router->get('/api/admin/store-locator/stats', [StoreNetworkStatController::class, 'index'], $mw);
+    $router->get('/api/admin/store-locator/stats/{id}', [StoreNetworkStatController::class, 'show'], $mw);
+    $router->post('/api/admin/store-locator/stats', [StoreNetworkStatController::class, 'store'], $mw);
+    $router->put('/api/admin/store-locator/stats/{id}', [StoreNetworkStatController::class, 'update'], $mw);
+    $router->delete('/api/admin/store-locator/stats/{id}', [StoreNetworkStatController::class, 'destroy'], $mw);
+
+    // Store Locator — Page Content (singleton id=1)
+    $router->get('/api/admin/store-locator/content', [StoreLocatorContentController::class, 'index'], $mw);
+    $router->put('/api/admin/store-locator/content', [StoreLocatorContentController::class, 'update'], $mw);
+
+    // Store Locator — Gallery
+    $router->get('/api/admin/store-locator/gallery', [StoreGalleryController::class, 'index'], $mw);
+    $router->get('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'show'], $mw);
+    $router->post('/api/admin/store-locator/gallery', [StoreGalleryController::class, 'store'], $mw);
+    $router->put('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'update'], $mw);
+    $router->delete('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'destroy'], $mw);
 }

@@ -21,6 +21,7 @@ import Diseases    from './pages/Diseases'
 import DiseaseDetail from './pages/DiseaseDetail'
 import AsaanOrder  from './pages/AsaanOrder'
 import StoreLocator from './pages/StoreLocator'
+import StoreBranchDetail from './pages/StoreBranchDetail'
 import Checkout     from './pages/Checkout'
 import Certification from './pages/Certification'
 
@@ -50,6 +51,7 @@ function App() {
             <Route path="/disease/:slug"     element={<DiseaseDetail />} />
             <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="/store-locator"     element={<StoreLocator />}  />
+            <Route path="/store-locator/:slug" element={<StoreBranchDetail />}  />
             <Route path="/checkout"          element={<Checkout />}      />
             <Route path="/certification"     element={<Certification />} />
             <Route path="*"                  element={<Home />}          />

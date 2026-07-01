@@ -5,8 +5,9 @@ import "quill/dist/quill.snow.css";
 const TOOLBAR_OPTIONS = [
   [{ header: [2, 3, false] }],
   ["bold", "italic", "underline"],
+  [{ color: [] }, { background: [] }],
   [{ list: "ordered" }, { list: "bullet" }],
-  ["link", "blockquote"],
+  ["blockquote", "link"],
   ["clean"],
 ];
 

@@ -17,6 +17,10 @@ use Backend\Controllers\ProductController;
 use Backend\Controllers\ProductPageController;
 use Backend\Controllers\SettingController;
 use Backend\Controllers\SiteSettingController;
+use Backend\Controllers\StoreBranchController;
+use Backend\Controllers\StoreGalleryController;
+use Backend\Controllers\StoreLocatorContentController;
+use Backend\Controllers\StoreNetworkStatController;
 use Backend\Controllers\TestimonialController;
 use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
@@ -37,6 +41,10 @@ require_once __DIR__ . '/../controllers/SiteSettingController.php';
 require_once __DIR__ . '/../controllers/NavLinkController.php';
 require_once __DIR__ . '/../controllers/CategoryController.php';
 require_once __DIR__ . '/../controllers/LocationController.php';
+require_once __DIR__ . '/../controllers/StoreBranchController.php';
+require_once __DIR__ . '/../controllers/StoreNetworkStatController.php';
+require_once __DIR__ . '/../controllers/StoreLocatorContentController.php';
+require_once __DIR__ . '/../controllers/StoreGalleryController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -51,6 +59,7 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/blog/search', [BlogController::class, 'publicSearch']);
     $router->get('/api/public/blog/settings', [BlogController::class, 'publicBlogSettings']);
     $router->get('/api/public/blog/{slug}', [BlogController::class, 'publicShowBySlug']);
+    $router->post('/api/public/blog/{slug}/like', [BlogController::class, 'publicLike']);
     $router->get('/api/public/settings', [SettingController::class, 'publicIndex']);
     $router->get('/api/public/contact-page',  [ContactController::class, 'publicContactPage']);
     $router->post('/api/public/contact', [ContactController::class, 'store']);
@@ -80,4 +89,11 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/categories', [CategoryController::class, 'publicIndex']);
     $router->get('/api/public/locations', [LocationController::class, 'publicIndex']);
     $router->get('/api/public/hero-slides', [HeroBannerController::class, 'publicIndex']);
+
+    // Store Locator
+    $router->get('/api/public/store-locator/branches', [StoreBranchController::class, 'publicIndex']);
+    $router->get('/api/public/store-locator/branches/{slug}', [StoreBranchController::class, 'publicShowBySlug']);
+    $router->get('/api/public/store-locator/stats', [StoreNetworkStatController::class, 'publicIndex']);
+    $router->get('/api/public/store-locator/content', [StoreLocatorContentController::class, 'publicIndex']);
+    $router->get('/api/public/store-locator/gallery', [StoreGalleryController::class, 'publicIndex']);
 }

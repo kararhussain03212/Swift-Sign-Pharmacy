@@ -14,8 +14,12 @@ const initialForm = {
   slug: "",
   category: "shilajit-wellness",
   excerpt: "",
+  watermarkText: "",
+  introHighlight: "",
   content: "",
   author: "Arion Wellness Team",
+  authorRole: "",
+  contentTypeLabel: "Guide",
   publishedAt: null,
   readTime: null,
   sortOrder: 1,
@@ -23,6 +27,9 @@ const initialForm = {
   imageFile: null,
   imagePreview: "",
   imageAltText: "",
+  avatarFile: null,
+  avatarPreview: "",
+  likesCount: 0,
 };
 
 const decodeHtmlEntities = (value) =>
@@ -117,8 +124,12 @@ export default function BlogForm() {
           slug:        decodeHtmlEntities(item.slug     || ""),
           category:    decodeHtmlEntities(item.category || "shilajit-wellness"),
           excerpt:     decodeHtmlEntities(item.excerpt  || ""),
+          watermarkText: decodeHtmlEntities(item.watermark_text || ""),
+          introHighlight: decodeHtmlEntities(item.intro_highlight || ""),
           content:     decodeHtmlEntities(item.content  || ""),
           author:      decodeHtmlEntities(item.author   || "Arion Wellness Team"),
+          authorRole:  decodeHtmlEntities(item.author_role || ""),
+          contentTypeLabel: decodeHtmlEntities(item.content_type_label || "Guide"),
           publishedAt: toDateValue(item.published_at),
           readTime:    item.read_time ? Number(item.read_time) : null,
           sortOrder:   Number(item.sort_order ?? 1),
@@ -126,6 +137,9 @@ export default function BlogForm() {
           imageFile:   null,
           imagePreview: toImageUrl(item.image || ""),
           imageAltText: item.image_alt_text || "",
+          avatarFile:  null,
+          avatarPreview: toImageUrl(item.author_avatar_url || ""),
+          likesCount:  Number(item.likes_count ?? 0),
         });
       } catch (err) {
         console.error(err);
@@ -160,15 +174,28 @@ export default function BlogForm() {
         imagePath = form.imagePreview.replace(apiRoot, "");
       }
 
+      let avatarPath = "";
+      if (form.avatarFile) {
+        const oldAvatarPath = isEditMode && form.avatarPreview ? form.avatarPreview.replace(apiRoot, "") : "";
+        avatarPath = await uploadImage(form.avatarFile, "blogs", oldAvatarPath);
+      } else if (form.avatarPreview) {
+        avatarPath = form.avatarPreview.replace(apiRoot, "");
+      }
+
       const payload = {
         title:         form.title.trim(),
         slug:          form.slug.trim(),
         category:      form.category.trim(),
         excerpt:       form.excerpt.trim(),
+        watermark_text: form.watermarkText.trim(),
+        intro_highlight: form.introHighlight.trim(),
         content:       form.content,
         image:         imagePath,
         image_alt_text: form.imageAltText.trim(),
         author:        form.author.trim(),
+        author_role:   form.authorRole.trim(),
+        author_avatar_url: avatarPath,
+        content_type_label: form.contentTypeLabel.trim() || "Guide",
         published_at:  toSqlDateTime(form.publishedAt),
         read_time:     form.readTime ? Number(form.readTime) : null,
         sort_order:    Number(form.sortOrder || 1),
@@ -223,6 +250,19 @@ export default function BlogForm() {
             <input value={form.author} onChange={(e) => setField("author", e.target.value)} className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
           </div>
           <div>
+            <label className="mb-1 block text-sm text-white/80">Author Role</label>
+            <input value={form.authorRole} onChange={(e) => setField("authorRole", e.target.value)} placeholder="e.g. Pediatrician" className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm text-white/80">Watermark Text</label>
+            <input value={form.watermarkText} onChange={(e) => setField("watermarkText", e.target.value)} placeholder="e.g. Baby Health" className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
+            <p className="mt-1 text-xs text-white/50">Large decorative word shown behind the hero title.</p>
+          </div>
+          <div>
+            <label className="mb-1 block text-sm text-white/80">Content Type Label</label>
+            <input value={form.contentTypeLabel} onChange={(e) => setField("contentTypeLabel", e.target.value)} placeholder="e.g. In-depth guide" className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
+          </div>
+          <div>
             <label className="mb-1 block text-sm text-white/80">Published At</label>
             <Calendar
               value={form.publishedAt}
@@ -245,6 +285,12 @@ export default function BlogForm() {
           <textarea rows={3} value={form.excerpt} onChange={(e) => setField("excerpt", e.target.value)} className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
         </div>
 
+        <div>
+          <label className="mb-1 block text-sm text-white/80">Intro Highlight</label>
+          <textarea rows={3} value={form.introHighlight} onChange={(e) => setField("introHighlight", e.target.value)} className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
+          <p className="mt-1 text-xs text-white/50">Shown as the tinted callout paragraph at the top of the article body.</p>
+        </div>
+
         <RichTextEditor value={form.content} onChange={(value) => setField("content", value)} label="Blog Content (Rich Text)" />
 
         <ImageUpload
@@ -255,6 +301,13 @@ export default function BlogForm() {
           label="Upload Blog Featured Image"
           helperText="This image will appear in home blog section and blog detail header."
           includeAltText={true}
+        />
+
+        <ImageUpload
+          value={form.avatarPreview}
+          onFileSelect={(file) => setField("avatarFile", file)}
+          label="Upload Author Avatar"
+          helperText="Shown next to the author name. Falls back to initials if left empty."
         />
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

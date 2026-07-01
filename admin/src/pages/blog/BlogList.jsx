@@ -132,6 +132,8 @@ export default function BlogList() {
                       </p>
                       <p className="mt-1 text-xs text-white/60">
                         {item.read_time ? `${item.read_time} min read` : "Read time not set"}
+                        {" • "}
+                        {Number(item.likes_count ?? 0)} likes
                       </p>
                     </div>
                   </div>

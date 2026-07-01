@@ -10,10 +10,22 @@ final class BlogPost extends BaseModel
 {
     protected string $table = 'blog_posts';
     protected array $fillable = [
-        'title', 'slug', 'category', 'excerpt',
-        'content', 'image', 'image_alt_text', 'author', 'tags',
-        'is_published', 'published_at', 'read_time', 'sort_order',
+        'title', 'slug', 'category', 'excerpt', 'watermark_text', 'intro_highlight',
+        'content', 'image', 'image_alt_text', 'author', 'author_role', 'author_avatar_url', 'tags',
+        'is_published', 'published_at', 'read_time', 'content_type_label', 'sort_order',
     ];
+
+    public function incrementLikes(int $id): int
+    {
+        $stmt = $this->pdo->prepare('UPDATE blog_posts SET likes_count = likes_count + 1 WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+
+        $stmt = $this->pdo->prepare('SELECT likes_count FROM blog_posts WHERE id = :id');
+        $stmt->execute([':id' => $id]);
+        $row = $stmt->fetch();
+
+        return (int) ($row['likes_count'] ?? 0);
+    }
 
     public function search(string $query): array
     {
