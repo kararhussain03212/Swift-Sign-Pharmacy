@@ -18,6 +18,7 @@ use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
 use Backend\Controllers\HomepagePromoCardController;
+use Backend\Controllers\HomepageProductSliderController;
 use Backend\Controllers\TrustBadgeController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
@@ -65,6 +66,7 @@ require_once __DIR__ . '/../controllers/HomepagePromoCardController.php';
 require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
 require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
 require_once __DIR__ . '/../controllers/TrustBadgeController.php';
+require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -124,6 +126,7 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/users', [UserController::class, 'store'], $mw);
     $router->put('/api/admin/users/{id}', [UserController::class, 'update'], $mw);
     $router->delete('/api/admin/users/{id}', [UserController::class, 'destroy'], $mw);
+    $router->get('/api/admin/roles/{role}/default-permissions', [UserController::class, 'roleDefaults'], $mw);
 
     // Commitment Items
     $router->get('/api/admin/commitment-items', [CommitmentItemController::class, 'index'], $mw);
@@ -207,6 +210,7 @@ function registerAdminRoutes(Router $router): void
     $router->put('/api/admin/nav-links/{id}', [NavLinkController::class, 'update'], $mw);
     $router->delete('/api/admin/nav-links/{id}', [NavLinkController::class, 'destroy'], $mw);
 
+    $router->get('/api/admin/categories-with-type', [CategoryController::class, 'adminWithType'], $mw);
     $router->get('/api/admin/categories', [CategoryController::class, 'index'], $mw);
     $router->get('/api/admin/categories/{id}', [CategoryController::class, 'show'], $mw);
     $router->post('/api/admin/categories', [CategoryController::class, 'store'], $mw);
@@ -281,4 +285,12 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/homepage/trust-badges', [TrustBadgeController::class, 'store'], $mw);
     $router->put('/api/admin/homepage/trust-badges/{id}', [TrustBadgeController::class, 'update'], $mw);
     $router->delete('/api/admin/homepage/trust-badges/{id}', [TrustBadgeController::class, 'destroy'], $mw);
+
+    // Homepage — Product Sliders
+    $router->get('/api/admin/homepage-sliders', [HomepageProductSliderController::class, 'index'], $mw);
+    $router->get('/api/admin/homepage-sliders/{id}', [HomepageProductSliderController::class, 'show'], $mw);
+    $router->post('/api/admin/homepage-sliders', [HomepageProductSliderController::class, 'store'], $mw);
+    $router->put('/api/admin/homepage-sliders/reorder', [HomepageProductSliderController::class, 'reorderSliders'], $mw);
+    $router->put('/api/admin/homepage-sliders/{id}', [HomepageProductSliderController::class, 'update'], $mw);
+    $router->delete('/api/admin/homepage-sliders/{id}', [HomepageProductSliderController::class, 'destroy'], $mw);
 }

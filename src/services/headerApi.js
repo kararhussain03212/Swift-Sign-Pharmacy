@@ -57,6 +57,24 @@ export const getHomepagePromoCards = () => getJson('/public/homepage/promo-cards
 export const getHomepageCarePlanBanner = () => getJson('/public/homepage/care-plan-banner')
 export const getFeaturedBrands = () => getJson('/public/homepage/featured-brands')
 export const getTrustBadges = () => getJson('/public/homepage/trust-badges')
+export const getHomepageProductSliders = () => getJson('/public/homepage/product-sliders')
+
+export async function getProductBySlug(slug) {
+  const res = await fetch(`${getApiBase()}/public/products/${encodeURIComponent(slug)}`)
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+  const json = await res.json()
+  if (!json.success) throw new Error(json.error || 'Request failed')
+  return json.data
+}
+
+export async function getRelatedProducts(slug) {
+  const res = await fetch(`${getApiBase()}/public/products/${encodeURIComponent(slug)}/related`)
+  if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+  const json = await res.json()
+  if (!json.success) throw new Error(json.error || 'Request failed')
+  return json.data
+}
 
 export const getStoreBranches = (area) => getJson(`/public/store-locator/branches${area ? `?area=${encodeURIComponent(area)}` : ''}`)
 export const getStoreNetworkStats = () => getJson('/public/store-locator/stats')

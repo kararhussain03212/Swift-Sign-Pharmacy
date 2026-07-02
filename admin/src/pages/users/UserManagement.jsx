@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { createUser, deleteUser, getUserById, getUsers, updateUser } from "../../api/userApi";
 import { useAuth } from "../../context/useAuth";
-import { isUserActive, normalizeUserRole } from "../../modules/users/constants";
+import { isUserActive } from "../../modules/users/constants";
 import PaginationControls from "../../modules/users/components/PaginationControls";
 import DeleteUserDialog from "../../modules/users/components/DeleteUserDialog";
 import UserDetailsDrawer from "../../modules/users/components/UserDetailsDrawer";
@@ -22,12 +22,12 @@ const extractErrorMessage = (error, fallback) =>
 
 export default function UserManagement() {
   const { user } = useAuth();
-  const isAdmin = useMemo(() => normalizeUserRole(user?.role) === "admin", [user?.role]);
+  const isSuperAdmin = useMemo(() => user?.is_super_admin === true, [user?.is_super_admin]);
   const activeUser = useMemo(() => isUserActive(user?.status), [user?.status]);
-  const canViewUsers = isAdmin && activeUser;
-  const canCreateUsers = isAdmin && activeUser;
-  const canEditUsers = isAdmin && activeUser;
-  const canDeleteUsers = isAdmin && activeUser;
+  const canViewUsers = isSuperAdmin && activeUser;
+  const canCreateUsers = isSuperAdmin && activeUser;
+  const canEditUsers = isSuperAdmin && activeUser;
+  const canDeleteUsers = isSuperAdmin && activeUser;
 
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const [searchInput, setSearchInput] = useState("");

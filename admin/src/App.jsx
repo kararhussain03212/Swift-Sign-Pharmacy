@@ -32,6 +32,8 @@ import FeaturedBrandList from "./pages/homepage/FeaturedBrandList";
 import FeaturedBrandForm from "./pages/homepage/FeaturedBrandForm";
 import TrustBadgeList from "./pages/homepage/TrustBadgeList";
 import TrustBadgeForm from "./pages/homepage/TrustBadgeForm";
+import HomepageProductSliderList from "./pages/homepage/HomepageProductSliderList";
+import HomepageProductSliderForm from "./pages/homepage/HomepageProductSliderForm";
 import HeroSectionAdmin from "./pages/about/HeroSectionAdmin";
 import StorySectionAdmin from "./pages/about/StorySectionAdmin";
 import MissionSectionAdmin from "./pages/about/MissionSectionAdmin";
@@ -469,6 +471,9 @@ export default function App() {
           <Route path="/trust-badges"                 element={<ProtectedPage><TrustBadgeList /></ProtectedPage>} />
           <Route path="/trust-badges/new"             element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
           <Route path="/trust-badges/edit/:id"        element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
+          <Route path="/homepage-sliders"             element={<ProtectedPage><HomepageProductSliderList /></ProtectedPage>} />
+          <Route path="/homepage-sliders/new"         element={<ProtectedPage><HomepageProductSliderForm /></ProtectedPage>} />
+          <Route path="/homepage-sliders/edit/:id"    element={<ProtectedPage><HomepageProductSliderForm /></ProtectedPage>} />
 
           {/* About Us Management */}
           <Route path="/about/hero"    element={<ProtectedPage><HeroSectionAdmin /></ProtectedPage>} />

@@ -37,13 +37,14 @@ final class AuthMiddleware
         }
 
         self::$currentAdmin = [
-            'id'          => (int) ($payload['sub'] ?? 0),
-            'email'       => (string) ($payload['email'] ?? ''),
-            'name'        => (string) ($payload['name'] ?? ''),
-            'role'        => (string) ($payload['role'] ?? 'editor'),
-            'status'      => (string) ($payload['status'] ?? 'active'),
-            'permissions' => \is_array($payload['permissions'] ?? null) ? $payload['permissions'] : [],
-            'csrf'        => (string) ($payload['csrf'] ?? ''),
+            'id'             => (int) ($payload['sub'] ?? 0),
+            'email'          => (string) ($payload['email'] ?? ''),
+            'name'           => (string) ($payload['name'] ?? ''),
+            'role'           => (string) ($payload['role'] ?? 'editor'),
+            'is_super_admin' => (bool) ($payload['is_super_admin'] ?? false),
+            'status'         => (string) ($payload['status'] ?? 'active'),
+            'permissions'    => \is_array($payload['permissions'] ?? null) ? $payload['permissions'] : [],
+            'csrf'           => (string) ($payload['csrf'] ?? ''),
         ];
     }
 

@@ -9,7 +9,14 @@ require_once __DIR__ . '/BaseModel.php';
 final class Admin extends BaseModel
 {
     protected string $table = 'admins';
-    protected array $fillable = ['name', 'email', 'password', 'role', 'status', 'designation', 'phone', 'location', 'bio', 'profile_photo', 'permissions_json', 'last_login_at'];
+    protected array $fillable = ['name', 'email', 'password', 'role', 'is_super_admin', 'status', 'designation', 'phone', 'location', 'bio', 'profile_photo', 'permissions_json', 'last_login_at'];
+
+    public function countSuperAdmins(): int
+    {
+        $stmt = $this->pdo->query('SELECT COUNT(*) AS aggregate FROM admins WHERE is_super_admin = 1');
+        $row = $stmt->fetch();
+        return (int) ($row['aggregate'] ?? 0);
+    }
 
     public function findByLogin(string $login): ?array
     {

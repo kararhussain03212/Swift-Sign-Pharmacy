@@ -17,6 +17,7 @@ use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
 use Backend\Controllers\HomepagePromoCardController;
+use Backend\Controllers\HomepageProductSliderController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
@@ -59,6 +60,7 @@ require_once __DIR__ . '/../controllers/HomepagePromoCardController.php';
 require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
 require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
 require_once __DIR__ . '/../controllers/TrustBadgeController.php';
+require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -66,6 +68,7 @@ function registerPublicRoutes(Router $router): void
 {
     $router->get('/api/public/hero', [HeroController::class, 'publicIndex']);
     $router->get('/api/public/products', [ProductController::class, 'publicIndex']);
+    $router->get('/api/public/products/{slug}/related', [ProductController::class, 'publicRelated']);
     $router->get('/api/public/products/{slug}', [ProductController::class, 'publicShowBySlug']);
     $router->get('/api/public/testimonials', [TestimonialController::class, 'publicIndex']);
     $router->get('/api/public/commitment-items', [CommitmentItemController::class, 'publicIndex']);
@@ -119,4 +122,5 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/homepage/care-plan-banner', [HomepageCarePlanBannerController::class, 'publicIndex']);
     $router->get('/api/public/homepage/featured-brands', [FeaturedBrandController::class, 'publicIndex']);
     $router->get('/api/public/homepage/trust-badges', [TrustBadgeController::class, 'publicIndex']);
+    $router->get('/api/public/homepage/product-sliders', [HomepageProductSliderController::class, 'publicIndex']);
 }

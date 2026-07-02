@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { PERMISSION_OPTIONS, getDefaultPermissions } from "../constants";
+import { getRoleDefaultPermissions } from "../../../api/userApi";
 
 const INITIAL = {
   name: "",
@@ -10,12 +11,28 @@ const INITIAL = {
   password: "",
   role: "editor",
   status: "active",
+  is_super_admin: false,
   permissions: getDefaultPermissions("editor"),
 };
+
+// Fetches real defaults from role_default_permissions; falls back to the
+// local static map (kept in sync, but this table is the source of truth)
+// if the request fails for any reason.
+async function fetchRoleDefaults(role) {
+  try {
+    const res = await getRoleDefaultPermissions(role);
+    const permissions = res.data?.data?.permissions;
+    return Array.isArray(permissions) ? permissions : getDefaultPermissions(role);
+  } catch {
+    return getDefaultPermissions(role);
+  }
+}
 
 export default function UserFormModal({ open, mode, initialData, onClose, onSubmit, submitting }) {
   const [form, setForm] = useState(INITIAL);
   const [error, setError] = useState("");
+
+  const [applyingDefaults, setApplyingDefaults] = useState(false);
 
   useEffect(() => {
     if (!open) return;
@@ -29,6 +46,7 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
         password:    "",
         role:        initialData.role || "editor",
         status:      initialData.status || "active",
+        is_super_admin: Boolean(initialData.is_super_admin),
         permissions: Array.isArray(initialData.permissions) ? initialData.permissions : getDefaultPermissions(initialData.role),
       });
       setError("");
@@ -40,12 +58,10 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
 
   if (!open) return null;
 
-  const handleRoleChange = (newRole) => {
-    setForm((prev) => ({
-      ...prev,
-      role: newRole,
-      permissions: getDefaultPermissions(newRole),
-    }));
+  const handleRoleChange = async (newRole) => {
+    setForm((prev) => ({ ...prev, role: newRole, permissions: getDefaultPermissions(newRole) }));
+    const permissions = await fetchRoleDefaults(newRole);
+    setForm((prev) => (prev.role === newRole ? { ...prev, permissions } : prev));
   };
 
   const togglePermission = (key, checked) => {
@@ -57,8 +73,11 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
     }));
   };
 
-  const applyRoleDefaults = () => {
-    setForm((prev) => ({ ...prev, permissions: getDefaultPermissions(prev.role) }));
+  const applyRoleDefaults = async () => {
+    setApplyingDefaults(true);
+    const permissions = await fetchRoleDefaults(form.role);
+    setForm((prev) => ({ ...prev, permissions }));
+    setApplyingDefaults(false);
   };
 
   const submit = async (e) => {
@@ -68,6 +87,7 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
       email:       form.email,
       role:        form.role,
       status:      form.status,
+      is_super_admin: form.is_super_admin,
       designation: form.designation,
       phone:       form.phone,
       location:    form.location,
@@ -215,6 +235,23 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
             </div>
           </div>
 
+          {/* Super Admin toggle */}
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
+            <input
+              type="checkbox"
+              checked={form.is_super_admin}
+              onChange={(e) => setForm((p) => ({ ...p, is_super_admin: e.target.checked }))}
+              className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
+            />
+            <div>
+              <p className="text-sm font-semibold text-amber-200">Super Admin</p>
+              <p className="mt-0.5 text-xs text-white/50">
+                Grants full access to User Management (view, create, edit, delete other users)
+                and bypasses the permissions panel below. At least one super admin must always exist.
+              </p>
+            </div>
+          </label>
+
           {/* Permissions */}
           <div className="space-y-3 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-bg)] p-4">
             <div className="flex items-center justify-between gap-3">
@@ -234,9 +271,10 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
                 <button
                   type="button"
                   onClick={applyRoleDefaults}
-                  className="rounded-lg border border-[var(--admin-border)] px-3 py-1.5 text-xs text-white/70 hover:border-[var(--admin-border-amber)] hover:text-white"
+                  disabled={applyingDefaults}
+                  className="rounded-lg border border-[var(--admin-border)] px-3 py-1.5 text-xs text-white/70 hover:border-[var(--admin-border-amber)] hover:text-white disabled:opacity-50"
                 >
-                  Apply Role Defaults
+                  {applyingDefaults ? "Applying..." : "Apply Role Defaults"}
                 </button>
               )}
             </div>

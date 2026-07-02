@@ -1,521 +1,621 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageUpload from "../../components/ImageUpload";
-import RichTextEditor from "../../components/RichTextEditor";
-import { createProduct, getProduct, updateProduct } from "../../api/productApi";
 import { uploadImage } from "../../api/uploadApi";
-import { getBackendRoot } from "../../api/runtimeApi";
+import { createProduct, getCategoriesWithType, getProduct, updateProduct } from "../../api/productApi";
 
-const CATEGORIES = ["ghee", "honey", "herbal"];
-const BADGE_OPTIONS = ["Best Seller", "Organic", "Pure", "Limited Stock", "Premium Quality", "Gold Grade", "Trial Size", "New"];
-
-function parseJson(value, fallback) {
-  if (Array.isArray(value)) return value;
-  if (value && typeof value === "object") return value;
-  if (typeof value === "string" && value.trim()) {
-    try { return JSON.parse(value); } catch { return fallback; }
-  }
-  return fallback;
-}
-
-function slugify(str) {
-  return str.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-}
+const DOC_GROUPS = [
+  { key: "certificate", label: "Certificates" },
+  { key: "safety_data_sheet", label: "Safety Data Sheets" },
+  { key: "product_information", label: "Product Information" },
+  { key: "scientific_resource", label: "Scientific Resources" },
+];
 
 const getInitialForm = () => ({
-  name: "", slug: "", subtitle: "", category: "ghee", size: "",
-  price: "", original_price: "", discount: "", rating: "5", reviews: "0",
-  stock: true, featured: false,
-  variants: [""],
-  variant_prices: {},
-  variant_original_prices: {},
-  images: [],
-  imageFiles: [],
-  imageAltTexts: [],
-  badges: [],
-  short_desc: "",
-  description: "",
-  benefits: [""],
-  ingredients: "",
-  how_to_use: [{ step: "01", text: "" }],
-  faqs: [{ q: "", a: "" }],
-  tags: "",
-  sort_order: 0,
+  name: "",
+  category_id: "",
+  manufacturer_or_brand: "",
+  form: "",
+  sku: "",
+  base_price: "",
+  badge_label: "",
+  description_text: "",
+  stock_status: "in_stock",
   is_active: true,
+  images: [], // array of { url, file }
+  pharmacy: {
+    net_weight: "",
+    original_price: "",
+    discount_percent: "",
+    directions_for_use: "",
+    benefits: [""],
+  },
+  chemical: {
+    cas_number: "",
+    chemical_name_of_material: "",
+    boiling_point: "",
+    melting_point: "",
+    molecular_formula: "",
+    molecular_weight: "",
+    percent_purity: "",
+    color: "",
+    synonym: "",
+    grade: "",
+    unit_size: "",
+    molecule_diagram_url: "",
+    moleculeDiagramFile: null,
+    quantity_options: [{ label: "", price_override: "", is_default: true }],
+    packaging_options: [{ label: "", is_default: true }],
+    documents: { certificate: [], safety_data_sheet: [], product_information: [], scientific_resource: [] },
+  },
 });
+
+function categoryFor(categories, id) {
+  return categories.find((c) => c.id === Number(id)) || null;
+}
+
+const inputCls = "w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white";
+const labelCls = "mb-1 block text-sm text-white/80";
+const sectionCls = "space-y-4 rounded-xl border border-white/10 bg-[var(--admin-bg)] p-4";
 
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditMode = Boolean(id);
 
-  const [loading, setLoading]   = useState(isEditMode);
-  const [saving, setSaving]     = useState(false);
-  const [error, setError]       = useState("");
-  const [form, setForm]         = useState(getInitialForm);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({});
+  const [form, setForm] = useState(getInitialForm);
+  const [categories, setCategories] = useState([]);
+  const [topCategoryId, setTopCategoryId] = useState("");
+  const [originalCategoryId, setOriginalCategoryId] = useState(null);
+  const [pendingCategoryId, setPendingCategoryId] = useState(null); // awaiting type-change confirmation
+  const [toast, setToast] = useState("");
 
-  const apiRoot = useMemo(() => getBackendRoot(), []);
+  const topLevelCategories = useMemo(() => categories.filter((c) => !c.parent_id), [categories]);
+  const subCategories = useMemo(
+    () => categories.filter((c) => c.parent_id === Number(topCategoryId)),
+    [categories, topCategoryId]
+  );
+  const selectedCategory = useMemo(
+    () => categoryFor(categories, form.category_id),
+    [categories, form.category_id]
+  );
+  const productType = selectedCategory?.product_type ?? null;
 
-  const toImageUrl = useCallback((v) => {
-    if (!v) return "";
-    if (v.startsWith("http")) return v;
-    if (v.startsWith("/uploads/")) return apiRoot + v;
-    if (v.startsWith("/")) return v;
-    return `${apiRoot}/uploads/${v}`;
-  }, [apiRoot]);
-
-  const setField = (key, value) => setForm((p) => ({ ...p, [key]: value }));
+  const setField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  const setPharmacyField = (key, value) => setForm((prev) => ({ ...prev, pharmacy: { ...prev.pharmacy, [key]: value } }));
+  const setChemicalField = (key, value) => setForm((prev) => ({ ...prev, chemical: { ...prev.chemical, [key]: value } }));
 
   useEffect(() => {
-    if (!isEditMode) { setForm(getInitialForm()); setLoading(false); return; }
+    if (!toast) return;
+    const t = setTimeout(() => setToast(""), 2500);
+    return () => clearTimeout(t);
+  }, [toast]);
+
+  useEffect(() => {
     (async () => {
       try {
-        const res = await getProduct(id);
-        const item = res?.data?.data ?? res?.data ?? {};
-        const variants    = parseJson(item.variants,    []);
-        const vPrices     = parseJson(item.variant_prices, {});
-        const vOrigPrices = parseJson(item.variant_original_prices, {});
-        const images      = parseJson(item.images, []);
-        const badges      = parseJson(item.badges, []);
-        const benefits    = parseJson(item.benefits, [""]);
-        const howToUse    = parseJson(item.how_to_use, [{ step: "01", text: "" }]);
-        const faqs        = parseJson(item.faqs, [{ q: "", a: "" }]);
-        const tags        = parseJson(item.tags, []);
+        const [catRes, prodRes] = await Promise.all([
+          getCategoriesWithType(),
+          isEditMode ? getProduct(id) : Promise.resolve(null),
+        ]);
 
-        const imageAltTexts = Array.isArray(images) ? images.map(img => {
-          if (typeof img === 'object' && img?.alt_text) return img.alt_text;
-          return '';
-        }) : [];
-        const imageUrls = Array.isArray(images) ? images.map(img => {
-          if (typeof img === 'object' && img?.url) return toImageUrl(img.url);
-          return toImageUrl(img);
-        }) : [];
+        const categoryList = Array.isArray(catRes.data?.data) ? catRes.data.data : [];
+        setCategories(categoryList);
 
-        setForm({
-          name:                   item.name         || "",
-          slug:                   item.slug         || "",
-          subtitle:               item.subtitle     || "",
-          category:               item.category     || "ghee",
-          size:                   item.size         || "",
-          price:                  item.price        != null ? String(item.price) : "",
-          original_price:         item.original_price != null ? String(item.original_price) : "",
-          discount:               item.discount     != null ? String(item.discount) : "",
-          rating:                 item.rating       != null ? String(item.rating) : "5",
-          reviews:                item.reviews      != null ? String(item.reviews) : "0",
-          stock:                  item.stock === 1  || item.stock === true,
-          featured:               item.featured === 1 || item.featured === true,
-          variants:               variants.length   ? variants : [""],
-          variant_prices:         vPrices,
-          variant_original_prices: vOrigPrices,
-          images:                 imageUrls,
-          imageAltTexts:          imageAltTexts,
-          imageFiles:             [],
-          badges,
-          short_desc:             item.short_desc   || "",
-          description:            item.description  || "",
-          benefits:               benefits.length   ? benefits : [""],
-          ingredients:            item.ingredients  || "",
-          how_to_use:             howToUse.length   ? howToUse : [{ step: "01", text: "" }],
-          faqs:                   faqs.length       ? faqs     : [{ q: "", a: "" }],
-          tags:                   Array.isArray(tags) ? tags.join(", ") : tags,
-          sort_order:             Number(item.sort_order || 0),
-          is_active:              item.is_active === 1 || item.is_active !== false,
-        });
-      } catch { setError("Failed to load product."); }
-      finally { setLoading(false); }
+        if (prodRes) {
+          const item = prodRes.data?.data ?? {};
+          setOriginalCategoryId(item.category_id ?? null);
+
+          const loadedCategory = categoryFor(categoryList, item.category_id);
+          setTopCategoryId(
+            loadedCategory ? String(loadedCategory.parent_id ?? loadedCategory.id) : ""
+          );
+
+          setForm({
+            name: item.name || "",
+            category_id: item.category_id ?? "",
+            manufacturer_or_brand: item.manufacturer_or_brand || "",
+            form: item.form || "",
+            sku: item.sku || "",
+            base_price: item.base_price != null ? String(item.base_price) : "",
+            badge_label: item.badge_label || "",
+            description_text: item.description_text || "",
+            stock_status: item.stock_status || "in_stock",
+            is_active: Boolean(Number(item.is_active ?? 1)),
+            images: Array.isArray(item.images) ? item.images.map((url) => ({ url, file: null })) : [],
+            pharmacy: {
+              net_weight: item.pharmacy?.net_weight || "",
+              original_price: item.pharmacy?.original_price != null ? String(item.pharmacy.original_price) : "",
+              discount_percent: item.pharmacy?.discount_percent != null ? String(item.pharmacy.discount_percent) : "",
+              directions_for_use: item.pharmacy?.directions_for_use || "",
+              benefits: item.pharmacy?.benefits?.length ? item.pharmacy.benefits : [""],
+            },
+            chemical: {
+              cas_number: item.chemical?.cas_number || "",
+              chemical_name_of_material: item.chemical?.chemical_name_of_material || "",
+              boiling_point: item.chemical?.boiling_point || "",
+              melting_point: item.chemical?.melting_point || "",
+              molecular_formula: item.chemical?.molecular_formula || "",
+              molecular_weight: item.chemical?.molecular_weight || "",
+              percent_purity: item.chemical?.percent_purity || "",
+              color: item.chemical?.color || "",
+              synonym: item.chemical?.synonym || "",
+              grade: item.chemical?.grade || "",
+              unit_size: item.chemical?.unit_size || "",
+              molecule_diagram_url: item.chemical?.molecule_diagram_url || "",
+              moleculeDiagramFile: null,
+              quantity_options: item.chemical?.quantity_options?.length
+                ? item.chemical.quantity_options.map((q) => ({ label: q.label, price_override: q.price_override ?? "", is_default: !!Number(q.is_default) }))
+                : [{ label: "", price_override: "", is_default: true }],
+              packaging_options: item.chemical?.packaging_options?.length
+                ? item.chemical.packaging_options.map((p) => ({ label: p.label, is_default: !!Number(p.is_default) }))
+                : [{ label: "", is_default: true }],
+              documents: (() => {
+                const grouped = { certificate: [], safety_data_sheet: [], product_information: [], scientific_resource: [] };
+                const docs = Array.isArray(item.chemical?.documents) ? item.chemical.documents : [];
+                docs.forEach((d) => { (grouped[d.doc_group] ??= []).push({ ...d, fileObj: null }); });
+                return grouped;
+              })(),
+            },
+          });
+        }
+      } catch {
+        setError("Failed to load product data.");
+      } finally {
+        setLoading(false);
+      }
     })();
-  }, [id, isEditMode, toImageUrl]);
+  }, [id, isEditMode]);
 
-  // Auto-calculate discount percentage when price or original_price changes
-  useEffect(() => {
-    const price = Number(form.price || 0);
-    const originalPrice = Number(form.original_price || 0);
-
-    if (price > 0 && originalPrice > price) {
-      const calculatedDiscount = Math.round(((originalPrice - price) / originalPrice) * 100);
-      setField("discount", String(calculatedDiscount));
+  const commitCategorySelection = (newCategoryIdRaw) => {
+    const newCategoryId = newCategoryIdRaw === "" ? "" : Number(newCategoryIdRaw);
+    if (isEditMode && originalCategoryId != null && newCategoryId !== "") {
+      const oldType = categories.find((c) => c.id === originalCategoryId)?.product_type;
+      const newType = categories.find((c) => c.id === newCategoryId)?.product_type;
+      if (oldType && newType && oldType !== newType) {
+        setPendingCategoryId(newCategoryId);
+        return;
+      }
     }
-  }, [form.price, form.original_price]);
-
-  const handleNameChange = (val) => {
-    setField("name", val);
-    if (!isEditMode || !form.slug) setField("slug", slugify(val));
+    setField("category_id", newCategoryId);
   };
 
-  const handleVariantChange = (i, val) => {
-    const updated = [...form.variants];
-    updated[i] = val;
-    setField("variants", updated);
+  const handleTopCategoryChange = (newTopIdRaw) => {
+    setTopCategoryId(newTopIdRaw);
+    const children = categories.filter((c) => c.parent_id === Number(newTopIdRaw));
+    // No subcategories under this top-level pick -> it IS the product's category.
+    // Otherwise wait for the subcategory dropdown before committing category_id.
+    commitCategorySelection(children.length === 0 ? newTopIdRaw : "");
   };
 
-  const handleImageSelect = (file) => {
-    const blobUrl = URL.createObjectURL(file);
-    setForm((p) => ({
-      ...p,
-      images: [...p.images, blobUrl],
-      imageFiles: [...p.imageFiles, file],
-      imageAltTexts: [...p.imageAltTexts, ""],
-    }));
+  const handleSubCategoryChange = (newSubIdRaw) => {
+    commitCategorySelection(newSubIdRaw);
   };
 
-  const handleRemoveImage = (i) => {
-    const url = form.images[i];
-    if (url.startsWith("blob:")) {
-      URL.revokeObjectURL(url);
-      const blobsBefore = form.images.slice(0, i).filter((u) => u.startsWith("blob:")).length;
-      setForm((p) => ({
-        ...p,
-        images: p.images.filter((_, j) => j !== i),
-        imageFiles: p.imageFiles.filter((_, j) => j !== blobsBefore),
-        imageAltTexts: p.imageAltTexts.filter((_, j) => j !== i),
-      }));
-    } else {
-      setForm((p) => ({
-        ...p,
-        images: p.images.filter((_, j) => j !== i),
-        imageAltTexts: p.imageAltTexts.filter((_, j) => j !== i),
-      }));
-    }
+  const confirmCategoryChange = () => {
+    setField("category_id", pendingCategoryId);
+    setPendingCategoryId(null);
   };
 
-  const handleImageAltTextChange = (i, altText) => {
-    setForm((p) => ({
-      ...p,
-      imageAltTexts: p.imageAltTexts.map((text, j) => j === i ? altText : text),
-    }));
-  };
+  // ---- Images ----
+  const addImageSlot = () => setForm((p) => ({ ...p, images: [...p.images, { url: "", file: null }] }));
+  const removeImageSlot = (idx) => setForm((p) => ({ ...p, images: p.images.filter((_, i) => i !== idx) }));
+  const setImageFile = (idx, file) =>
+    setForm((p) => ({ ...p, images: p.images.map((img, i) => (i === idx ? { ...img, file } : img)) }));
+
+  // ---- Pharmacy benefits ----
+  const addBenefit = () => setPharmacyField("benefits", [...form.pharmacy.benefits, ""]);
+  const removeBenefit = (idx) => setPharmacyField("benefits", form.pharmacy.benefits.filter((_, i) => i !== idx));
+  const setBenefit = (idx, value) =>
+    setPharmacyField("benefits", form.pharmacy.benefits.map((b, i) => (i === idx ? value : b)));
+
+  // ---- Chemical quantity/packaging options ----
+  const addQuantityOption = () =>
+    setChemicalField("quantity_options", [...form.chemical.quantity_options, { label: "", price_override: "", is_default: false }]);
+  const removeQuantityOption = (idx) =>
+    setChemicalField("quantity_options", form.chemical.quantity_options.filter((_, i) => i !== idx));
+  const setQuantityOption = (idx, key, value) =>
+    setChemicalField("quantity_options", form.chemical.quantity_options.map((o, i) => (i === idx ? { ...o, [key]: value } : o)));
+
+  const addPackagingOption = () =>
+    setChemicalField("packaging_options", [...form.chemical.packaging_options, { label: "", is_default: false }]);
+  const removePackagingOption = (idx) =>
+    setChemicalField("packaging_options", form.chemical.packaging_options.filter((_, i) => i !== idx));
+  const setPackagingOption = (idx, key, value) =>
+    setChemicalField("packaging_options", form.chemical.packaging_options.map((o, i) => (i === idx ? { ...o, [key]: value } : o)));
+
+  // ---- Chemical documents ----
+  const addDocument = (group) =>
+    setChemicalField("documents", {
+      ...form.chemical.documents,
+      [group]: [...form.chemical.documents[group], { title: "", file_url: "", fileObj: null, lot_number: "", certificate_type: "", document_date: "", catalog_numbers: "" }],
+    });
+  const removeDocument = (group, idx) =>
+    setChemicalField("documents", { ...form.chemical.documents, [group]: form.chemical.documents[group].filter((_, i) => i !== idx) });
+  const setDocumentField = (group, idx, key, value) =>
+    setChemicalField("documents", {
+      ...form.chemical.documents,
+      [group]: form.chemical.documents[group].map((d, i) => (i === idx ? { ...d, [key]: value } : d)),
+    });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-    if (!form.name.trim()) { setError("Product name is required."); return; }
-    if (!form.price)       { setError("Price is required."); return; }
+    setFieldErrors({});
+
+    if (!form.name.trim()) { setError("Name is required."); return; }
+    if (!form.category_id) { setError("Category is required."); return; }
+    if (!form.manufacturer_or_brand.trim()) { setError(`${productType === "chemical" ? "Manufacturer" : "Brand"} is required.`); return; }
+    if (!form.base_price) { setError("Base price is required."); return; }
 
     try {
       setSaving(true);
 
-      // Upload new files; keep existing server URLs as-is, and bundle with alt text
-      let fileIdx = 0;
-      const uploadedImages = [];
-      for (let i = 0; i < form.images.length; i++) {
-        const url = form.images[i];
-        const altText = form.imageAltTexts[i] || "";
-        if (url.startsWith("blob:")) {
-          const serverUrl = await uploadImage(form.imageFiles[fileIdx++], "products", "");
-          uploadedImages.push({ url: serverUrl, alt_text: altText });
-          URL.revokeObjectURL(url);
-        } else {
-          uploadedImages.push({ url, alt_text: altText });
-        }
-      }
-
-      const variantArr = form.variants.filter((v) => v.trim());
+      const imageUrls = await Promise.all(
+        form.images.map(async (img) => (img.file ? await uploadImage(img.file, "products") : img.url))
+      );
 
       const payload = {
-        name:          form.name.trim(),
-        slug:          form.slug.trim() || slugify(form.name),
-        subtitle:      form.subtitle.trim(),
-        category:      form.category,
-        size:          form.size.trim(),
-        price:         Number(form.price || 0),
-        original_price: form.original_price === "" ? null : Number(form.original_price),
-        discount:      form.discount === "" ? null : Number(form.discount),
-        rating:        Number(form.rating || 5),
-        reviews:       Number(form.reviews || 0),
-        stock:         form.stock ? 1 : 0,
-        featured:      form.featured ? 1 : 0,
-        variants:      JSON.stringify(variantArr),
-        variant_prices:           JSON.stringify(form.variant_prices),
-        variant_original_prices:  JSON.stringify(form.variant_original_prices),
-        images:        JSON.stringify(uploadedImages),
-        badges:        JSON.stringify(form.badges),
-        short_desc:    form.short_desc.trim(),
-        description:   form.description.trim(),
-        benefits:      JSON.stringify(form.benefits.filter((b) => b.trim())),
-        ingredients:   form.ingredients.trim(),
-        how_to_use:    JSON.stringify(form.how_to_use.filter((h) => h.text.trim())),
-        faqs:          JSON.stringify(form.faqs.filter((f) => f.q.trim())),
-        tags:          JSON.stringify(form.tags.split(",").map((t) => t.trim()).filter(Boolean)),
-        sort_order:    Number(form.sort_order || 0),
-        is_active:     form.is_active ? 1 : 0,
+        name: form.name.trim(),
+        category_id: Number(form.category_id),
+        manufacturer_or_brand: form.manufacturer_or_brand.trim(),
+        form: form.form.trim(),
+        sku: form.sku.trim(),
+        base_price: Number(form.base_price),
+        badge_label: form.badge_label.trim(),
+        description_text: form.description_text.trim(),
+        stock_status: form.stock_status,
+        is_active: form.is_active ? 1 : 0,
+        images: imageUrls.filter(Boolean),
       };
+
+      if (productType === "pharmacy") {
+        payload.pharmacy = {
+          net_weight: form.pharmacy.net_weight.trim(),
+          original_price: form.pharmacy.original_price === "" ? "" : Number(form.pharmacy.original_price),
+          discount_percent: form.pharmacy.discount_percent === "" ? "" : Number(form.pharmacy.discount_percent),
+          directions_for_use: form.pharmacy.directions_for_use.trim(),
+          benefits: form.pharmacy.benefits.map((b) => b.trim()).filter(Boolean),
+        };
+      } else if (productType === "chemical") {
+        const moleculeDiagramUrl = form.chemical.moleculeDiagramFile
+          ? await uploadImage(form.chemical.moleculeDiagramFile, "products")
+          : form.chemical.molecule_diagram_url;
+
+        const documents = [];
+        for (const group of DOC_GROUPS) {
+          for (const doc of form.chemical.documents[group.key]) {
+            if (!doc.title.trim()) continue;
+            const fileUrl = doc.fileObj ? await uploadImage(doc.fileObj, "documents") : doc.file_url;
+            if (!fileUrl) continue;
+            documents.push({
+              doc_group: group.key,
+              title: doc.title.trim(),
+              file_url: fileUrl,
+              lot_number: doc.lot_number || "",
+              certificate_type: doc.certificate_type || "",
+              document_date: doc.document_date || "",
+              catalog_numbers: doc.catalog_numbers || "",
+            });
+          }
+        }
+
+        payload.chemical = {
+          cas_number: form.chemical.cas_number.trim(),
+          chemical_name_of_material: form.chemical.chemical_name_of_material.trim(),
+          boiling_point: form.chemical.boiling_point.trim(),
+          melting_point: form.chemical.melting_point.trim(),
+          molecular_formula: form.chemical.molecular_formula.trim(),
+          molecular_weight: form.chemical.molecular_weight.trim(),
+          percent_purity: form.chemical.percent_purity.trim(),
+          color: form.chemical.color.trim(),
+          synonym: form.chemical.synonym.trim(),
+          grade: form.chemical.grade.trim(),
+          unit_size: form.chemical.unit_size.trim(),
+          molecule_diagram_url: moleculeDiagramUrl,
+          quantity_options: form.chemical.quantity_options.filter((o) => o.label.trim()),
+          packaging_options: form.chemical.packaging_options.filter((o) => o.label.trim()),
+          documents,
+        };
+      }
 
       if (isEditMode) await updateProduct(id, payload);
       else await createProduct(payload);
 
+      setToast(isEditMode ? "Product updated." : "Product created.");
       navigate("/products");
     } catch (err) {
-      if (err?.response?.status === 401) { navigate("/login", { replace: true }); return; }
-      setError(err?.response?.data?.message || "Save failed.");
+      setError(err?.response?.data?.error || err?.response?.data?.message || "Save failed.");
+      setFieldErrors(err?.response?.data?.fields || {});
     } finally {
       setSaving(false);
     }
   };
 
-  if (loading) return <div className="text-white/70">Loading product…</div>;
-
-  const inputCls = "w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white";
-  const labelCls = "mb-1 block text-sm text-white/80";
-  const sectionCls = "rounded-xl border border-white/10 bg-[var(--admin-bg)] p-4 space-y-3";
+  if (loading) return <div className="text-white/70">Loading…</div>;
 
   return (
-    <section className="mx-auto max-w-4xl">
-      <h2 className="mb-4 text-2xl font-bold text-white">
-        {isEditMode ? "Edit Product" : "Add Product"}
-      </h2>
+    <section className="mx-auto max-w-3xl space-y-5">
+      <h2 className="text-2xl font-bold text-white">{isEditMode ? "Edit Product" : "Add Product"}</h2>
 
-      {error && (
-        <div className="mb-4 rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300">{error}</div>
+      {toast && (
+        <div className="fixed right-5 top-5 z-[220] rounded-xl border border-green-400/30 bg-green-600/90 px-4 py-2 text-sm font-medium text-white shadow-lg">
+          {toast}
+        </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-white/10 bg-[var(--admin-bg)] p-6">
+      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300">{error}</div>}
 
-        {/* ── Basic Info ── */}
+      {pendingCategoryId !== null && (
+        <div className="fixed inset-0 z-[300] flex items-center justify-center bg-black/60 p-4">
+          <div className="w-full max-w-md rounded-2xl border border-white/10 bg-[var(--admin-bg)] p-6">
+            <h3 className="text-lg font-bold text-white">Change product type?</h3>
+            <p className="mt-2 text-sm text-white/70">
+              This category switches the product from{" "}
+              <strong>{categories.find((c) => c.id === originalCategoryId)?.product_type}</strong> to{" "}
+              <strong>{categories.find((c) => c.id === pendingCategoryId)?.product_type}</strong>. The previous
+              type-specific fields (benefits, specifications, documents, etc.) will stop showing on the storefront —
+              they are not deleted, but you'll need to re-enter fields for the new type.
+            </p>
+            <div className="mt-5 flex gap-3">
+              <button type="button" onClick={confirmCategoryChange} className="rounded-xl bg-[var(--admin-primary)] px-5 py-2 text-sm font-semibold text-white hover:bg-[var(--admin-primary-strong)]">
+                Continue
+              </button>
+              <button type="button" onClick={() => setPendingCategoryId(null)} className="rounded-xl border border-white/20 px-5 py-2 text-sm font-semibold text-white hover:bg-white/5">
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* Shared fields */}
         <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Basic Info</h3>
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <div>
-              <label className={labelCls}>Name *</label>
-              <input value={form.name} onChange={(e) => handleNameChange(e.target.value)} required className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Slug</label>
-              <input value={form.slug} onChange={(e) => setField("slug", e.target.value)} placeholder="auto-generated" className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Subtitle</label>
-              <input value={form.subtitle} onChange={(e) => setField("subtitle", e.target.value)} className={inputCls} />
-            </div>
+          <h3 className="font-semibold text-white/90">Product Details</h3>
+
+          <div>
+            <label className={labelCls}>Name</label>
+            <input value={form.name} onChange={(e) => setField("name", e.target.value)} className={inputCls} />
+            {fieldErrors.name && <p className="mt-1 text-xs text-red-400">{fieldErrors.name}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className={labelCls}>Category</label>
-              <select value={form.category} onChange={(e) => setField("category", e.target.value)} className={inputCls}>
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c.charAt(0).toUpperCase() + c.slice(1)}</option>)}
+              <select value={topCategoryId} onChange={(e) => handleTopCategoryChange(e.target.value)} className={inputCls}>
+                <option value="">Select a category…</option>
+                {topLevelCategories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
               </select>
             </div>
             <div>
-              <label className={labelCls}>Size</label>
-              <input value={form.size} onChange={(e) => setField("size", e.target.value)} placeholder="500g" className={inputCls} />
+              <label className={labelCls}>Subcategory</label>
+              <select
+                value={subCategories.some((c) => c.id === Number(form.category_id)) ? form.category_id : ""}
+                onChange={(e) => handleSubCategoryChange(e.target.value)}
+                disabled={subCategories.length === 0}
+                className={inputCls}
+              >
+                <option value="">{subCategories.length === 0 ? "No subcategories" : "Select a subcategory…"}</option>
+                {subCategories.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))}
+              </select>
+            </div>
+            {fieldErrors.category_id && <p className="col-span-2 mt-1 text-xs text-red-400">{fieldErrors.category_id}</p>}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>{productType === "chemical" ? "Manufacturer" : "Brand"}</label>
+              <input value={form.manufacturer_or_brand} onChange={(e) => setField("manufacturer_or_brand", e.target.value)} className={inputCls} />
+            </div>
+            <div>
+              <label className={labelCls}>Form</label>
+              <input value={form.form} onChange={(e) => setField("form", e.target.value)} className={inputCls} placeholder="Cream, Liquid, Tablet…" />
             </div>
           </div>
-        </div>
 
-        {/* ── Pricing ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Pricing</h3>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className={labelCls}>Price (Rs) *</label>
-              <input type="number" min="0" value={form.price} onChange={(e) => setField("price", e.target.value)} required className={inputCls} />
+              <label className={labelCls}>SKU</label>
+              <input value={form.sku} onChange={(e) => setField("sku", e.target.value)} className={inputCls} />
             </div>
             <div>
-              <label className={labelCls}>Original Price (Rs)</label>
-              <input type="number" min="0" value={form.original_price} onChange={(e) => setField("original_price", e.target.value)} className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Discount (%)</label>
-              <input type="number" min="0" max="100" value={form.discount} onChange={(e) => setField("discount", e.target.value)} className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Rating</label>
-              <input type="number" min="1" max="5" step="0.1" value={form.rating} onChange={(e) => setField("rating", e.target.value)} className={inputCls} />
-            </div>
-            <div>
-              <label className={labelCls}>Reviews Count</label>
-              <input type="number" min="0" value={form.reviews} onChange={(e) => setField("reviews", e.target.value)} className={inputCls} />
+              <label className={labelCls}>Base Price</label>
+              <input type="number" min="0" step="0.01" value={form.base_price} onChange={(e) => setField("base_price", e.target.value)} className={inputCls} />
             </div>
           </div>
-          <div className="flex gap-6">
-            <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
-              <input type="checkbox" checked={form.stock} onChange={(e) => setField("stock", e.target.checked)} className="h-4 w-4" />
-              In Stock
-            </label>
-            <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer">
-              <input type="checkbox" checked={form.featured} onChange={(e) => setField("featured", e.target.checked)} className="h-4 w-4" />
-              Featured Product
-            </label>
-          </div>
-        </div>
 
-        {/* ── Variants ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Variants (sizes / options)</h3>
-          <p className="text-xs text-white/50">Add each variant label (e.g. 500g, 1kg). Set per-variant prices below.</p>
-          {form.variants.map((v, i) => (
-            <div key={i} className="flex gap-2">
-              <input value={v} onChange={(e) => handleVariantChange(i, e.target.value)} placeholder="e.g. 500g" className={`${inputCls} flex-1`} />
-              <input
-                type="number" min="0"
-                value={form.variant_prices[v] ?? ""}
-                onChange={(e) => setField("variant_prices", { ...form.variant_prices, [v]: e.target.value })}
-                placeholder="Price"
-                className="w-28 rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white"
-              />
-              <input
-                type="number" min="0"
-                value={form.variant_original_prices[v] ?? ""}
-                onChange={(e) => setField("variant_original_prices", { ...form.variant_original_prices, [v]: e.target.value })}
-                placeholder="Orig. Price"
-                className="w-32 rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white"
-              />
-              <button type="button" onClick={() => setField("variants", form.variants.filter((_, j) => j !== i))} className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-red-300 text-sm">✕</button>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className={labelCls}>Badge Label</label>
+              <input value={form.badge_label} onChange={(e) => setField("badge_label", e.target.value)} className={inputCls} placeholder="HOT, NEW, CHEMICAL…" />
             </div>
-          ))}
-          <button type="button" onClick={() => setField("variants", [...form.variants, ""])} className="rounded-lg border border-[var(--admin-border-amber)] bg-[var(--admin-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--admin-primary)]">+ Add Variant</button>
+            <div>
+              <label className={labelCls}>Stock Status</label>
+              <select value={form.stock_status} onChange={(e) => setField("stock_status", e.target.value)} className={inputCls}>
+                <option value="in_stock">In Stock</option>
+                <option value="out_of_stock">Out of Stock</option>
+                <option value="preorder">Preorder</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label className={labelCls}>Description</label>
+            <textarea value={form.description_text} onChange={(e) => setField("description_text", e.target.value)} rows={4} className={inputCls} />
+          </div>
+
+          <label className="flex items-center gap-2 text-sm text-white/80">
+            <input type="checkbox" checked={form.is_active} onChange={(e) => setField("is_active", e.target.checked)} />
+            Active (visible on the storefront)
+          </label>
         </div>
 
-        {/* ── Images ── */}
+        {/* Image gallery */}
         <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Product Images</h3>
+          <h3 className="font-semibold text-white/90">Image Gallery</h3>
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+            {form.images.map((img, idx) => (
+              <div key={idx} className="relative">
+                <ImageUpload value={img.url} onFileSelect={(file) => setImageFile(idx, file)} label={`Image ${idx + 1}`} />
+                <button type="button" onClick={() => removeImageSlot(idx)} className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-xs text-white hover:bg-red-600">✕</button>
+              </div>
+            ))}
+          </div>
+          <button type="button" onClick={addImageSlot} className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5">
+            + Add Image
+          </button>
+        </div>
 
-          {form.images.length > 0 && (
-            <div className="space-y-4">
-              {form.images.map((url, i) => (
-                <div key={i} className="rounded-lg border border-white/10 bg-white/5 p-3">
-                  <div className="mb-2 flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white/70">Image #{i + 1}</span>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(i)}
-                      className="rounded-lg bg-red-500/20 px-2 py-1 text-xs font-semibold text-red-400 hover:bg-red-500/30"
-                    >
-                      Remove
-                    </button>
+        {/* Pharmacy section */}
+        {productType === "pharmacy" && (
+          <div className={sectionCls}>
+            <h3 className="font-semibold text-white/90">Pharmacy Details</h3>
+            <div className="grid grid-cols-3 gap-4">
+              <div>
+                <label className={labelCls}>Net Weight</label>
+                <input value={form.pharmacy.net_weight} onChange={(e) => setPharmacyField("net_weight", e.target.value)} className={inputCls} placeholder="50g" />
+              </div>
+              <div>
+                <label className={labelCls}>Original Price</label>
+                <input type="number" min="0" step="0.01" value={form.pharmacy.original_price} onChange={(e) => setPharmacyField("original_price", e.target.value)} className={inputCls} />
+              </div>
+              <div>
+                <label className={labelCls}>Discount %</label>
+                <input type="number" min="0" max="100" value={form.pharmacy.discount_percent} onChange={(e) => setPharmacyField("discount_percent", e.target.value)} className={inputCls} />
+              </div>
+            </div>
+
+            <div>
+              <label className={labelCls}>Directions for Use</label>
+              <textarea value={form.pharmacy.directions_for_use} onChange={(e) => setPharmacyField("directions_for_use", e.target.value)} rows={3} className={inputCls} />
+            </div>
+
+            <div>
+              <label className={labelCls}>Key Benefits</label>
+              <div className="space-y-2">
+                {form.pharmacy.benefits.map((b, idx) => (
+                  <div key={idx} className="flex gap-2">
+                    <input value={b} onChange={(e) => setBenefit(idx, e.target.value)} className={inputCls} placeholder="Broad-spectrum protection…" />
+                    <button type="button" onClick={() => removeBenefit(idx)} className="rounded-lg border border-white/20 px-3 text-white hover:bg-white/5">✕</button>
                   </div>
-                  <div className="group relative mb-3 aspect-square overflow-hidden rounded-lg border border-white/10">
-                    <img
-                      src={url}
-                      alt={form.imageAltTexts[i] || "Product image"}
-                      className="h-full w-full object-cover"
-                      onError={(e) => { e.target.style.display = "none"; }}
-                    />
-                    {url.startsWith("blob:") && (
-                      <span className="absolute bottom-0 left-0 right-0 bg-black/60 py-0.5 text-center text-[10px] font-semibold text-amber-400">
-                        New — not saved yet
-                      </span>
-                    )}
+                ))}
+              </div>
+              <button type="button" onClick={addBenefit} className="mt-2 rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5">
+                + Add Benefit
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Chemical section */}
+        {productType === "chemical" && (
+          <>
+            <div className={sectionCls}>
+              <h3 className="font-semibold text-white/90">Chemical Specifications</h3>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  ["cas_number", "CAS Number"], ["chemical_name_of_material", "Chemical Name of Material"],
+                  ["boiling_point", "Boiling Point"], ["melting_point", "Melting Point"],
+                  ["molecular_formula", "Molecular Formula"], ["molecular_weight", "Molecular Weight (g/mol)"],
+                  ["percent_purity", "Percent Purity"], ["color", "Color"],
+                  ["synonym", "Synonym"], ["grade", "Grade"], ["unit_size", "Unit Size"],
+                ].map(([key, label]) => (
+                  <div key={key}>
+                    <label className={labelCls}>{label}</label>
+                    <input value={form.chemical[key]} onChange={(e) => setChemicalField(key, e.target.value)} className={inputCls} />
                   </div>
-                  <div>
-                    <label className="block text-xs font-semibold text-white/80 mb-1">
-                      Alt Text (SEO & Accessibility)
-                    </label>
-                    <input
-                      type="text"
-                      value={form.imageAltTexts[i] || ""}
-                      onChange={(e) => handleImageAltTextChange(i, e.target.value)}
-                      placeholder="Describe this image for accessibility..."
-                      maxLength="150"
-                      className="w-full rounded-lg border border-white/20 bg-white/10 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-[var(--admin-primary)] focus:outline-none"
-                    />
-                    <p className="mt-1 text-[10px] text-white/50">
-                      {form.imageAltTexts[i]?.length || 0}/150 characters
-                    </p>
-                  </div>
+                ))}
+              </div>
+              <div>
+                <label className={labelCls}>Molecule Diagram</label>
+                <ImageUpload value={form.chemical.molecule_diagram_url} onFileSelect={(file) => setChemicalField("moleculeDiagramFile", file)} label="Upload Molecule Diagram" />
+              </div>
+            </div>
+
+            <div className={sectionCls}>
+              <h3 className="font-semibold text-white/90">Quantity Options</h3>
+              {form.chemical.quantity_options.map((opt, idx) => (
+                <div key={idx} className="flex flex-wrap items-center gap-2">
+                  <input value={opt.label} onChange={(e) => setQuantityOption(idx, "label", e.target.value)} className={inputCls + " flex-1"} placeholder="500 mL" />
+                  <input type="number" min="0" step="0.01" value={opt.price_override} onChange={(e) => setQuantityOption(idx, "price_override", e.target.value)} className={inputCls + " w-32"} placeholder="Price override" />
+                  <label className="flex items-center gap-1 text-xs text-white/70">
+                    <input type="radio" name="qty_default" checked={opt.is_default} onChange={() => form.chemical.quantity_options.forEach((_, i) => setQuantityOption(i, "is_default", i === idx))} />
+                    Default
+                  </label>
+                  <button type="button" onClick={() => removeQuantityOption(idx)} className="rounded-lg border border-white/20 px-3 py-1 text-white hover:bg-white/5">✕</button>
+                </div>
+              ))}
+              <button type="button" onClick={addQuantityOption} className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5">
+                + Add Quantity Option
+              </button>
+            </div>
+
+            <div className={sectionCls}>
+              <h3 className="font-semibold text-white/90">Packaging Options</h3>
+              {form.chemical.packaging_options.map((opt, idx) => (
+                <div key={idx} className="flex flex-wrap items-center gap-2">
+                  <input value={opt.label} onChange={(e) => setPackagingOption(idx, "label", e.target.value)} className={inputCls + " flex-1"} placeholder="Clear glass bottle" />
+                  <label className="flex items-center gap-1 text-xs text-white/70">
+                    <input type="radio" name="pkg_default" checked={opt.is_default} onChange={() => form.chemical.packaging_options.forEach((_, i) => setPackagingOption(i, "is_default", i === idx))} />
+                    Default
+                  </label>
+                  <button type="button" onClick={() => removePackagingOption(idx)} className="rounded-lg border border-white/20 px-3 py-1 text-white hover:bg-white/5">✕</button>
+                </div>
+              ))}
+              <button type="button" onClick={addPackagingOption} className="rounded-lg border border-white/20 px-4 py-2 text-sm text-white hover:bg-white/5">
+                + Add Packaging Option
+              </button>
+            </div>
+
+            <div className={sectionCls}>
+              <h3 className="font-semibold text-white/90">Documents &amp; Downloads</h3>
+              {DOC_GROUPS.map((group) => (
+                <div key={group.key} className="space-y-3 rounded-lg border border-white/10 p-3">
+                  <p className="text-sm font-semibold text-white/80">{group.label}</p>
+                  {form.chemical.documents[group.key].map((doc, idx) => (
+                    <div key={idx} className="space-y-2 rounded-lg bg-white/5 p-3">
+                      <div className="flex gap-2">
+                        <input value={doc.title} onChange={(e) => setDocumentField(group.key, idx, "title", e.target.value)} className={inputCls} placeholder="Title" />
+                        <button type="button" onClick={() => removeDocument(group.key, idx)} className="rounded-lg border border-white/20 px-3 text-white hover:bg-white/5">✕</button>
+                      </div>
+                      <input
+                        type="file"
+                        onChange={(e) => setDocumentField(group.key, idx, "fileObj", e.target.files?.[0] || null)}
+                        className="block w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-[var(--admin-primary)] file:px-3 file:py-1.5 file:text-black"
+                      />
+                      {group.key === "certificate" && (
+                        <div className="grid grid-cols-2 gap-2">
+                          <input value={doc.lot_number} onChange={(e) => setDocumentField(group.key, idx, "lot_number", e.target.value)} className={inputCls} placeholder="Lot Number" />
+                          <input value={doc.certificate_type} onChange={(e) => setDocumentField(group.key, idx, "certificate_type", e.target.value)} className={inputCls} placeholder="Certificate Type" />
+                          <input type="date" value={doc.document_date} onChange={(e) => setDocumentField(group.key, idx, "document_date", e.target.value)} className={inputCls} />
+                          <input value={doc.catalog_numbers} onChange={(e) => setDocumentField(group.key, idx, "catalog_numbers", e.target.value)} className={inputCls} placeholder="Catalog Number(s)" />
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                  <button type="button" onClick={() => addDocument(group.key)} className="rounded-lg border border-white/20 px-3 py-1.5 text-xs text-white hover:bg-white/5">
+                    + Add {group.label.replace(/s$/, "")}
+                  </button>
                 </div>
               ))}
             </div>
-          )}
+          </>
+        )}
 
-          <ImageUpload
-            value=""
-            onFileSelect={handleImageSelect}
-            label="Upload Product Image"
-            helperText="PNG, JPG — upload one at a time, add as many as needed"
-          />
-        </div>
-
-        {/* ── Badges ── */}
-        {/* <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Badges</h3>
-          <div className="flex flex-wrap gap-2">
-            {BADGE_OPTIONS.map((b) => (
-              <label key={b} className={`flex cursor-pointer items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition ${form.badges.includes(b) ? "border-[var(--admin-border-amber)] bg-[var(--admin-primary)] text-black" : "border-white/20 text-white/70 hover:border-white/40"}`}>
-                <input type="checkbox" className="sr-only" checked={form.badges.includes(b)} onChange={(e) => setField("badges", e.target.checked ? [...form.badges, b] : form.badges.filter((x) => x !== b))} />
-                {b}
-              </label>
-            ))}
-          </div>
-        </div> */}
-
-        {/* ── Description ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Content</h3>
-          <div>
-            <label className={labelCls}>Short Description</label>
-            <textarea rows={2} value={form.short_desc} onChange={(e) => setField("short_desc", e.target.value)} className={inputCls} />
-          </div>
-          <div>
-            <label className={labelCls}>Full Description</label>
-            <RichTextEditor value={form.description} onChange={(v) => setField("description", v)} />
-          </div>
-          <div>
-            <label className={labelCls}>Ingredients</label>
-            <textarea rows={2} value={form.ingredients} onChange={(e) => setField("ingredients", e.target.value)} className={inputCls} />
-          </div>
-        </div>
-
-        {/* ── Benefits ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Benefits</h3>
-          {form.benefits.map((b, i) => (
-            <div key={i} className="flex gap-2">
-              <input value={b} onChange={(e) => { const u = [...form.benefits]; u[i] = e.target.value; setField("benefits", u); }} placeholder="Benefit…" className={`${inputCls} flex-1`} />
-              <button type="button" onClick={() => setField("benefits", form.benefits.filter((_, j) => j !== i))} className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-red-300 text-sm">✕</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => setField("benefits", [...form.benefits, ""])} className="rounded-lg border border-[var(--admin-border-amber)] bg-[var(--admin-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--admin-primary)]">+ Add Benefit</button>
-        </div>
-
-        {/* ── How To Use ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">How To Use</h3>
-          {form.how_to_use.map((h, i) => (
-            <div key={i} className="flex gap-2">
-              <input value={h.step} onChange={(e) => { const u = [...form.how_to_use]; u[i] = { ...u[i], step: e.target.value }; setField("how_to_use", u); }} placeholder="01" className="w-16 rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
-              <input value={h.text} onChange={(e) => { const u = [...form.how_to_use]; u[i] = { ...u[i], text: e.target.value }; setField("how_to_use", u); }} placeholder="Step description…" className={`${inputCls} flex-1`} />
-              <button type="button" onClick={() => setField("how_to_use", form.how_to_use.filter((_, j) => j !== i))} className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-2 text-red-300 text-sm">✕</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => setField("how_to_use", [...form.how_to_use, { step: String(form.how_to_use.length + 1).padStart(2, "0"), text: "" }])} className="rounded-lg border border-[var(--admin-border-amber)] bg-[var(--admin-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--admin-primary)]">+ Add Step</button>
-        </div>
-
-        {/* ── FAQs ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">FAQs</h3>
-          {form.faqs.map((f, i) => (
-            <div key={i} className="space-y-1.5 rounded-lg border border-white/10 p-3">
-              <input value={f.q} onChange={(e) => { const u = [...form.faqs]; u[i] = { ...u[i], q: e.target.value }; setField("faqs", u); }} placeholder="Question…" className={inputCls} />
-              <textarea rows={2} value={f.a} onChange={(e) => { const u = [...form.faqs]; u[i] = { ...u[i], a: e.target.value }; setField("faqs", u); }} placeholder="Answer…" className={inputCls} />
-              <button type="button" onClick={() => setField("faqs", form.faqs.filter((_, j) => j !== i))} className="text-xs text-red-400">Remove FAQ</button>
-            </div>
-          ))}
-          <button type="button" onClick={() => setField("faqs", [...form.faqs, { q: "", a: "" }])} className="rounded-lg border border-[var(--admin-border-amber)] bg-[var(--admin-primary)]/15 px-3 py-2 text-sm font-semibold text-[var(--admin-primary)]">+ Add FAQ</button>
-        </div>
-
-        {/* ── Tags & Sort ── */}
-        <div className={sectionCls}>
-          <h3 className="font-semibold text-white/90">Tags & Visibility</h3>
-          <div>
-            <label className={labelCls}>Tags (comma-separated)</label>
-            <input value={form.tags} onChange={(e) => setField("tags", e.target.value)} placeholder="ghee, organic, desi, 500g" className={inputCls} />
-          </div>
-          <div className="flex gap-4 items-center flex-wrap">
-            <div>
-              <label className={labelCls}>Sort Order</label>
-              <input type="number" min="0" value={form.sort_order} onChange={(e) => setField("sort_order", Number(e.target.value))} className="w-24 rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white" />
-            </div>
-            <label className="flex items-center gap-2 text-sm text-white/80 cursor-pointer mt-5">
-              <input type="checkbox" checked={form.is_active} onChange={(e) => setField("is_active", e.target.checked)} className="h-4 w-4" />
-              Active (visible on frontend)
-            </label>
-          </div>
-        </div>
-
-        {/* ── Submit ── */}
         <div className="flex flex-col gap-3 sm:flex-row">
-          <button type="submit" disabled={saving} className="rounded-lg bg-[var(--admin-primary)] px-5 py-2 text-black hover:bg-[var(--admin-primary-strong)] disabled:opacity-60">
+          <button type="submit" disabled={saving} className="rounded-xl bg-[var(--admin-primary)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--admin-primary-strong)] disabled:opacity-60">
             {saving ? "Saving…" : isEditMode ? "Update Product" : "Create Product"}
           </button>
-          <button type="button" onClick={() => navigate("/products")} className="rounded-lg border border-white/20 px-5 py-2 text-white/90 hover:bg-white/10">
+          <button type="button" onClick={() => navigate("/products")} className="rounded-xl border border-white/20 px-6 py-2.5 text-sm font-semibold text-white hover:bg-white/5">
             Cancel
           </button>
         </div>

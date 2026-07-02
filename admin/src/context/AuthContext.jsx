@@ -199,6 +199,7 @@ export function AuthProvider({ children }) {
       bio: String(me.bio || user?.bio || "").trim(),
       profile_photo: String(me.profile_photo || user?.profile_photo || "").trim(),
       status: String(me.status || user?.status || "active").trim(),
+      is_super_admin: Boolean(me.is_super_admin ?? user?.is_super_admin ?? false),
       permissions: Array.isArray(me.permissions) ? me.permissions : (Array.isArray(user?.permissions) ? user.permissions : []),
     };
 
@@ -261,6 +262,7 @@ export function AuthProvider({ children }) {
         bio: "",
         profile_photo: "",
         status: String(payload?.admin?.status || data?.admin?.status || "active"),
+        is_super_admin: Boolean(payload?.admin?.is_super_admin ?? data?.admin?.is_super_admin ?? false),
         permissions: Array.isArray(payload?.admin?.permissions) ? payload.admin.permissions : [],
       };
 
@@ -394,6 +396,9 @@ export function AuthProvider({ children }) {
   const can = useCallback((permission) => {
     if (!user) return false;
     if (String(user.status || "active").toLowerCase() === "inactive") return false;
+    // User Management is restricted to super admins specifically, not every
+    // role="admin" user — checked separately from the generic permission bypass.
+    if (permission === "manage_users") return user.is_super_admin === true;
     if (normalizeRole(user.role) === "admin") return true;
     const permissions = Array.isArray(user.permissions) ? user.permissions : [];
     return permissions.includes(permission);

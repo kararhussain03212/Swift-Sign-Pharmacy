@@ -36,6 +36,22 @@ final class CategoryController extends BaseCrudController
         Response::success($data, 'Fetched successfully');
     }
 
+    /** Flat category list with product_type, for the admin product form's category dropdown. */
+    public function adminWithType(array $params = []): void
+    {
+        $model = new Category();
+        $rows = $model->all();
+        $data = array_map(static fn (array $row): array => [
+            'id' => (int) $row['id'],
+            'name' => $row['name'],
+            'slug' => $row['slug'],
+            'parent_id' => $row['parent_id'] !== null ? (int) $row['parent_id'] : null,
+            'product_type' => $row['product_type'],
+        ], $rows);
+
+        Response::success($data, 'Fetched successfully');
+    }
+
     public function store(array $params = []): void
     {
         $this->requirePermission('create_content');

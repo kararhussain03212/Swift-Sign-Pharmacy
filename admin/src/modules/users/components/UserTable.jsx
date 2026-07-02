@@ -94,8 +94,7 @@ export default function UserTable({
                     <button
                       type="button"
                       onClick={() => onEdit(user)}
-                      disabled={!canEditUsers || user.is_super_admin}
-                      title={user.is_super_admin ? "Super admin is protected" : ""}
+                      disabled={!canEditUsers}
                       className="rounded-lg border border-blue-500/40 bg-blue-500/20 px-3 py-1.5 text-blue-200 disabled:opacity-50"
                     >
                       Edit
@@ -103,8 +102,8 @@ export default function UserTable({
                     <button
                       type="button"
                       onClick={() => onDelete(user)}
-                      disabled={!canDeleteUsers || user.is_super_admin}
-                      title={user.is_super_admin ? "Super admin is protected" : ""}
+                      disabled={!canDeleteUsers}
+                      title={user.is_super_admin ? "Server will reject deleting the last remaining super admin" : ""}
                       className="rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-1.5 text-red-200 disabled:opacity-50"
                     >
                       Delete
@@ -142,8 +141,8 @@ export default function UserTable({
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <button type="button" onClick={() => onView(user)} className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-bg)] px-3 py-2 text-xs text-white/90">View</button>
-              <button type="button" onClick={() => onEdit(user)} disabled={!canEditUsers || user.is_super_admin} className="rounded-lg border border-blue-500/40 bg-blue-500/20 px-3 py-2 text-xs text-blue-200 disabled:opacity-50">Edit</button>
-              <button type="button" onClick={() => onDelete(user)} disabled={!canDeleteUsers || user.is_super_admin} className="rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-2 text-xs text-red-200 disabled:opacity-50">Delete</button>
+              <button type="button" onClick={() => onEdit(user)} disabled={!canEditUsers} className="rounded-lg border border-blue-500/40 bg-blue-500/20 px-3 py-2 text-xs text-blue-200 disabled:opacity-50">Edit</button>
+              <button type="button" onClick={() => onDelete(user)} disabled={!canDeleteUsers} className="rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-2 text-xs text-red-200 disabled:opacity-50">Delete</button>
             </div>
           </article>
         ))

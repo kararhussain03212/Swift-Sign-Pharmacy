@@ -7,7 +7,15 @@ import StarRating from '../ui/StarRating'
 
 const SuperSavingDeals = () => {
   const { addToCart } = useCartStore()
-  const dealProducts = products.slice(0, 4)
+
+  const dealProducts = products
+    .filter(product => product.salePrice && product.salePrice < product.price)
+    .map(product => ({
+      ...product,
+      discountPercent: Math.round(((product.price - product.salePrice) / product.price) * 100)
+    }))
+    .sort((a, b) => b.discountPercent - a.discountPercent)
+    .slice(0, 4)
 
   return (
     <section className="max-w-[1450px] mx-auto px-4 sm:px-5 mt-8 sm:mt-10">

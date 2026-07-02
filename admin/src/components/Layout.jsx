@@ -7,7 +7,7 @@ import { getSettings } from "../api/settingApi";
 
 const NAV = [
   { path: "/dashboard",         label: "Dashboard" },
-  { path: "/users",             label: "User Management", adminOnly: true },
+  { path: "/users",             label: "User Management", superAdminOnly: true },
   { path: "/sliders",           label: "Hero Slides" },
   { path: "/products",          label: "Products" },
   { path: "/blogs",             label: "Blogs" },
@@ -60,6 +60,7 @@ const NAV = [
   { path: "/homepage-care-plan",     label: "Care Plan Banner",  child: true, childGroup: "homepage" },
   { path: "/featured-brands",        label: "Featured Brands",   child: true, childGroup: "homepage" },
   { path: "/trust-badges",           label: "Trust Badges",      child: true, childGroup: "homepage" },
+  { path: "/homepage-sliders",       label: "Product Sliders",   child: true, childGroup: "homepage" },
 ];
 
 const PAGE_TITLES = {
@@ -89,6 +90,8 @@ const PAGE_TITLES = {
   "/featured-brands/new":            "Add Brand",
   "/trust-badges":                   "Trust Badges",
   "/trust-badges/new":               "Add Trust Badge",
+  "/homepage-sliders":               "Homepage Product Sliders",
+  "/homepage-sliders/new":           "Add Slider",
   "/settings/navbar":                "Navbar Settings",
   "/settings/home":                  "Home Settings",
   "/settings/home-about":            "Home - Our Story",
@@ -152,6 +155,7 @@ export default function Layout({ children }) {
 
   const { user, logout } = useAuth();
   const isAdmin  = user?.role === "admin";
+  const isSuperAdmin = user?.is_super_admin === true;
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -170,7 +174,8 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/homepage-promo-cards")
     || location.pathname.startsWith("/homepage-care-plan")
     || location.pathname.startsWith("/featured-brands")
-    || location.pathname.startsWith("/trust-badges");
+    || location.pathname.startsWith("/trust-badges")
+    || location.pathname.startsWith("/homepage-sliders");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -206,6 +211,7 @@ export default function Layout({ children }) {
     if (location.pathname.startsWith("/homepage-promo-cards/edit"))   return "Edit Promo Card";
     if (location.pathname.startsWith("/featured-brands/edit"))        return "Edit Brand";
     if (location.pathname.startsWith("/trust-badges/edit"))           return "Edit Trust Badge";
+    if (location.pathname.startsWith("/homepage-sliders/edit"))       return "Edit Slider";
     if (location.pathname.startsWith("/sliders/edit"))           return "Edit Hero Slide";
     if (location.pathname.startsWith("/products/edit"))          return "Edit Product";
     if (location.pathname.startsWith("/commitment/edit"))        return "Edit Commitment Item";
@@ -302,7 +308,7 @@ export default function Layout({ children }) {
             Main
           </p>
 
-          {NAV.filter((item) => !item.adminOnly || isAdmin).map((item) => {
+          {NAV.filter((item) => (!item.adminOnly || isAdmin) && (!item.superAdminOnly || isSuperAdmin)).map((item) => {
             /* About Us dropdown */
             if (item.group === "about") {
               const active = location.pathname.startsWith("/about/");

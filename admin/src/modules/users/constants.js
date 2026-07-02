@@ -21,10 +21,12 @@ export const PERMISSION_OPTIONS = [
   },
 ];
 
+// Synchronous fallback only (used for the very first render before the async
+// role-defaults fetch resolves, or if that fetch fails). The source of truth
+// is the `role_default_permissions` table via GET /admin/roles/{role}/default-permissions.
 export const ROLE_PERMISSIONS = {
   admin:  ["create_content", "edit_content", "delete_content", "publish_content"],
-  editor: ["create_content", "edit_content", "publish_content"],
-  viewer: [],
+  editor: ["create_content", "edit_content"],
 };
 
 export const getDefaultPermissions = (role) =>
