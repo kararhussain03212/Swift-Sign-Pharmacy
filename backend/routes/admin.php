@@ -13,17 +13,14 @@ use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
 use Backend\Controllers\FeaturedBrandController;
-use Backend\Controllers\HeroController;
 use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
 use Backend\Controllers\HomepagePromoCardController;
 use Backend\Controllers\HomepageProductSliderController;
-use Backend\Controllers\TrustBadgeController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
 use Backend\Controllers\ProductController;
-use Backend\Controllers\ProductPageController;
 use Backend\Controllers\SettingController;
 use Backend\Controllers\SiteSettingController;
 use Backend\Controllers\StoreBranchController;
@@ -31,15 +28,14 @@ use Backend\Controllers\StoreGalleryController;
 use Backend\Controllers\StoreLocatorContentController;
 use Backend\Controllers\StoreNetworkStatController;
 use Backend\Controllers\TestimonialController;
+use Backend\Controllers\TrustBadgeController;
 use Backend\Controllers\UploadController;
 use Backend\Controllers\UserController;
 use Backend\Middleware\AuthMiddleware;
 use Backend\Utils\Router;
 
-require_once __DIR__ . '/../controllers/HeroController.php';
 require_once __DIR__ . '/../controllers/HeroBannerController.php';
 require_once __DIR__ . '/../controllers/ProductController.php';
-require_once __DIR__ . '/../controllers/ProductPageController.php';
 require_once __DIR__ . '/../controllers/TestimonialController.php';
 require_once __DIR__ . '/../controllers/CommitmentItemController.php';
 require_once __DIR__ . '/../controllers/BlogController.php';
@@ -76,13 +72,6 @@ function registerAdminRoutes(Router $router): void
 
     $router->get('/api/admin/dashboard', [DashboardController::class, 'stats'], $mw);
 
-    // Hero Slides
-    $router->get('/api/admin/hero', [HeroController::class, 'index'], $mw);
-    $router->get('/api/admin/hero/{id}', [HeroController::class, 'show'], $mw);
-    $router->post('/api/admin/hero', [HeroController::class, 'store'], $mw);
-    $router->put('/api/admin/hero/{id}', [HeroController::class, 'update'], $mw);
-    $router->delete('/api/admin/hero/{id}', [HeroController::class, 'destroy'], $mw);
-    $router->patch('/api/admin/hero/reorder', [HeroController::class, 'reorder'], $mw);
 
     // Products
     $router->get('/api/admin/products', [ProductController::class, 'index'], $mw);
@@ -92,9 +81,6 @@ function registerAdminRoutes(Router $router): void
     $router->delete('/api/admin/products/{id}', [ProductController::class, 'destroy'], $mw);
     $router->patch('/api/admin/products/reorder', [ProductController::class, 'reorder'], $mw);
 
-    // Product Page Settings (admin)
-    $router->get('/api/admin/product-page', [ProductPageController::class, 'index'], $mw);
-    $router->put('/api/admin/product-page', [ProductPageController::class, 'update'], $mw);
 
     // Testimonials
     $router->get('/api/admin/testimonials', [TestimonialController::class, 'index'], $mw);

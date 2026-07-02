@@ -94,29 +94,29 @@ export default function HeaderSiteSettings() {
     }
   };
 
-  if (loading) return <div className="arion-theme text-[var(--arion-muted)]">Loading…</div>;
+  if (loading) return <div className="admin-theme text-[var(--admin-muted)]">Loading…</div>;
 
   const inputCls =
-    "w-full rounded-lg border border-[var(--arion-border)] bg-[var(--arion-card-solid)] px-3 py-2 text-[var(--arion-ink)] focus:border-[var(--arion-cyan)] focus:outline-none";
-  const labelCls = "mb-1 block text-sm text-[var(--arion-muted)]";
+    "w-full rounded-lg border border-[var(--admin-border)] bg-[var(--admin-input)] px-3 py-2 text-white focus:border-[var(--admin-accent)] focus:outline-none";
+  const labelCls = "mb-1 block text-sm text-[var(--admin-muted)]";
 
   return (
-    <section className="arion-theme mx-auto max-w-2xl space-y-5">
+    <section className="admin-theme mx-auto max-w-2xl space-y-5">
       <div>
-        <h2 className="text-2xl font-bold text-[var(--arion-ink)] sm:text-3xl">Site Settings</h2>
-        <p className="text-sm text-[var(--arion-muted)]">Logo, site name, country, and license details shown in the header.</p>
+        <h2 className="text-2xl font-bold text-white sm:text-3xl">Site Settings</h2>
+        <p className="text-sm text-[var(--admin-muted)]">Logo, site name, country, and license details shown in the header.</p>
       </div>
 
       {error && (
-        <div className="arion-glass rounded-lg border border-red-500/40 px-4 py-3 text-red-300">{error}</div>
+        <div className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-3 text-red-300">{error}</div>
       )}
       {saved && (
-        <div className="arion-glass rounded-lg border border-[var(--arion-border-strong)] px-4 py-3 text-[var(--arion-cyan)]">
+        <div className="rounded-lg border border-[var(--admin-accent)] bg-[var(--admin-accent)]/10 px-4 py-3 text-[var(--admin-accent)]">
           Settings saved.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="arion-glass space-y-5 rounded-2xl p-6">
+      <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)] p-6">
         <ImageUpload
           value={form.logoPreview}
           onFileSelect={(file) => setField("logoFile", file)}
@@ -151,7 +151,7 @@ export default function HeaderSiteSettings() {
           </div>
         </div>
 
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--arion-muted)]">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--admin-muted)]">
           <input
             type="checkbox"
             checked={form.hot_deals_enabled}
@@ -172,7 +172,7 @@ export default function HeaderSiteSettings() {
           </div>
         </div>
 
-        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--arion-muted)]">
+        <label className="flex cursor-pointer items-center gap-2 text-sm text-[var(--admin-muted)]">
           <input
             type="checkbox"
             checked={form.prescription_enabled}
@@ -186,7 +186,7 @@ export default function HeaderSiteSettings() {
           <button
             type="submit"
             disabled={saving}
-            className="rounded-lg bg-[var(--arion-cyan)] px-6 py-2.5 font-semibold text-white hover:bg-[var(--arion-cyan-strong)] disabled:opacity-60"
+            className="rounded-lg bg-[var(--admin-accent)] px-6 py-2.5 font-semibold text-white hover:bg-[var(--admin-accent-strong)] disabled:opacity-60"
           >
             {saving ? "Saving…" : "Save Settings"}
           </button>

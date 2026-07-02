@@ -15,12 +15,10 @@ final class CorsMiddleware
         if ($origin === '') {
             return false;
         }
-
         $parts = parse_url($origin);
         if (!is_array($parts)) {
             return false;
         }
-
         $host = strtolower((string) ($parts['host'] ?? ''));
         return in_array($host, ['localhost', '127.0.0.1', '::1'], true);
     }
@@ -28,39 +26,47 @@ final class CorsMiddleware
     public static function handle(): void
     {
         Env::load(dirname(__DIR__) . '/.env');
-        $allowedOrigins = array_values(array_filter(array_map(
-            static fn (string $origin): string => trim($origin),
-            explode(',', Env::get('CORS_ALLOW_ORIGIN', '*') ?? '*')
-        )));
 
-        $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+        $requestOrigin = trim((string) ($_SERVER['HTTP_ORIGIN'] ?? ''));
         $allowedOrigin = null;
 
-        if ($allowedOrigins !== []) {
-            if (in_array('*', $allowedOrigins, true)) {
-                $allowedOrigin = '*';
-            } elseif ($requestOrigin !== '' && in_array($requestOrigin, $allowedOrigins, true)) {
+        if ($requestOrigin !== '') {
+            // Always allow any localhost / 127.0.0.1 origin (covers all Vite dev ports)
+            if (self::isLocalOrigin($requestOrigin)) {
                 $allowedOrigin = $requestOrigin;
-            } elseif (self::isLocalOrigin($requestOrigin)) {
-                // Allow local tooling origins (Vite/Live Server/etc.) without editing production CORS list.
-                $allowedOrigin = $requestOrigin;
+            } else {
+                // Check explicit CORS_ALLOW_ORIGIN whitelist from .env
+                $list = array_values(array_filter(array_map(
+                    static fn(string $o): string => trim($o),
+                    explode(',', Env::get('CORS_ALLOW_ORIGIN', '') ?? '')
+                )));
+                if (in_array('*', $list, true)) {
+                    $allowedOrigin = '*';
+                } elseif (in_array($requestOrigin, $list, true)) {
+                    $allowedOrigin = $requestOrigin;
+                }
             }
         }
 
+        // Remove any headers Apache may have pre-set to avoid duplicates
+        header_remove('Access-Control-Allow-Origin');
+        header_remove('Access-Control-Allow-Credentials');
+        header_remove('Access-Control-Allow-Methods');
+        header_remove('Access-Control-Allow-Headers');
+
         if ($allowedOrigin !== null) {
             header('Access-Control-Allow-Origin: ' . $allowedOrigin);
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
+            header('Access-Control-Allow-Headers: Content-Type, Authorization, X-CSRF-Token');
         }
+
+        header('Vary: Origin');
         header('X-Frame-Options: SAMEORIGIN');
         header('X-Content-Type-Options: nosniff');
         header('Referrer-Policy: strict-origin-when-cross-origin');
-        header('Strict-Transport-Security: max-age=31536000; includeSubDomains; preload');
-        header('Permissions-Policy: camera=(), microphone=(), geolocation=()');
-        header("Content-Security-Policy: default-src 'self'; base-uri 'self'; frame-ancestors 'self'; frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://www.google.com https://maps.google.com; object-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com https://fonts.googleapis.com; img-src 'self' data: blob: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https:; worker-src 'self' blob:; manifest-src 'self'; form-action 'self'; upgrade-insecure-requests; block-all-mixed-content");
-        header('Access-Control-Allow-Credentials: true');
-        header('Access-Control-Allow-Methods: GET, POST, PUT, PATCH, DELETE, OPTIONS');
-        header('Access-Control-Allow-Headers: Content-Type, Authorization, X-CSRF-Token');
-        header('Vary: Origin');
 
+        // Handle OPTIONS preflight — respond immediately with 204
         if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'OPTIONS') {
             http_response_code(204);
             exit;
