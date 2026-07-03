@@ -1,5 +1,4 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
-import { LucideProvider } from "lucide-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -27,7 +26,7 @@ import CustomerAddresses from "./pages/addresses/CustomerAddresses";
 import AnnouncementBarList from "./pages/header/AnnouncementBarList";
 import HeaderSiteSettings from "./pages/header/HeaderSiteSettings";
 import NavLinkList from "./pages/header/NavLinkList";
-import CategoryList from "./pages/header/CategoryList";
+import CategoryList from "./pages/main/CategoryList";
 import LocationList from "./pages/header/LocationList";
 import HeroSlideList from "./pages/header/HeroSlideList";
 import HeroSlideForm from "./pages/header/HeroSlideForm";
@@ -106,9 +105,8 @@ export default function App() {
       : undefined;
 
   return (
-    <LucideProvider>
-      <AuthProvider>
-        <BrowserRouter basename={basename}>
+    <AuthProvider>
+      <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/login" element={<Login />} />
 
@@ -308,7 +306,7 @@ export default function App() {
           <Route path="/header/announcement-bar" element={<ProtectedPage><AnnouncementBarList /></ProtectedPage>} />
           <Route path="/header/site-settings"    element={<ProtectedPage><HeaderSiteSettings /></ProtectedPage>} />
           <Route path="/header/nav-links"        element={<ProtectedPage><NavLinkList /></ProtectedPage>} />
-          <Route path="/header/categories"       element={<ProtectedPage><CategoryList /></ProtectedPage>} />
+          <Route path="/categories"       element={<ProtectedPage><CategoryList /></ProtectedPage>} />
           <Route path="/header/locations"        element={<ProtectedPage><LocationList /></ProtectedPage>} />
           <Route path="/header/hero-slides"           element={<ProtectedPage><HeroSlideList /></ProtectedPage>} />
           <Route path="/header/hero-slides/new"       element={<ProtectedPage><HeroSlideForm /></ProtectedPage>} />
@@ -356,6 +354,5 @@ export default function App() {
         </Routes>
         </BrowserRouter>
       </AuthProvider>
-    </LucideProvider>
   );
 }

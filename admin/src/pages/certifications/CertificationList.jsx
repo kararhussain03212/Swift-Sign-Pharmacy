@@ -401,7 +401,7 @@ function CertificateForm({ form, setForm, categories, onSubmit, onCancel, onImag
               <input
                 type="number"
                 value={form.sort_order || 0}
-                onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) })}
+                onChange={(e) => setForm({ ...form, sort_order: parseInt(e.target.value) || 0 })}
                 className={inputCls}
               />
             </div>

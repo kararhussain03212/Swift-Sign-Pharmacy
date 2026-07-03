@@ -17,6 +17,7 @@
 
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { LucideProvider } from 'lucide-react'
 import './index.css'
 import './styles/arionHeaderTheme.css'
 import "primereact/resources/themes/lara-light-green/theme.css";
@@ -25,7 +26,9 @@ import "primeicons/primeicons.css";
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
+  <LucideProvider>
+    <StrictMode>
+      <App />
+    </StrictMode>
+  </LucideProvider>,
 )

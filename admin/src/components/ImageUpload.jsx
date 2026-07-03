@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { getBackendRoot } from "../api/runtimeApi";
 
 const ImageUpload = ({
@@ -16,6 +16,7 @@ const ImageUpload = ({
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
   const apiRoot = useMemo(() => getBackendRoot(), []);
+  const objectUrlRef = useRef("");
 
   const resolveImageUrl = (url) => {
     if (!url) return "";
@@ -23,33 +24,31 @@ const ImageUpload = ({
     if (url.startsWith("http")) return url;
     if (url.startsWith("/uploads/")) return apiRoot + url;
     if (url.startsWith("/")) return url;
-    return `${apiRoot}/uploads/${url}`;
+    // bare filenames (legacy seed assets like "store2.png") live as static
+    // files served from this app's own public/ folder, not backend/uploads
+    return `/${url}`;
   };
 
   const preview = objectUrl || resolveImageUrl(value) || "";
 
-  // prevents memory leaks when user changes image many times
+  // revoke only on unmount — avoids revoking a fresh blob URL before its <img> finishes loading
   useEffect(() => {
     return () => {
-      if (objectUrl) URL.revokeObjectURL(objectUrl);
+      if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
     };
-  }, [objectUrl]);
-
-  // Log for debugging
-  useEffect(() => {
-    if (preview) {
-      console.log("ImageUpload preview URL:", preview);
-    }
-  }, [preview]);
+  }, []);
 
   const handleChange = (event) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
-    if (objectUrl) URL.revokeObjectURL(objectUrl);
+    if (objectUrlRef.current) URL.revokeObjectURL(objectUrlRef.current);
 
     const nextUrl = URL.createObjectURL(file);
+    objectUrlRef.current = nextUrl;
     setObjectUrl(nextUrl);
+    setImageLoaded(false);
+    setImageError(false);
 
     // parent form needs file for FormData submit to backend
     if (typeof onFileSelect === "function") {

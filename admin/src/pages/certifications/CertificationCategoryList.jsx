@@ -154,7 +154,7 @@ export default function CertificationCategoryList() {
                   <input
                     type="number"
                     value={addForm.sort_order || 0}
-                    onChange={(e) => setAddForm({ ...addForm, sort_order: parseInt(e.target.value) })}
+                    onChange={(e) => setAddForm({ ...addForm, sort_order: parseInt(e.target.value) || 0 })}
                     className={inputCls}
                   />
                 </div>
@@ -219,7 +219,7 @@ export default function CertificationCategoryList() {
                         <input
                           type="number"
                           value={form.sort_order || 0}
-                          onChange={(e) => handleFieldChange(item.id, "sort_order", parseInt(e.target.value))}
+                          onChange={(e) => handleFieldChange(item.id, "sort_order", parseInt(e.target.value) || 0)}
                           className={inputCls}
                         />
                       </div>

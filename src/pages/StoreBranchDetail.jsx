@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MapPin, Phone, Clock, ArrowLeft } from 'lucide-react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import L from 'leaflet'
-import 'leaflet/dist/leaflet.css'
 import { getStoreBranchBySlug } from '../services/headerApi'
 
-const redIcon = new L.Icon({
-  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-  popupAnchor: [1, -34],
-  shadowSize: [41, 41],
-})
+const extractMapSrc = (value) => {
+  const raw = String(value || '').trim()
+  if (!raw) return ''
+  const match = raw.match(/src=["']([^"']+)["']/i)
+  return match ? match[1] : raw
+}
 
 const DetailSkeleton = () => (
   <div className="max-w-[900px] mx-auto px-4 sm:px-6 py-10 animate-pulse">
@@ -70,8 +65,7 @@ const StoreBranchDetail = () => {
     )
   }
 
-  const lat = Number(branch.latitude)
-  const lng = Number(branch.longitude)
+  const mapSrc = extractMapSrc(branch.map_embed_link)
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16">
@@ -102,18 +96,22 @@ const StoreBranchDetail = () => {
         </div>
 
         <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200" style={{ height: '400px' }}>
-          <MapContainer center={[lat, lng]} zoom={15} style={{ height: '100%', width: '100%' }}>
-            <TileLayer
-              attribution='&copy; Google Maps'
-              url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+          {mapSrc ? (
+            <iframe
+              src={mapSrc}
+              title={`Map — ${branch.name}`}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
             />
-            <Marker position={[lat, lng]} icon={redIcon}>
-              <Popup>
-                <strong>{branch.name}</strong><br/>
-                {branch.address}
-              </Popup>
-            </Marker>
-          </MapContainer>
+          ) : (
+            <div className="flex h-full w-full flex-col items-center justify-center gap-2 bg-gray-50 text-center px-4">
+              <MapPin size={28} className="text-gray-300" />
+              <p className="text-gray-400 text-[14px] font-medium">Map not available</p>
+            </div>
+          )}
         </div>
       </div>
     </main>

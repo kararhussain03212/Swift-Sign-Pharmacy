@@ -263,34 +263,30 @@ export default function CategoryList() {
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => handleToggleActive(item)}
-                disabled={!canPublish || editingId !== null}
-                className={
-                  item.is_active
-                    ? "rounded-full bg-[var(--arion-cyan-light)] px-3 py-1 text-xs font-semibold text-[var(--arion-cyan)]"
-                    : "rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/50"
-                }
-              >
-                {item.is_active ? "Active" : "Inactive"}
-              </button>
+              {item.is_active && (
+                <button
+                  onClick={() => handleToggleActive(item)}
+                  disabled={!canPublish || editingId !== null}
+                  className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-60"
+                >
+                  Published
+                </button>
+              )}
 
               <button
                 onClick={() => startEdit(item)}
                 disabled={!canEdit || editingId !== null}
-                className="p-2 text-[var(--arion-muted)] hover:text-[var(--arion-cyan)] disabled:opacity-40"
-                title="Edit"
+                className="rounded-lg bg-[var(--arion-cyan)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--arion-cyan-strong)] disabled:opacity-60"
               >
-                <Edit2 size={16} />
+                Edit
               </button>
 
               <button
                 onClick={() => handleDelete(item)}
                 disabled={!canDelete || editingId !== null}
-                className="p-2 text-red-500/60 hover:text-red-500 disabled:opacity-40"
-                title="Delete"
+                className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60"
               >
-                <Trash2 size={16} />
+                Delete
               </button>
             </div>
           </div>

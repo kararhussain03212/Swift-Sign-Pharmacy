@@ -8,6 +8,7 @@ import { getSettings } from "../api/settingApi";
 const NAV = [
   { path: "/dashboard",         label: "Dashboard" },
   { path: "/users",             label: "User Management", superAdminOnly: true },
+  { path: "/categories",        label: "Categories" },
   { path: "/header/hero-slides",      label: "Hero Banner" },
   { path: "/blogs",             label: "Blogs" },
   // Other Settings
@@ -31,8 +32,6 @@ const NAV = [
   { path: "/header/announcement-bar", label: "Announcement Bar", child: true, childGroup: "header" },
   { path: "/header/site-settings",    label: "Site Settings",    child: true, childGroup: "header" },
   { path: "/header/nav-links",        label: "Nav Links",        child: true, childGroup: "header" },
-  { path: "/header/categories",       label: "Categories",       child: true, childGroup: "header" },
-  { path: "/header/locations",        label: "Locations",        child: true, childGroup: "header" },
   // Store Locator
   { path: "/store-locator", label: "Store Locator", group: "storeLocator" },
   { path: "/store-locator/branches",      label: "Branches",      child: true, childGroup: "storeLocator" },
@@ -73,11 +72,10 @@ const PAGE_TITLES = {
   "/profile":                        "Admin Profile",
   "/users":                          "User Management",
   "/addresses":                      "Customer Addresses",
+  "/categories":                     "Categories",
   "/header/announcement-bar":        "Announcement Bar",
   "/header/site-settings":           "Header — Site Settings",
   "/header/nav-links":               "Nav Links",
-  "/header/categories":              "Categories",
-  "/header/locations":               "Locations",
   "/header/hero-slides":             "Hero Banner",
   "/header/hero-slides/new":         "Add Hero Slide",
   "/homepage/hero-banner":           "Home Page — Hero Banner",

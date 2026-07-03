@@ -17,7 +17,7 @@ final class StoreBranchController extends BaseCrudController
 {
     protected string $modelClass = StoreBranch::class;
     protected string $resourceName = 'store_branches';
-    protected array $requiredCreateFields = ['name', 'address', 'area', 'city', 'latitude', 'longitude', 'hours_display'];
+    protected array $requiredCreateFields = ['name', 'address', 'area', 'city', 'map_embed_link', 'hours_display'];
 
     public function publicIndex(array $params = []): void
     {
@@ -64,7 +64,10 @@ final class StoreBranchController extends BaseCrudController
     {
         $this->requirePermission('create_content');
         $model = new StoreBranch();
-        $payload = Validator::sanitizeInput($this->body());
+        $body = $this->body();
+        $mapEmbedLink = $this->extractMapEmbedUrl((string) ($body['map_embed_link'] ?? ''));
+        $payload = Validator::sanitizeInput($body);
+        $payload['map_embed_link'] = $mapEmbedLink;
 
         $errors = Validator::required($payload, $this->requiredCreateFields);
         if ($errors !== []) {
@@ -94,7 +97,11 @@ final class StoreBranchController extends BaseCrudController
             Response::error('Resource not found', 404);
         }
 
-        $payload = Validator::sanitizeInput($this->body());
+        $body = $this->body();
+        $payload = Validator::sanitizeInput($body);
+        if (array_key_exists('map_embed_link', $body)) {
+            $payload['map_embed_link'] = $this->extractMapEmbedUrl((string) $body['map_embed_link']);
+        }
         if (array_key_exists('detail_slug', $payload) || array_key_exists('name', $payload)) {
             $desired = trim((string) ($payload['detail_slug'] ?? $existing['detail_slug']));
             $payload['detail_slug'] = $this->resolveSlug($model, $desired, (string) ($payload['name'] ?? $existing['name']), $id);
@@ -109,6 +116,20 @@ final class StoreBranchController extends BaseCrudController
         Cache::clearAll();
 
         Response::success($model->find($id), 'Updated successfully');
+    }
+
+    private function extractMapEmbedUrl(string $value): string
+    {
+        $raw = trim($value);
+        if ($raw === '') {
+            return '';
+        }
+
+        if (preg_match('/src=["\']([^"\']+)["\']/i', $raw, $matches) === 1) {
+            return trim($matches[1]);
+        }
+
+        return $raw;
     }
 
     private function resolveSlug(StoreBranch $model, string $desired, string $fallbackName, ?int $excludeId = null): string

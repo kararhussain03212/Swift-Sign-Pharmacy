@@ -223,7 +223,7 @@ export default function FooterQuickLinkList() {
                       <input
                         type="number"
                         value={editForms[item.id]?.sort_order || 0}
-                        onChange={(e) => handleFieldChange(item.id, "sort_order", parseInt(e.target.value))}
+                        onChange={(e) => handleFieldChange(item.id, "sort_order", parseInt(e.target.value) || 0)}
                         className="w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white focus:outline-none focus:ring-1 focus:ring-[var(--admin-primary)]"
                       />
                     </div>
