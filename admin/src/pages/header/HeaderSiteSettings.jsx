@@ -14,6 +14,7 @@ const getInitialForm = () => ({
   prescription_enabled: true,
   country: "",
   license_number: "",
+  license_label: "PCP License Number",
   logoFile: null,
   logoPreview: "",
 });
@@ -43,6 +44,7 @@ export default function HeaderSiteSettings() {
           prescription_enabled: item.prescription_enabled === 1 || item.prescription_enabled === true,
           country: item.country || "",
           license_number: item.license_number || "",
+          license_label: item.license_label || "PCP License Number",
           logoFile: null,
           logoPreview: item.logo_url || "",
         });
@@ -71,6 +73,7 @@ export default function HeaderSiteSettings() {
         prescription_enabled: form.prescription_enabled ? 1 : 0,
         country: form.country.trim(),
         license_number: form.license_number.trim(),
+        license_label: form.license_label.trim() || "PCP License Number",
       };
 
       if (form.logoFile) {
@@ -137,6 +140,10 @@ export default function HeaderSiteSettings() {
           <div>
             <label className={labelCls}>License Number</label>
             <input value={form.license_number} onChange={(e) => setField("license_number", e.target.value)} className={inputCls} placeholder="2659-A/2014-PC" />
+          </div>
+          <div>
+            <label className={labelCls}>License Label</label>
+            <input value={form.license_label} onChange={(e) => setField("license_label", e.target.value)} className={inputCls} placeholder="PCP License Number" />
           </div>
         </div>
 

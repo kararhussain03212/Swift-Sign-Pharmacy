@@ -57,6 +57,7 @@ const Navbar = () => {
   const [navLinks, setNavLinks] = useState(null)
   const [navItems, setNavItems] = useState(null)
   const [licenseNumber, setLicenseNumber] = useState(licenseInfo.number)
+  const [licenseLabel, setLicenseLabel] = useState(licenseInfo.description)
   const [prescription, setPrescription] = useState(FALLBACK_PRESCRIPTION)
 
   useEffect(() => {
@@ -84,6 +85,7 @@ const Navbar = () => {
       .then((data) => {
         if (!active || !data) return
         if (data.license_number) setLicenseNumber(data.license_number)
+        if (data.license_label) setLicenseLabel(data.license_label)
         setPrescription({
           prescription_link: data.prescription_link || FALLBACK_PRESCRIPTION.prescription_link,
           prescription_text: data.prescription_text || FALLBACK_PRESCRIPTION.prescription_text,
@@ -234,7 +236,7 @@ const Navbar = () => {
         <div className="flex-shrink-0 flex items-center gap-0.5 sm:gap-1 md:gap-1.5 lg:gap-3 w-full sm:w-auto" style={{ order: 2 }}>
           <div className="hidden lg:block w-px h-6" style={{ backgroundColor: '#e5e5e5' }} />
           <div className="hidden lg:block text-gray-700 text-right leading-tight" style={{ fontSize: 'clamp(11px, 1vw, 13px)' }}>
-            <div>{licenseInfo.description}:</div>
+            <div>{licenseLabel}:</div>
             <div className="font-medium" style={{ fontSize: 'clamp(12px, 1.1vw, 14px)' }}>{licenseNumber}</div>
           </div>
           {(prescription.prescription_enabled === undefined || Number(prescription.prescription_enabled) === 1) && (

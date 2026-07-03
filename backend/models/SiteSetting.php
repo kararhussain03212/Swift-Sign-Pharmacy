@@ -13,6 +13,6 @@ final class SiteSetting extends ArionBaseModel
         'logo_url', 'site_name',
         'hot_deals_link', 'hot_deals_text', 'hot_deals_enabled',
         'prescription_link', 'prescription_text', 'prescription_enabled',
-        'country', 'license_number',
+        'country', 'license_number', 'license_label',
     ];
 }
