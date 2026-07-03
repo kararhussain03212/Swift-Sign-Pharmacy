@@ -1,4 +1,5 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { LucideProvider } from "lucide-react";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Layout from "./components/Layout";
 import { AuthProvider } from "./context/AuthContext.jsx";
@@ -105,8 +106,9 @@ export default function App() {
       : undefined;
 
   return (
-    <AuthProvider>
-      <BrowserRouter basename={basename}>
+    <LucideProvider>
+      <AuthProvider>
+        <BrowserRouter basename={basename}>
         <Routes>
           <Route path="/login" element={<Login />} />
 
@@ -352,7 +354,8 @@ export default function App() {
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+        </BrowserRouter>
+      </AuthProvider>
+    </LucideProvider>
   );
 }
