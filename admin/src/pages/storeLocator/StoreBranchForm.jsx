@@ -7,8 +7,7 @@ const getInitialForm = () => ({
   address: "",
   area: "",
   city: "",
-  latitude: "",
-  longitude: "",
+  map_embed_link: "",
   phone: "",
   hours_display: "",
   detail_slug: "",
@@ -42,8 +41,7 @@ export default function StoreBranchForm() {
           address: item.address || "",
           area: item.area || "",
           city: item.city || "",
-          latitude: item.latitude ?? "",
-          longitude: item.longitude ?? "",
+          map_embed_link: item.map_embed_link || "",
           phone: item.phone || "",
           hours_display: item.hours_display || "",
           detail_slug: item.detail_slug || "",
@@ -66,7 +64,7 @@ export default function StoreBranchForm() {
     if (!form.address.trim()) { setError("Address is required."); return; }
     if (!form.area.trim()) { setError("Area is required."); return; }
     if (!form.city.trim()) { setError("City is required."); return; }
-    if (form.latitude === "" || form.longitude === "") { setError("Latitude and longitude are required."); return; }
+    if (!form.map_embed_link.trim()) { setError("Map embed link is required."); return; }
     if (!form.hours_display.trim()) { setError("Hours display text is required."); return; }
 
     try {
@@ -77,8 +75,7 @@ export default function StoreBranchForm() {
         address: form.address.trim(),
         area: form.area.trim(),
         city: form.city.trim(),
-        latitude: Number(form.latitude),
-        longitude: Number(form.longitude),
+        map_embed_link: form.map_embed_link.trim(),
         phone: form.phone.trim(),
         hours_display: form.hours_display.trim(),
         detail_slug: form.detail_slug.trim(),
@@ -136,15 +133,9 @@ export default function StoreBranchForm() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div>
-            <label className={labelCls}>Latitude *</label>
-            <input type="number" step="any" value={form.latitude} onChange={(e) => setField("latitude", e.target.value)} required className={inputCls} placeholder="31.4827" />
-          </div>
-          <div>
-            <label className={labelCls}>Longitude *</label>
-            <input type="number" step="any" value={form.longitude} onChange={(e) => setField("longitude", e.target.value)} required className={inputCls} placeholder="74.3036" />
-          </div>
+        <div>
+          <label className={labelCls}>Map Embed Link *</label>
+          <textarea value={form.map_embed_link} onChange={(e) => setField("map_embed_link", e.target.value)} required rows="3" className={`${inputCls} resize-none`} placeholder="Paste Google Maps embed code or iframe link here" />
         </div>
 
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">

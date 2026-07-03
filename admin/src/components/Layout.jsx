@@ -11,6 +11,10 @@ const NAV = [
   { path: "/categories",        label: "Categories" },
   { path: "/header/hero-slides",      label: "Hero Banner" },
   { path: "/blogs",             label: "Blogs" },
+  // Product module
+  { path: "/products", label: "Products", group: "products" },
+  { path: "/products",         label: "Product List", child: true, childGroup: "products" },
+  { path: "/settings/product", label: "Product Settings", child: true, childGroup: "products" },
   // Other Settings
   { path: "/settings/blog",     label: "Blog Page" },
   // Home Page module
@@ -58,6 +62,7 @@ const PAGE_TITLES = {
   "/dashboard":                      "Dashboard",
   "/products":                       "Products",
   "/products/new":                   "Add Product",
+  "/settings/product":               "Product Settings",
   "/commitment":                     "Commitment Items",
   "/commitment/new":                 "Add Commitment Item",
   "/blogs":                          "Blogs",
@@ -138,6 +143,7 @@ export default function Layout({ children }) {
   const [contactUsManual,   setContactUsManual]     = useState(false);
   const [footerManual,     setFooterManual]      = useState(false);
   const [certificationsManual, setCertificationsManual] = useState(false);
+  const [productsManual,   setProductsManual]    = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -148,7 +154,7 @@ export default function Layout({ children }) {
   const navigate = useNavigate();
 
   /* ── derive dropdown open state from route (no setState-in-effect) */
-  const headerOpen = headerManual || location.pathname.startsWith("/header/");
+  const headerOpen = headerManual || (location.pathname.startsWith("/header/") && !location.pathname.startsWith("/header/hero-slides"));
   const homepageOpen = homepageManual
     || location.pathname.startsWith("/homepage/")
     || location.pathname.startsWith("/homepage-sliders")
@@ -163,6 +169,7 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/contact-messages");
   const footerOpen = footerManual || location.pathname.startsWith("/footer/");
   const certificationsOpen = certificationsManual || location.pathname.startsWith("/certifications/");
+  const productsOpen = productsManual || location.pathname.startsWith("/products") || location.pathname === "/settings/product";
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -404,6 +411,33 @@ export default function Layout({ children }) {
                   {footerOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "footer").map((e) => (
+                        <Link
+                          key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Products dropdown */
+            if (item.group === "products") {
+              const active = location.pathname.startsWith("/products") || location.pathname === "/settings/product";
+              return (
+                <div key="products-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setProductsManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${productsOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {productsOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "products").map((e) => (
                         <Link
                           key={e.path}
                           to={e.path}

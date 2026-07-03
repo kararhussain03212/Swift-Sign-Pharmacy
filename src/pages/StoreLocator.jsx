@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Navigation, Autoplay, EffectCoverflow } from 'swiper/modules'
 import { MapPin, Phone, Clock, Search, ChevronRight, ChevronLeft } from 'lucide-react'
+import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
+import L from 'leaflet'
+import 'leaflet/dist/leaflet.css'
 import 'swiper/css'
 import 'swiper/css/navigation'
 import 'swiper/css/effect-coverflow'
@@ -14,11 +17,23 @@ import {
   resolveUploadUrl,
 } from '../services/headerApi'
 
-const extractMapSrc = (value) => {
-  const raw = String(value || '').trim()
-  if (!raw) return ''
-  const match = raw.match(/src=["']([^"']+)["']/i)
-  return match ? match[1] : raw
+const redIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+})
+
+const MapController = ({ selectedLat, selectedLng }) => {
+  const map = useMap()
+  useEffect(() => {
+    if (selectedLat && selectedLng) {
+      map.flyTo([selectedLat, selectedLng], 15, { duration: 1.5 })
+    }
+  }, [selectedLat, selectedLng, map])
+  return null
 }
 
 const resolveGalleryImage = (path) => {
@@ -51,15 +66,17 @@ const StoreLocatorPage = () => {
       if (contentRes.status === 'fulfilled') setContent(contentRes.value)
       if (branchesRes.status === 'fulfilled') {
         setStores(
-          (branchesRes.value || []).map(b => ({
-            id: b.id,
-            name: b.name,
-            address: b.address,
-            hours: b.hours_display,
-            phone: b.phone,
-            mapSrc: extractMapSrc(b.map_embed_link),
-            slug: b.detail_slug,
-          }))
+          (branchesRes.value || [])
+            .map(b => ({
+              id: b.id,
+              name: b.name,
+              address: b.address,
+              hours: b.hours_display,
+              phone: b.phone,
+              lat: b.latitude !== null && b.latitude !== undefined ? Number(b.latitude) : null,
+              lng: b.longitude !== null && b.longitude !== undefined ? Number(b.longitude) : null,
+              slug: b.detail_slug,
+            }))
         )
       }
       if (statsRes.status === 'fulfilled') setStats(statsRes.value || [])
@@ -77,7 +94,8 @@ const StoreLocatorPage = () => {
     s.address.toLowerCase().includes(search.toLowerCase())
   )
 
-  const activeStore = stores.find(s => s.id === selected) || stores[0]
+  const mappable = stores.filter(s => s.lat !== null && s.lng !== null)
+  const activeStore = mappable.find(s => s.id === selected) || mappable[0]
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16 md:pb-0">
@@ -182,17 +200,38 @@ const StoreLocatorPage = () => {
           {/* Map */}
           <div className="flex-1 rounded-2xl overflow-hidden shadow-md border border-gray-200 relative z-0 w-full" style={{ minHeight: '440px' }}>
             {!loading && (
-              activeStore?.mapSrc ? (
-                <iframe
-                  key={activeStore.id}
-                  src={activeStore.mapSrc}
-                  title={`Map — ${activeStore.name}`}
-                  width="100%"
-                  height="100%"
-                  style={{ height: '100%', minHeight: '440px', width: '100%', border: 0 }}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                />
+              mappable.length > 0 ? (
+                <MapContainer
+                  center={[activeStore.lat, activeStore.lng]}
+                  zoom={12}
+                  style={{ height: '100%', minHeight: '440px', width: '100%' }}
+                >
+                  <TileLayer
+                    attribution='&copy; Google Maps'
+                    url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                  />
+
+                  {mappable.map(store => (
+                    <Marker
+                      key={store.id}
+                      position={[store.lat, store.lng]}
+                      icon={redIcon}
+                      eventHandlers={{
+                        click: () => setSelected(store.id)
+                      }}
+                    >
+                      <Popup>
+                        <strong>{store.name}</strong><br/>
+                        {store.address}
+                      </Popup>
+                    </Marker>
+                  ))}
+
+                  <MapController
+                    selectedLat={activeStore?.lat}
+                    selectedLng={activeStore?.lng}
+                  />
+                </MapContainer>
               ) : (
                 <div className="flex h-full min-h-[440px] w-full flex-col items-center justify-center gap-2 bg-gray-50 text-center px-4">
                   <MapPin size={28} className="text-gray-300" />

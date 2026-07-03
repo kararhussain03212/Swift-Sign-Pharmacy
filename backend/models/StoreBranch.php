@@ -10,7 +10,7 @@ final class StoreBranch extends ArionBaseModel
 {
     protected string $table = 'store_branches';
     protected array $fillable = [
-        'name', 'address', 'area', 'city', 'map_embed_link',
+        'name', 'address', 'area', 'city', 'map_embed_link', 'latitude', 'longitude',
         'phone', 'hours_display', 'detail_slug', 'is_active', 'sort_order',
     ];
 
