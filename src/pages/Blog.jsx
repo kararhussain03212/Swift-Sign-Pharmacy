@@ -35,7 +35,28 @@ const Blog = () => {
   useEffect(() => {
     getPublishedBlogs()
       .then(data => {
-        setBlogs(Array.isArray(data) ? data : [])
+        if (Array.isArray(data)) {
+          const transformed = data.map(blog => ({
+            id: blog.id,
+            slug: blog.slug,
+            title: blog.title,
+            excerpt: blog.excerpt || '',
+            cover: resolveUploadUrl(blog.image || ''),
+            category: blog.category || '',
+            categoryColor: '#0FAFB8',
+            author: {
+              name: blog.author || 'Author',
+              avatar: blog.author_avatar_url ? resolveUploadUrl(blog.author_avatar_url) : 'https://placehold.co/40x40?text=A',
+              role: blog.author_role || '',
+            },
+            date: new Date(blog.published_at).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+            readTime: blog.read_time || 5,
+            tags: blog.tags ? (typeof blog.tags === 'string' ? blog.tags.split(',') : blog.tags) : [],
+            featured: false,
+            likes_count: blog.likes_count || 0,
+          }))
+          setBlogs(transformed)
+        }
         setLoading(false)
       })
       .catch(() => {
