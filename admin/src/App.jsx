@@ -46,6 +46,11 @@ import FeaturedBrandList from "./pages/homepage/FeaturedBrandList";
 import FeaturedBrandForm from "./pages/homepage/FeaturedBrandForm";
 import TrustBadgeList from "./pages/homepage/TrustBadgeList";
 import TrustBadgeForm from "./pages/homepage/TrustBadgeForm";
+import FooterQuickLinkList from "./pages/footer/FooterQuickLinkList";
+import FooterAppLinkList from "./pages/footer/FooterAppLinkList";
+import FooterSocialLinkList from "./pages/footer/FooterSocialLinkList";
+import FooterCompanyInfoForm from "./pages/footer/FooterCompanyInfoForm";
+import FooterSettingsForm from "./pages/footer/FooterSettingsForm";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -327,6 +332,13 @@ export default function App() {
           <Route path="/trust-badges"           element={<ProtectedPage><TrustBadgeList /></ProtectedPage>} />
           <Route path="/trust-badges/new"       element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
           <Route path="/trust-badges/edit/:id"  element={<ProtectedPage><TrustBadgeForm /></ProtectedPage>} />
+
+          {/* Footer module */}
+          <Route path="/footer/quick-links"  element={<ProtectedPage><FooterQuickLinkList /></ProtectedPage>} />
+          <Route path="/footer/app-links"    element={<ProtectedPage><FooterAppLinkList /></ProtectedPage>} />
+          <Route path="/footer/social-links" element={<ProtectedPage><FooterSocialLinkList /></ProtectedPage>} />
+          <Route path="/footer/company-info" element={<ProtectedPage><FooterCompanyInfoForm /></ProtectedPage>} />
+          <Route path="/footer/settings"     element={<ProtectedPage><FooterSettingsForm /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

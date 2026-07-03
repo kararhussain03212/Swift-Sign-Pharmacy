@@ -46,4 +46,15 @@ final class Category extends ArionBaseModel
 
         return $build(0);
     }
+
+    /** Flat, active, top-level categories for simple list displays (e.g. the footer). */
+    public function topLevelActive(): array
+    {
+        $stmt = $this->pdo->query(
+            'SELECT id, name, slug FROM ' . $this->table
+            . ' WHERE is_active = 1 AND parent_id IS NULL ORDER BY ' . $this->defaultOrderBy()
+        );
+
+        return $stmt->fetchAll() ?: [];
+    }
 }

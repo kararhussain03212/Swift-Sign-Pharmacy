@@ -59,6 +59,8 @@ export const getFeaturedBrands = () => getJson('/public/homepage/featured-brands
 export const getTrustBadges = () => getJson('/public/homepage/trust-badges')
 export const getHomepageProductSliders = () => getJson('/public/homepage/product-sliders')
 
+export const getFooterData = () => getJson('/public/footer')
+
 export async function getProductBySlug(slug) {
   const res = await fetch(`${getApiBase()}/public/products/${encodeURIComponent(slug)}`)
   if (res.status === 404) return null

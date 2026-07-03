@@ -13,6 +13,11 @@ use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\CustomerAddressController;
 use Backend\Controllers\DashboardController;
 use Backend\Controllers\FeaturedBrandController;
+use Backend\Controllers\FooterAppLinkController;
+use Backend\Controllers\FooterCompanyInfoController;
+use Backend\Controllers\FooterQuickLinkController;
+use Backend\Controllers\FooterSettingController;
+use Backend\Controllers\FooterSocialLinkController;
 use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
@@ -63,6 +68,11 @@ require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
 require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
 require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
+require_once __DIR__ . '/../controllers/FooterQuickLinkController.php';
+require_once __DIR__ . '/../controllers/FooterCompanyInfoController.php';
+require_once __DIR__ . '/../controllers/FooterAppLinkController.php';
+require_once __DIR__ . '/../controllers/FooterSocialLinkController.php';
+require_once __DIR__ . '/../controllers/FooterSettingController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -279,4 +289,33 @@ function registerAdminRoutes(Router $router): void
     $router->put('/api/admin/homepage-sliders/reorder', [HomepageProductSliderController::class, 'reorderSliders'], $mw);
     $router->put('/api/admin/homepage-sliders/{id}', [HomepageProductSliderController::class, 'update'], $mw);
     $router->delete('/api/admin/homepage-sliders/{id}', [HomepageProductSliderController::class, 'destroy'], $mw);
+
+    // Footer — Quick Links
+    $router->get('/api/admin/footer/quick-links', [FooterQuickLinkController::class, 'index'], $mw);
+    $router->get('/api/admin/footer/quick-links/{id}', [FooterQuickLinkController::class, 'show'], $mw);
+    $router->post('/api/admin/footer/quick-links', [FooterQuickLinkController::class, 'store'], $mw);
+    $router->put('/api/admin/footer/quick-links/{id}', [FooterQuickLinkController::class, 'update'], $mw);
+    $router->delete('/api/admin/footer/quick-links/{id}', [FooterQuickLinkController::class, 'destroy'], $mw);
+
+    // Footer — App Links
+    $router->get('/api/admin/footer/app-links', [FooterAppLinkController::class, 'index'], $mw);
+    $router->get('/api/admin/footer/app-links/{id}', [FooterAppLinkController::class, 'show'], $mw);
+    $router->post('/api/admin/footer/app-links', [FooterAppLinkController::class, 'store'], $mw);
+    $router->put('/api/admin/footer/app-links/{id}', [FooterAppLinkController::class, 'update'], $mw);
+    $router->delete('/api/admin/footer/app-links/{id}', [FooterAppLinkController::class, 'destroy'], $mw);
+
+    // Footer — Social Links
+    $router->get('/api/admin/footer/social-links', [FooterSocialLinkController::class, 'index'], $mw);
+    $router->get('/api/admin/footer/social-links/{id}', [FooterSocialLinkController::class, 'show'], $mw);
+    $router->post('/api/admin/footer/social-links', [FooterSocialLinkController::class, 'store'], $mw);
+    $router->put('/api/admin/footer/social-links/{id}', [FooterSocialLinkController::class, 'update'], $mw);
+    $router->delete('/api/admin/footer/social-links/{id}', [FooterSocialLinkController::class, 'destroy'], $mw);
+
+    // Footer — Company Info (singleton id=1)
+    $router->get('/api/admin/footer/company-info', [FooterCompanyInfoController::class, 'index'], $mw);
+    $router->put('/api/admin/footer/company-info', [FooterCompanyInfoController::class, 'update'], $mw);
+
+    // Footer — Settings (singleton id=1)
+    $router->get('/api/admin/footer/settings', [FooterSettingController::class, 'index'], $mw);
+    $router->put('/api/admin/footer/settings', [FooterSettingController::class, 'update'], $mw);
 }

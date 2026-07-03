@@ -39,6 +39,13 @@ const NAV = [
   { path: "/store-locator/stats",         label: "Network Stats", child: true, childGroup: "storeLocator" },
   { path: "/store-locator/content",       label: "Page Content",  child: true, childGroup: "storeLocator" },
   { path: "/store-locator/gallery",       label: "Gallery",       child: true, childGroup: "storeLocator" },
+  // Footer
+  { path: "/footer", label: "Footer", group: "footer" },
+  { path: "/footer/quick-links",   label: "Quick Links",   child: true, childGroup: "footer" },
+  { path: "/footer/app-links",     label: "App Links",     child: true, childGroup: "footer" },
+  { path: "/footer/social-links",  label: "Social Links",  child: true, childGroup: "footer" },
+  { path: "/footer/company-info",  label: "Company Info",  child: true, childGroup: "footer" },
+  { path: "/footer/settings",      label: "Settings",      child: true, childGroup: "footer" },
 ];
 
 const PAGE_TITLES = {
@@ -83,6 +90,14 @@ const PAGE_TITLES = {
   "/store-locator/content":          "Store Locator — Page Content",
   "/store-locator/gallery":          "Store Locator — Gallery",
   "/store-locator/gallery/new":      "Add Gallery Image",
+  "/footer/quick-links":             "Footer — Quick Links",
+  "/footer/quick-links/new":         "Add Quick Link",
+  "/footer/app-links":               "Footer — App Links",
+  "/footer/app-links/new":           "Add App Link",
+  "/footer/social-links":            "Footer — Social Links",
+  "/footer/social-links/new":        "Add Social Link",
+  "/footer/company-info":            "Footer — Company Info",
+  "/footer/settings":                "Footer — Settings",
 };
 
 /* nav-link class helpers */
@@ -113,6 +128,7 @@ export default function Layout({ children }) {
   const [homepageManual,   setHomepageManual]    = useState(false);
   const [storeLocatorManual, setStoreLocatorManual] = useState(false);
   const [contactUsManual,   setContactUsManual]     = useState(false);
+  const [footerManual,     setFooterManual]      = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -136,6 +152,7 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/contact-info-cards")
     || location.pathname.startsWith("/contact-faqs")
     || location.pathname.startsWith("/contact-messages");
+  const footerOpen = footerManual || location.pathname.startsWith("/footer/");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -352,6 +369,33 @@ export default function Layout({ children }) {
                       {NAV.filter((e) => e.child && e.childGroup === "contactUs").map((e) => (
                         <Link
                           key={e.label}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Footer dropdown */
+            if (item.group === "footer") {
+              const active = location.pathname.startsWith("/footer/");
+              return (
+                <div key="footer-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setFooterManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${footerOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {footerOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "footer").map((e) => (
+                        <Link
+                          key={e.path}
                           to={e.path}
                           onClick={closeSidebar}
                           className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}

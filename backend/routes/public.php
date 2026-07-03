@@ -12,6 +12,7 @@ use Backend\Controllers\ContactController;
 use Backend\Controllers\ContactFaqController;
 use Backend\Controllers\ContactInfoCardController;
 use Backend\Controllers\FeaturedBrandController;
+use Backend\Controllers\FooterController;
 use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
@@ -57,6 +58,7 @@ require_once __DIR__ . '/../controllers/HomepageCarePlanBannerController.php';
 require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
 require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
+require_once __DIR__ . '/../controllers/FooterController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -117,4 +119,7 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/homepage/featured-brands', [FeaturedBrandController::class, 'publicIndex']);
     $router->get('/api/public/homepage/trust-badges', [TrustBadgeController::class, 'publicIndex']);
     $router->get('/api/public/homepage/product-sliders', [HomepageProductSliderController::class, 'publicIndex']);
+
+    // Footer — aggregate endpoint (categories + quick links + company info + app links + social links + settings)
+    $router->get('/api/public/footer', [FooterController::class, 'publicIndex']);
 }

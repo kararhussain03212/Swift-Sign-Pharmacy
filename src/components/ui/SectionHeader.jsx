@@ -1,6 +1,4 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react'
-
-const SectionHeader = ({ title, subtitle, prevRef, nextRef, viewAllLink }) => {
+const SectionHeader = ({ title, subtitle, viewAllLink }) => {
   return (
     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
       <div className="flex-1">
@@ -20,27 +18,6 @@ const SectionHeader = ({ title, subtitle, prevRef, nextRef, viewAllLink }) => {
           >
             View All
           </a>
-        )}
-
-        {(prevRef || nextRef) && (
-          <div className="flex items-center gap-1.5">
-            <button
-              ref={prevRef}
-              className="w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center
-                         hover:bg-primary hover:border-primary hover:text-white text-gray-500
-                         transition-all duration-200 shadow-sm"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <button
-              ref={nextRef}
-              className="w-8 h-8 rounded-full border border-gray-200 bg-white flex items-center justify-center
-                         hover:bg-primary hover:border-primary hover:text-white text-gray-500
-                         transition-all duration-200 shadow-sm"
-            >
-              <ChevronRight size={16} />
-            </button>
-          </div>
         )}
       </div>
     </div>
