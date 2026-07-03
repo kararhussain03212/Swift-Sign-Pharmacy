@@ -1,7 +1,8 @@
-import { Fragment, useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { createCategory, deleteCategory, getCategoriesNested, updateCategory } from "../../api/categoryApi";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
+import { ChevronDown, Plus, Edit2, Trash2, Save, X } from "lucide-react";
 
 const extractErrorMessage = (error, fallback) =>
   error?.response?.data?.error || error?.response?.data?.message || error?.message || fallback;
@@ -9,30 +10,23 @@ const extractErrorMessage = (error, fallback) =>
 const slugify = (value) =>
   value.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
 
-const blankDraft = (nextOrder) => ({
+const blankDraft = () => ({
   name: "",
   slug: "",
   parent_id: "",
-  sort_order: nextOrder,
+  sort_order: 1,
   is_active: true,
   slugTouched: false,
 });
-
-function flatten(nodes, depth = 0) {
-  return nodes.flatMap((node) => [
-    { ...node, depth },
-    ...flatten(node.children || [], depth + 1),
-  ]);
-}
 
 export default function CategoryList() {
   const { user } = useAuth();
   const [tree, setTree] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
+  const [expandedIds, setExpandedIds] = useState(new Set());
   const [editingId, setEditingId] = useState(null);
-  const [draft, setDraft] = useState(blankDraft(1));
+  const [draft, setDraft] = useState(blankDraft());
   const [saving, setSaving] = useState(false);
 
   const canAdd = hasPermission(user, "create_content");
@@ -44,9 +38,9 @@ export default function CategoryList() {
     try {
       const res = await getCategoriesNested();
       setTree(Array.isArray(res.data?.data) ? res.data.data : []);
+      setLoading(false);
     } catch {
       setError("Failed to load categories.");
-    } finally {
       setLoading(false);
     }
   };
@@ -54,6 +48,15 @@ export default function CategoryList() {
   useEffect(() => {
     load();
   }, []);
+
+  const toggleExpand = (id) => {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
 
   const setField = (key, value) => setDraft((prev) => ({ ...prev, [key]: value }));
 
@@ -65,10 +68,10 @@ export default function CategoryList() {
     }));
   };
 
-  const startAdd = () => {
+  const startAdd = (parentId = null) => {
     setError("");
     setEditingId("new");
-    setDraft(blankDraft(flatten(tree).length + 1));
+    setDraft({ ...blankDraft(), parent_id: parentId || "" });
   };
 
   const startEdit = (item) => {
@@ -86,7 +89,7 @@ export default function CategoryList() {
 
   const cancelEdit = () => {
     setEditingId(null);
-    setDraft(blankDraft(1));
+    setDraft(blankDraft());
   };
 
   const saveEdit = async () => {
@@ -104,8 +107,11 @@ export default function CategoryList() {
         is_active: draft.is_active ? 1 : 0,
       };
 
-      if (editingId === "new") await createCategory(payload);
-      else await updateCategory(editingId, payload);
+      if (editingId === "new") {
+        await createCategory(payload);
+      } else {
+        await updateCategory(editingId, payload);
+      }
 
       cancelEdit();
       load();
@@ -143,172 +149,206 @@ export default function CategoryList() {
   };
 
   const inputCls =
-    "w-full rounded-lg border border-[var(--arion-border)] bg-[var(--arion-card-solid)] px-2.5 py-1.5 text-sm text-[var(--arion-ink)] focus:border-[var(--arion-cyan)] focus:outline-none";
+    "w-full rounded-lg border border-[var(--arion-border)] bg-[var(--arion-card-solid)] px-3 py-2 text-sm text-[var(--arion-ink)] focus:border-[var(--arion-cyan)] focus:outline-none";
 
-  const flatRows = flatten(tree);
-  const rows = editingId === "new" ? [{ id: "new", depth: 0 }, ...flatRows] : flatRows;
+  const renderCategory = (item, isNew = false) => {
+    const isEditing = editingId === item.id;
+    const hasChildren = item.children && item.children.length > 0;
+    const isExpanded = expandedIds.has(item.id);
+
+    if (isEditing) {
+      return (
+        <div key={item.id} className="space-y-3 rounded-xl border border-[var(--arion-cyan-light)] bg-[var(--arion-cyan)]/10 p-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-[var(--arion-muted)] uppercase">Name</label>
+              <input
+                value={draft.name}
+                onChange={(e) => handleNameChange(e.target.value)}
+                className={inputCls}
+                placeholder="Category name"
+                autoFocus
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-[var(--arion-muted)] uppercase">Slug</label>
+              <input
+                value={draft.slug}
+                onChange={(e) => setDraft((p) => ({ ...p, slug: e.target.value, slugTouched: true }))}
+                className={inputCls}
+                placeholder="slug"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-[var(--arion-muted)] uppercase">Order</label>
+              <input
+                type="number"
+                min="1"
+                value={draft.sort_order}
+                onChange={(e) => setField("sort_order", Number(e.target.value))}
+                className={inputCls}
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-semibold text-[var(--arion-muted)] uppercase">Parent</label>
+              <select
+                value={draft.parent_id}
+                onChange={(e) => setField("parent_id", e.target.value)}
+                className={inputCls}
+              >
+                <option value="">None (top-level)</option>
+                {tree.map((opt) => (
+                  <option key={opt.id} value={opt.id}>
+                    {opt.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={draft.is_active}
+              onChange={(e) => setField("is_active", e.target.checked)}
+              className="h-4 w-4"
+            />
+            <span className="text-sm text-[var(--arion-ink)]">Active</span>
+          </label>
+
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={saveEdit}
+              disabled={saving}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[var(--arion-cyan)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--arion-cyan-strong)] disabled:opacity-60"
+            >
+              <Save size={16} /> Save
+            </button>
+            <button
+              type="button"
+              onClick={cancelEdit}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-[var(--arion-border)] px-4 py-2 text-sm font-semibold text-[var(--arion-ink)] hover:bg-white/5"
+            >
+              <X size={16} /> Cancel
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div key={item.id} className="space-y-2">
+        <div className="rounded-lg border border-[var(--arion-border)] bg-[var(--arion-card)] p-4 hover:border-[var(--arion-cyan-light)] transition-colors">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                {hasChildren && (
+                  <button
+                    onClick={() => toggleExpand(item.id)}
+                    className="text-[var(--arion-muted)] hover:text-[var(--arion-cyan)]"
+                  >
+                    <ChevronDown size={18} style={{ transform: isExpanded ? "rotate(0)" : "rotate(-90deg)", transition: "transform 200ms" }} />
+                  </button>
+                )}
+                {!hasChildren && <div className="w-6" />}
+                <div className="min-w-0">
+                  <div className="font-semibold text-[var(--arion-ink)]">{item.name}</div>
+                  <div className="text-xs text-[var(--arion-muted)]">{item.slug}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => handleToggleActive(item)}
+                disabled={!canPublish || editingId !== null}
+                className={
+                  item.is_active
+                    ? "rounded-full bg-[var(--arion-cyan-light)] px-3 py-1 text-xs font-semibold text-[var(--arion-cyan)]"
+                    : "rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/50"
+                }
+              >
+                {item.is_active ? "Active" : "Inactive"}
+              </button>
+
+              <button
+                onClick={() => startEdit(item)}
+                disabled={!canEdit || editingId !== null}
+                className="p-2 text-[var(--arion-muted)] hover:text-[var(--arion-cyan)] disabled:opacity-40"
+                title="Edit"
+              >
+                <Edit2 size={16} />
+              </button>
+
+              <button
+                onClick={() => handleDelete(item)}
+                disabled={!canDelete || editingId !== null}
+                className="p-2 text-red-500/60 hover:text-red-500 disabled:opacity-40"
+                title="Delete"
+              >
+                <Trash2 size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Subcategories */}
+        {hasChildren && isExpanded && (
+          <div className="ml-6 space-y-2 border-l-2 border-[var(--arion-border)] pl-4">
+            {item.children.map((child) => renderCategory(child))}
+            {canAdd && (
+              <button
+                onClick={() => startAdd(item.id)}
+                disabled={editingId !== null}
+                className="w-full rounded-lg border border-dashed border-[var(--arion-border)] py-2 text-sm font-semibold text-[var(--arion-muted)] hover:border-[var(--arion-cyan)] hover:text-[var(--arion-cyan)] disabled:opacity-40"
+              >
+                <Plus size={16} className="inline mr-1" /> Add Subcategory
+              </button>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
+
+  if (loading) {
+    return <div className="arion-theme text-[var(--arion-muted)]">Loading…</div>;
+  }
 
   return (
     <section className="arion-theme space-y-5">
       <header className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-[var(--arion-ink)] sm:text-3xl">Categories</h2>
-          <p className="text-sm text-[var(--arion-muted)]">Shop categories shown in the navbar dropdown.</p>
+          <p className="text-sm text-[var(--arion-muted)]">Manage categories and subcategories shown in the navbar.</p>
         </div>
         <button
           type="button"
           disabled={!canAdd || editingId !== null}
-          onClick={startAdd}
-          className="inline-flex w-fit items-center gap-2 rounded-xl bg-[var(--arion-cyan)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--arion-cyan-strong)] disabled:cursor-not-allowed disabled:opacity-50"
+          onClick={() => startAdd()}
+          className="inline-flex items-center gap-2 rounded-xl bg-[var(--arion-cyan)] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[var(--arion-cyan-strong)] disabled:cursor-not-allowed disabled:opacity-50"
         >
-          + Add Category
+          <Plus size={18} /> Add Category
         </button>
       </header>
 
-      {error ? (
+      {error && (
         <div className="arion-glass rounded-xl border border-red-500/40 px-4 py-3 text-red-300">{error}</div>
-      ) : null}
-
-      {loading ? (
-        <p className="text-[var(--arion-muted)]">Loading…</p>
-      ) : rows.length === 0 ? (
-        <div className="arion-glass rounded-2xl p-6 text-[var(--arion-muted)]">No categories yet.</div>
-      ) : (
-        <div className="arion-glass overflow-hidden rounded-2xl">
-          <table className="w-full text-left text-sm">
-            <thead>
-              <tr className="border-b border-[var(--arion-border)] text-xs uppercase tracking-wider text-[var(--arion-muted)]">
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Slug</th>
-                <th className="px-4 py-3">Order</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((item) => {
-                const isEditing = editingId === item.id;
-                const topLevelOptions = tree.filter((c) => String(c.id) !== String(item.id));
-
-                return (
-                  <Fragment key={item.id}>
-                    <tr className={`border-b border-[var(--arion-border)] ${isEditing ? "bg-[var(--arion-cyan-light)]" : ""} ${isEditing ? "" : "last:border-0"}`}>
-                      {isEditing ? (
-                        <>
-                          <td className="px-4 py-3 align-top">
-                            <input value={draft.name} onChange={(e) => handleNameChange(e.target.value)} className={inputCls} placeholder="Medicines" autoFocus />
-                          </td>
-                          <td className="px-4 py-3 align-top">
-                            <input
-                              value={draft.slug}
-                              onChange={(e) => setDraft((p) => ({ ...p, slug: e.target.value, slugTouched: true }))}
-                              className={inputCls}
-                              placeholder="medicines"
-                            />
-                          </td>
-                          <td className="px-4 py-3 align-top">
-                            <input
-                              type="number"
-                              min="1"
-                              value={draft.sort_order}
-                              onChange={(e) => setField("sort_order", Number(e.target.value))}
-                              className={`${inputCls} w-16`}
-                            />
-                          </td>
-                          <td className="px-4 py-3 align-top">
-                            <label className="flex items-center gap-2 text-xs text-[var(--arion-muted)]">
-                              <input type="checkbox" checked={draft.is_active} onChange={(e) => setField("is_active", e.target.checked)} className="h-4 w-4" />
-                              Active
-                            </label>
-                          </td>
-                          <td className="px-4 py-3 text-right align-top">
-                            <div className="inline-flex gap-2">
-                              <button type="button" onClick={saveEdit} disabled={saving} className="rounded-lg bg-[var(--arion-cyan)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--arion-cyan-strong)] disabled:opacity-60">
-                                {saving ? "Saving…" : "Save"}
-                              </button>
-                              <button type="button" onClick={cancelEdit} className="rounded-lg border border-[var(--arion-border)] px-3 py-1.5 text-xs font-semibold text-[var(--arion-ink)] hover:bg-white/5">
-                                Cancel
-                              </button>
-                            </div>
-                          </td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="px-4 py-3 text-[var(--arion-ink)]" style={{ paddingLeft: `${1 + item.depth * 1.5}rem` }}>
-                            {item.depth > 0 ? <span className="mr-2 text-[var(--arion-muted)]">↳</span> : null}
-                            <span className={item.depth === 0 ? "font-semibold" : ""}>{item.name}</span>
-                          </td>
-                          <td className="px-4 py-3 text-[var(--arion-muted)]">{item.slug}</td>
-                          <td className="px-4 py-3 text-[var(--arion-muted)]">{item.sort_order}</td>
-                          <td className="px-4 py-3">
-                            <button
-                              type="button"
-                              onClick={() => handleToggleActive(item)}
-                              disabled={!canPublish || editingId !== null}
-                              className={
-                                item.is_active
-                                  ? "rounded-full bg-[var(--arion-cyan-light)] px-3 py-1 text-xs font-semibold text-[var(--arion-cyan)]"
-                                  : "rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/50"
-                              }
-                            >
-                              {item.is_active ? "Active" : "Inactive"}
-                            </button>
-                          </td>
-                          <td className="px-4 py-3 text-right">
-                            <div className="inline-flex gap-2">
-                              <button
-                                type="button"
-                                disabled={!canEdit || editingId !== null}
-                                onClick={() => startEdit(item)}
-                                className="rounded-lg border border-[var(--arion-border)] px-3 py-1.5 text-xs font-semibold text-[var(--arion-ink)] hover:border-[var(--arion-border-strong)] disabled:opacity-40"
-                              >
-                                Edit
-                              </button>
-                              <button
-                                type="button"
-                                disabled={!canDelete || editingId !== null}
-                                onClick={() => handleDelete(item)}
-                                className="rounded-lg border border-red-500/40 px-3 py-1.5 text-xs font-semibold text-red-300 hover:bg-red-500/10 disabled:opacity-40"
-                              >
-                                Delete
-                              </button>
-                            </div>
-                          </td>
-                        </>
-                      )}
-                    </tr>
-
-                    {isEditing && (
-                      <tr className="border-b border-[var(--arion-border)] bg-[var(--arion-cyan-light)]">
-                        <td colSpan={5} className="px-4 pb-4">
-                          <div className="flex flex-wrap items-end gap-4">
-                            <div>
-                              <label className="mb-1 block text-xs text-[var(--arion-muted)]">Parent Category</label>
-                              <select
-                                value={draft.parent_id}
-                                onChange={(e) => setField("parent_id", e.target.value)}
-                                className={`${inputCls} w-48`}
-                              >
-                                <option value="">None (top-level)</option>
-                                {topLevelOptions.map((opt) => (
-                                  <option key={opt.id} value={opt.id}>
-                                    {opt.name}
-                                  </option>
-                                ))}
-                              </select>
-                            </div>
-
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </Fragment>
-                );
-              })}
-            </tbody>
-          </table>
-        </div>
       )}
+
+      <div className="space-y-3">
+        {editingId === "new" && renderCategory({ id: "new", name: "", slug: "", sort_order: 1, is_active: true }, true)}
+
+        {tree.length === 0 && editingId !== "new" ? (
+          <div className="arion-glass rounded-2xl p-6 text-[var(--arion-muted)]">No categories yet.</div>
+        ) : (
+          tree.map((item) => renderCategory(item))
+        )}
+      </div>
     </section>
   );
 }
