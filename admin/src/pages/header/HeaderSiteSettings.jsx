@@ -107,7 +107,7 @@ export default function HeaderSiteSettings() {
     <section className="admin-theme mx-auto max-w-2xl space-y-5">
       <div>
         <h2 className="text-2xl font-bold text-white sm:text-3xl">Site Settings</h2>
-        <p className="text-sm text-[var(--admin-muted)]">Logo, site name, country, and license details shown in the header.</p>
+        <p className="text-sm text-[var(--admin-muted)]">Logo and license details shown in the header.</p>
       </div>
 
       {error && (
@@ -127,16 +127,7 @@ export default function HeaderSiteSettings() {
           helperText="PNG, JPG, JPEG, WebP, SVG"
         />
 
-        <div>
-          <label className={labelCls}>Site Name</label>
-          <input value={form.site_name} onChange={(e) => setField("site_name", e.target.value)} className={inputCls} placeholder="Arion Pharmacy" />
-        </div>
-
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <div>
-            <label className={labelCls}>Country</label>
-            <input value={form.country} onChange={(e) => setField("country", e.target.value)} className={inputCls} placeholder="Pakistan" />
-          </div>
           <div>
             <label className={labelCls}>License Number</label>
             <input value={form.license_number} onChange={(e) => setField("license_number", e.target.value)} className={inputCls} placeholder="2659-A/2014-PC" />
