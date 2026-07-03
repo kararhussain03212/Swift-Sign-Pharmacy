@@ -46,11 +46,18 @@ const mergeNavItems = (apiCategories) => {
     })
 }
 
+const FALLBACK_PRESCRIPTION = {
+  prescription_link: '/asaan-order',
+  prescription_text: 'PRESCRIPTION',
+  prescription_enabled: 1,
+}
+
 const Navbar = () => {
   const navigate = useNavigate()
   const [navLinks, setNavLinks] = useState(null)
   const [navItems, setNavItems] = useState(null)
   const [licenseNumber, setLicenseNumber] = useState(licenseInfo.number)
+  const [prescription, setPrescription] = useState(FALLBACK_PRESCRIPTION)
 
   useEffect(() => {
     let active = true
@@ -75,7 +82,13 @@ const Navbar = () => {
 
     getSiteSettings()
       .then((data) => {
-        if (active && data?.license_number) setLicenseNumber(data.license_number)
+        if (!active || !data) return
+        if (data.license_number) setLicenseNumber(data.license_number)
+        setPrescription({
+          prescription_link: data.prescription_link || FALLBACK_PRESCRIPTION.prescription_link,
+          prescription_text: data.prescription_text || FALLBACK_PRESCRIPTION.prescription_text,
+          prescription_enabled: data.prescription_enabled,
+        })
       })
       .catch(() => {})
 
@@ -224,17 +237,19 @@ const Navbar = () => {
             <div>{licenseInfo.description}:</div>
             <div className="font-medium" style={{ fontSize: 'clamp(12px, 1.1vw, 14px)' }}>{licenseNumber}</div>
           </div>
-          <Link
-            to="/asaan-order"
-            className="flex items-center gap-0.5 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
-                       px-1.5 sm:px-3 md:px-4 py-0.5 md:py-2 lg:py-2 rounded-full font-bold text-[7px] sm:text-[8px] md:text-[13px] lg:text-sm transition-colors flex-shrink-0"
-          >
-            <FileUp size={10} className="sm:hidden" strokeWidth={2.5} />
-            <FileUp size={11} className="hidden sm:block md:hidden" strokeWidth={2.5} />
-            <FileUp size={14} className="hidden md:block" strokeWidth={2.5} />
-            <span className="hidden sm:inline">PRESCRIPTION</span>
-            <span className="sm:hidden">Rx</span>
-          </Link>
+          {(prescription.prescription_enabled === undefined || Number(prescription.prescription_enabled) === 1) && (
+            <Link
+              to={prescription.prescription_link}
+              className="flex items-center gap-0.5 bg-[#0FAFB8] text-white border-2 border-[#0FAFB8] hover:bg-white hover:text-[#0FAFB8]
+                         px-1.5 sm:px-3 md:px-4 py-0.5 md:py-2 lg:py-2 rounded-full font-bold text-[7px] sm:text-[8px] md:text-[13px] lg:text-sm transition-colors flex-shrink-0"
+            >
+              <FileUp size={10} className="sm:hidden" strokeWidth={2.5} />
+              <FileUp size={11} className="hidden sm:block md:hidden" strokeWidth={2.5} />
+              <FileUp size={14} className="hidden md:block" strokeWidth={2.5} />
+              <span className="hidden sm:inline">{prescription.prescription_text}</span>
+              <span className="sm:hidden">Rx</span>
+            </Link>
+          )}
         </div>
       </div>
     </nav>

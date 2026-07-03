@@ -185,7 +185,7 @@ const Header = () => {
                      style={{ width: '200%' }} />
                 <div className="relative z-10 flex items-center gap-2">
                   {/* <VscPercentage size={16} className="animate-bounce text-white" style={{ animationDuration: '1.5s' }} /> */}
-                  <span>Hot Deals</span>
+                  <span>{resolvedSettings.hot_deals_text || 'Hot Deals'}</span>
                   <span className="inline-block animate-pulse">🔥</span>
                 </div>
               </Link>
