@@ -24,7 +24,7 @@ export default function HeaderSiteSettings() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [saved, setSaved] = useState(false);
-  const [form, setForm] = useState(getInitialForm);
+  const [form, setForm] = useState(getInitialForm());
 
   const setField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
