@@ -46,6 +46,12 @@ const NAV = [
   { path: "/footer/social-links",  label: "Social Links",  child: true, childGroup: "footer" },
   { path: "/footer/company-info",  label: "Company Info",  child: true, childGroup: "footer" },
   { path: "/footer/settings",      label: "Settings",      child: true, childGroup: "footer" },
+  // Certifications
+  { path: "/certifications", label: "Certifications", group: "certifications" },
+  { path: "/certifications/page-content", label: "Page Content", child: true, childGroup: "certifications" },
+  { path: "/certifications/categories",   label: "Categories",   child: true, childGroup: "certifications" },
+  { path: "/certifications/items",        label: "Certificates", child: true, childGroup: "certifications" },
+  { path: "/certifications/trust-badges", label: "Trust Badges", child: true, childGroup: "certifications" },
 ];
 
 const PAGE_TITLES = {
@@ -98,6 +104,10 @@ const PAGE_TITLES = {
   "/footer/social-links/new":        "Add Social Link",
   "/footer/company-info":            "Footer — Company Info",
   "/footer/settings":                "Footer — Settings",
+  "/certifications/page-content":    "Certifications — Page Content",
+  "/certifications/categories":      "Certifications — Categories",
+  "/certifications/items":           "Certifications — Certificates",
+  "/certifications/trust-badges":    "Certifications — Trust Badges",
 };
 
 /* nav-link class helpers */
@@ -129,6 +139,7 @@ export default function Layout({ children }) {
   const [storeLocatorManual, setStoreLocatorManual] = useState(false);
   const [contactUsManual,   setContactUsManual]     = useState(false);
   const [footerManual,     setFooterManual]      = useState(false);
+  const [certificationsManual, setCertificationsManual] = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
 
@@ -153,6 +164,7 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/contact-faqs")
     || location.pathname.startsWith("/contact-messages");
   const footerOpen = footerManual || location.pathname.startsWith("/footer/");
+  const certificationsOpen = certificationsManual || location.pathname.startsWith("/certifications/");
 
   /* ── fetch logo from site settings once ── */
   useEffect(() => {
@@ -394,6 +406,33 @@ export default function Layout({ children }) {
                   {footerOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "footer").map((e) => (
+                        <Link
+                          key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Certifications dropdown */
+            if (item.group === "certifications") {
+              const active = location.pathname.startsWith("/certifications/");
+              return (
+                <div key="certifications-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setCertificationsManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${certificationsOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {certificationsOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "certifications").map((e) => (
                         <Link
                           key={e.path}
                           to={e.path}

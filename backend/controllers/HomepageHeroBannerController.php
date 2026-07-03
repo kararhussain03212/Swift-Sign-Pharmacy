@@ -19,6 +19,7 @@ require_once __DIR__ . '/../utils/Cache.php';
 require_once __DIR__ . '/../utils/Response.php';
 require_once __DIR__ . '/../utils/Validator.php';
 
+
 /**
  * Single-row content resource (id = 1) for the "Up To 25% Off" dark-teal
  * homepage banner (WideBanner.jsx), plus its stacked product images (max 3).

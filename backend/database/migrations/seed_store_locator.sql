@@ -1,4 +1,4 @@
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 INSERT INTO `store_branches` (`name`, `address`, `area`, `city`, `latitude`, `longitude`, `phone`, `hours_display`, `detail_slug`, `is_active`, `sort_order`) VALUES
 ('Swift Pharmacy - Johar Town', '12 Block C, Johar Town, Lahore, Punjab - 54000', 'Johar Town', 'Lahore', 31.4827000, 74.3036000, '0300-1234567', 'Mon–Sat: 8:00 AM – 11:00 PM | Sun: 9:00 AM – 10:00 PM', 'swift-pharmacy-johar-town', 1, 1),

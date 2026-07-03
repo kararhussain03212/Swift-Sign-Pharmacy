@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Backend\Controllers;
 
+use Backend\Config\Database;
 use Backend\Models\BlogPost;
 use Backend\Models\Setting;
 use Backend\Utils\ActivityLogger;
@@ -12,6 +13,7 @@ use Backend\Utils\Response;
 use Backend\Utils\Validator;
 
 require_once __DIR__ . '/BaseCrudController.php';
+require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/BlogPost.php';
 require_once __DIR__ . '/../models/Setting.php';
 require_once __DIR__ . '/../utils/ActivityLogger.php';
@@ -121,6 +123,18 @@ final class BlogController extends BaseCrudController
         Cache::clearAll();
 
         Response::success(['likes_count' => $likes], 'Liked');
+    }
+
+    public function publicIndex(array $params = []): void
+    {
+        $posts = Cache::remember('public:blog:list', static function () {
+            $pdo = Database::connection();
+            $stmt = $pdo->prepare('SELECT * FROM blog_posts WHERE is_published = 1 ORDER BY published_at DESC, sort_order ASC');
+            $stmt->execute();
+            return $stmt->fetchAll() ?: [];
+        });
+
+        Response::success($posts, 'Fetched successfully');
     }
 
     public function publicSearch(array $params = []): void

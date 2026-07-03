@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import clsx from 'clsx'
 import {
@@ -8,8 +8,7 @@ import {
   Clock,
   BookOpen,
 } from 'lucide-react'
-import { blogs } from '../data/blogs'
-import { resolveUploadUrl } from '../services/headerApi'
+import { getPublishedBlogs, resolveUploadUrl } from '../services/headerApi'
 import BlogCard from '../components/ui/BlogCard'
 import SectionHeader from '../components/ui/SectionHeader'
 import ArticlesHeroSection from '../components/sections/ArticlesHeroSection'
@@ -26,24 +25,38 @@ const CATEGORIES = [
   'Mental Health',
 ]
 
-const categoryList = [
-  { name: 'All',           count: blogs.length },
-  { name: 'Baby Care',     count: blogs.filter(b => b.category === 'Baby Care').length },
-  { name: 'Skin Care',     count: blogs.filter(b => b.category === 'Skin Care').length },
-  { name: 'Nutrition',     count: blogs.filter(b => b.category === 'Nutrition').length },
-  { name: 'Wellness',      count: blogs.filter(b => b.category === 'Wellness').length },
-  { name: 'Diabetes',      count: blogs.filter(b => b.category === 'Diabetes').length },
-  { name: 'Heart Health',  count: blogs.filter(b => b.category === 'Heart Health').length },
-  { name: 'Immunity',      count: blogs.filter(b => b.category === 'Immunity').length },
-  { name: 'Mental Health', count: blogs.filter(b => b.category === 'Mental Health').length },
-]
-
-const featured = blogs.find(b => b.featured)
-
 const Blog = () => {
+  const [blogs, setBlogs] = useState([])
+  const [loading, setLoading] = useState(true)
   const [searchQuery, setSearchQuery]     = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
   const [visibleCount, setVisibleCount]   = useState(6)
+
+  useEffect(() => {
+    getPublishedBlogs()
+      .then(data => {
+        setBlogs(Array.isArray(data) ? data : [])
+        setLoading(false)
+      })
+      .catch(() => {
+        setBlogs([])
+        setLoading(false)
+      })
+  }, [])
+
+  const categoryList = [
+    { name: 'All',           count: blogs.length },
+    { name: 'Baby Care',     count: blogs.filter(b => b.category === 'Baby Care').length },
+    { name: 'Skin Care',     count: blogs.filter(b => b.category === 'Skin Care').length },
+    { name: 'Nutrition',     count: blogs.filter(b => b.category === 'Nutrition').length },
+    { name: 'Wellness',      count: blogs.filter(b => b.category === 'Wellness').length },
+    { name: 'Diabetes',      count: blogs.filter(b => b.category === 'Diabetes').length },
+    { name: 'Heart Health',  count: blogs.filter(b => b.category === 'Heart Health').length },
+    { name: 'Immunity',      count: blogs.filter(b => b.category === 'Immunity').length },
+    { name: 'Mental Health', count: blogs.filter(b => b.category === 'Mental Health').length },
+  ]
+
+  const featured = blogs.find(b => b.featured)
 
   const filtered = blogs
     .filter(b => !b.featured)

@@ -3,7 +3,7 @@
 -- the data-source swap to the /api/public/footer endpoint.
 -- Run after add_footer_tables.sql. Uses INSERT IGNORE, safe to re-run.
 
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 -- Footer quick links (Footer.jsx "Quick Links" column)
 INSERT IGNORE INTO `footer_quick_links` (`id`, `label`, `url`, `sort_order`, `is_active`) VALUES

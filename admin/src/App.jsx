@@ -51,6 +51,10 @@ import FooterAppLinkList from "./pages/footer/FooterAppLinkList";
 import FooterSocialLinkList from "./pages/footer/FooterSocialLinkList";
 import FooterCompanyInfoForm from "./pages/footer/FooterCompanyInfoForm";
 import FooterSettingsForm from "./pages/footer/FooterSettingsForm";
+import CertificationPageContentForm from "./pages/certifications/CertificationPageContentForm";
+import CertificationCategoryList from "./pages/certifications/CertificationCategoryList";
+import CertificationList from "./pages/certifications/CertificationList";
+import CertificationTrustBadgeList from "./pages/certifications/CertificationTrustBadgeList";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -339,6 +343,12 @@ export default function App() {
           <Route path="/footer/social-links" element={<ProtectedPage><FooterSocialLinkList /></ProtectedPage>} />
           <Route path="/footer/company-info" element={<ProtectedPage><FooterCompanyInfoForm /></ProtectedPage>} />
           <Route path="/footer/settings"     element={<ProtectedPage><FooterSettingsForm /></ProtectedPage>} />
+
+          {/* Certifications module */}
+          <Route path="/certifications/page-content" element={<ProtectedPage><CertificationPageContentForm /></ProtectedPage>} />
+          <Route path="/certifications/categories"   element={<ProtectedPage><CertificationCategoryList /></ProtectedPage>} />
+          <Route path="/certifications/items"        element={<ProtectedPage><CertificationList /></ProtectedPage>} />
+          <Route path="/certifications/trust-badges" element={<ProtectedPage><CertificationTrustBadgeList /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

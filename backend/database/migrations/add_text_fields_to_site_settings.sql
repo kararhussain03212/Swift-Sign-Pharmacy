@@ -2,7 +2,7 @@
 -- This migration adds two new columns to the site_settings table to allow
 -- customizing the button labels in the admin panel.
 
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 -- Add hot_deals_text column (after hot_deals_link)
 ALTER TABLE `site_settings`

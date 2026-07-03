@@ -119,7 +119,7 @@ final class ProductController extends BaseCrudController
 
         $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug
                 FROM products p
-                LEFT JOIN arion_pharmacy.categories c ON c.id = p.category_id
+                LEFT JOIN categories c ON c.id = p.category_id
                 $whereSql
                 ORDER BY p.created_at DESC, p.id DESC
                 LIMIT :limit OFFSET :offset";
@@ -284,7 +284,7 @@ final class ProductController extends BaseCrudController
     private function resolveCategoryProductType(int $categoryId): ?string
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('SELECT product_type FROM arion_pharmacy.categories WHERE id = :id LIMIT 1');
+        $stmt = $pdo->prepare('SELECT product_type FROM categories WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => $categoryId]);
         $row = $stmt->fetch();
 
@@ -340,7 +340,7 @@ final class ProductController extends BaseCrudController
         $productType = (string) $product['product_type'];
 
         $pdo = Database::connection();
-        $catStmt = $pdo->prepare('SELECT id, name, slug FROM arion_pharmacy.categories WHERE id = :id LIMIT 1');
+        $catStmt = $pdo->prepare('SELECT id, name, slug FROM categories WHERE id = :id LIMIT 1');
         $catStmt->execute([':id' => (int) $product['category_id']]);
         $category = $catStmt->fetch() ?: null;
 

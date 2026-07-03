@@ -6,6 +6,10 @@ use Backend\Controllers\AboutController;
 use Backend\Controllers\AnnouncementBarController;
 use Backend\Controllers\BlogController;
 use Backend\Controllers\CategoryController;
+use Backend\Controllers\CertificationCategoryController;
+use Backend\Controllers\CertificationController;
+use Backend\Controllers\CertificationPageContentController;
+use Backend\Controllers\CertificationTrustBadgeController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\ContactFaqController;
@@ -73,6 +77,10 @@ require_once __DIR__ . '/../controllers/FooterCompanyInfoController.php';
 require_once __DIR__ . '/../controllers/FooterAppLinkController.php';
 require_once __DIR__ . '/../controllers/FooterSocialLinkController.php';
 require_once __DIR__ . '/../controllers/FooterSettingController.php';
+require_once __DIR__ . '/../controllers/CertificationPageContentController.php';
+require_once __DIR__ . '/../controllers/CertificationCategoryController.php';
+require_once __DIR__ . '/../controllers/CertificationController.php';
+require_once __DIR__ . '/../controllers/CertificationTrustBadgeController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -318,4 +326,30 @@ function registerAdminRoutes(Router $router): void
     // Footer — Settings (singleton id=1)
     $router->get('/api/admin/footer/settings', [FooterSettingController::class, 'index'], $mw);
     $router->put('/api/admin/footer/settings', [FooterSettingController::class, 'update'], $mw);
+
+    // Certifications — Page Content (singleton id=1)
+    $router->get('/api/admin/certifications/page-content', [CertificationPageContentController::class, 'index'], $mw);
+    $router->put('/api/admin/certifications/page-content', [CertificationPageContentController::class, 'update'], $mw);
+
+    // Certifications — Categories
+    $router->get('/api/admin/certifications/categories', [CertificationCategoryController::class, 'index'], $mw);
+    $router->get('/api/admin/certifications/categories/{id}', [CertificationCategoryController::class, 'show'], $mw);
+    $router->post('/api/admin/certifications/categories', [CertificationCategoryController::class, 'store'], $mw);
+    $router->put('/api/admin/certifications/categories/{id}', [CertificationCategoryController::class, 'update'], $mw);
+    $router->delete('/api/admin/certifications/categories/{id}', [CertificationCategoryController::class, 'destroy'], $mw);
+
+    // Certifications — Trust Badges
+    $router->get('/api/admin/certifications/trust-badges', [CertificationTrustBadgeController::class, 'index'], $mw);
+    $router->get('/api/admin/certifications/trust-badges/{id}', [CertificationTrustBadgeController::class, 'show'], $mw);
+    $router->post('/api/admin/certifications/trust-badges', [CertificationTrustBadgeController::class, 'store'], $mw);
+    $router->put('/api/admin/certifications/trust-badges/{id}', [CertificationTrustBadgeController::class, 'update'], $mw);
+    $router->delete('/api/admin/certifications/trust-badges/{id}', [CertificationTrustBadgeController::class, 'destroy'], $mw);
+
+    // Certifications — Certificate items (30+ rows expected — kept under /items to avoid
+    // route-matching ambiguity with the static sub-paths above)
+    $router->get('/api/admin/certifications/items', [CertificationController::class, 'index'], $mw);
+    $router->get('/api/admin/certifications/items/{id}', [CertificationController::class, 'show'], $mw);
+    $router->post('/api/admin/certifications/items', [CertificationController::class, 'store'], $mw);
+    $router->put('/api/admin/certifications/items/{id}', [CertificationController::class, 'update'], $mw);
+    $router->delete('/api/admin/certifications/items/{id}', [CertificationController::class, 'destroy'], $mw);
 }

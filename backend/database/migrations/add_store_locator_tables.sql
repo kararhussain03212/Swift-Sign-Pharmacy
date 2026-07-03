@@ -1,5 +1,5 @@
 -- Store Locator module — branches, network stats, page content, gallery
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 CREATE TABLE IF NOT EXISTS `store_branches` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,

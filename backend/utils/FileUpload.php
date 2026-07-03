@@ -37,6 +37,7 @@ final class FileUpload
         'settings',
         'icons',
         'profiles',
+        'certifications',
     ];
     private const WEBP_QUALITY = 82;
 

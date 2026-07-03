@@ -21,7 +21,7 @@ Env::load(__DIR__ . '/../.env');
 
 $host = Env::get('ARION_DB_HOST', Env::get('DB_HOST', 'localhost'));
 $port = Env::get('ARION_DB_PORT', Env::get('DB_PORT', '3306'));
-$name = Env::get('ARION_DB_NAME', 'arion_pharmacy');
+$name = Env::get('ARION_DB_NAME', 'arion-pharmacy');
 $user = Env::get('ARION_DB_USER', Env::get('DB_USER', 'root'));
 $pass = Env::get('ARION_DB_PASS', Env::get('DB_PASS', ''));
 

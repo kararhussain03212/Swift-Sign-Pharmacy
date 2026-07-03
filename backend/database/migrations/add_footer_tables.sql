@@ -3,7 +3,7 @@
 -- Footer categories intentionally reuse the existing `categories` table
 -- (same source as the Navbar/Shop pages) rather than a separate table.
 
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 CREATE TABLE IF NOT EXISTS `footer_quick_links` (
     `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

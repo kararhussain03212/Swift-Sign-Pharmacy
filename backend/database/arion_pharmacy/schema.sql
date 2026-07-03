@@ -3,7 +3,7 @@
 -- Tables: announcement_bar, site_settings, nav_links, categories, locations, hero_slides
 
 CREATE DATABASE IF NOT EXISTS `arion_pharmacy` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 CREATE TABLE IF NOT EXISTS `announcement_bar` (
     `id`         INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,

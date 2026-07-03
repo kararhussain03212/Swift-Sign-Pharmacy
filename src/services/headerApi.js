@@ -47,6 +47,8 @@ export const getLocations = () => getJson('/public/locations')
 export const getHeroSlides = () => getJson('/public/hero-slides')
 export const getBlogSettings = () => getJson('/public/blog/settings')
 
+export const getPublishedBlogs = () => getJson('/public/blog')
+
 export const getContactPageContent = () => getJson('/public/contact-page')
 export const getContactInfoCards = () => getJson('/public/contact/info-cards')
 export const getContactFaqs = () => getJson('/public/contact/faqs')

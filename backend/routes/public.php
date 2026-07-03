@@ -7,6 +7,7 @@ use Backend\Controllers\AddressController;
 use Backend\Controllers\AnnouncementBarController;
 use Backend\Controllers\BlogController;
 use Backend\Controllers\CategoryController;
+use Backend\Controllers\CertificationPublicController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\ContactFaqController;
@@ -59,6 +60,7 @@ require_once __DIR__ . '/../controllers/FeaturedBrandController.php';
 require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
 require_once __DIR__ . '/../controllers/FooterController.php';
+require_once __DIR__ . '/../controllers/CertificationPublicController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -122,4 +124,10 @@ function registerPublicRoutes(Router $router): void
 
     // Footer — aggregate endpoint (categories + quick links + company info + app links + social links + settings)
     $router->get('/api/public/footer', [FooterController::class, 'publicIndex']);
+
+    // Certifications
+    $router->get('/api/public/certifications/page-content', [CertificationPublicController::class, 'pageContent']);
+    $router->get('/api/public/certifications/grouped', [CertificationPublicController::class, 'grouped']);
+    $router->get('/api/public/certifications/trust-badges', [CertificationPublicController::class, 'trustBadges']);
+    $router->get('/api/public/certifications/primary-license', [CertificationPublicController::class, 'primaryLicense']);
 }

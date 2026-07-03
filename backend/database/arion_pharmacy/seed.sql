@@ -1,6 +1,6 @@
 -- Arion Pharmacy — Header module seed data
 -- Mirrors the current hardcoded header content so the live site is unchanged after the data-source swap.
-USE `arion_pharmacy`;
+USE `arion-pharmacy`;
 
 -- Announcement bar (TopBar.jsx marquee messages)
 INSERT IGNORE INTO `announcement_bar` (`id`, `text`, `icon`, `is_active`, `sort_order`) VALUES
