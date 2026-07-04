@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
@@ -82,7 +82,7 @@ export default function ContactInfoCardList() {
                   <div className="mt-2 text-sm text-white/40">Order: {item.sort_order}</div>
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
-                  <span className="rounded-full bg-green-600 px-4 py-1.5 text-sm font-semibold text-white">
+                  <span className="rounded-full bg-[#0998A0] px-4 py-1.5 text-sm font-semibold text-white">
                     {item.icon_key}
                   </span>
                   <button

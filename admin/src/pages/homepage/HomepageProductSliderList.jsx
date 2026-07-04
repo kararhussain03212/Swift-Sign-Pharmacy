@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
@@ -146,7 +146,7 @@ export default function HomepageProductSliderList() {
                     <h3 className="text-lg font-bold text-white">{item.title}</h3>
                     <div className="mt-1 flex flex-wrap items-center gap-1.5">
                       {(item.categories ?? []).length === 0 ? (
-                        <span className="rounded-full bg-yellow-500/15 px-2.5 py-0.5 text-xs font-medium text-yellow-300">
+                        <span className="rounded-full bg-[rgba(15,175,184,0.15)] px-2.5 py-0.5 text-xs font-medium text-[#0FAFB8]">
                           No categories assigned
                         </span>
                       ) : (
@@ -168,7 +168,7 @@ export default function HomepageProductSliderList() {
                     disabled={!canPublish}
                     onClick={() => handleToggleActive(item)}
                     className={`rounded-full px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-40 ${
-                      item.is_active ? "bg-green-600 hover:bg-green-700" : "bg-white/10 hover:bg-white/20"
+                      item.is_active ? "bg-[#0998A0] hover:bg-[#0785A0]" : "bg-white/10 hover:bg-white/20"
                     }`}
                   >
                     {item.is_active ? "Active" : "Inactive"}

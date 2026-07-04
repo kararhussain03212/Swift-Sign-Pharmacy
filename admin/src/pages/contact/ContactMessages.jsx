@@ -1,10 +1,10 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import { getContactMessages, markContactRead, deleteContactMessage } from "../../api/contactApi";
 
 const STATUS_STYLES = {
   unread:  { bg: "bg-red-500/15",   text: "text-red-400",   border: "border-red-500/30",   label: "Unread"  },
   read:    { bg: "bg-zinc-500/15",  text: "text-zinc-400",  border: "border-zinc-500/30",  label: "Read"    },
-  replied: { bg: "bg-green-500/15", text: "text-green-400", border: "border-green-500/30", label: "Replied" },
+  replied: { bg: "bg-[rgba(15,175,184,0.15)]", text: "text-[#0FAFB8]", border: "border-[rgba(15,175,184,0.30)]", label: "Replied" },
 };
 
 function StatusBadge({ status }) {
@@ -101,7 +101,7 @@ export default function ContactMessages() {
       )}
 
       {/* Table */}
-      <div className="overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)]">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)]">
         {loading ? (
           <div className="py-16 text-center text-sm text-[var(--admin-muted)]">Loading messages…</div>
         ) : messages.length === 0 ? (
@@ -181,7 +181,7 @@ export default function ContactMessages() {
                                 href={`https://wa.me/${msg.phone.replace(/\D/g, "")}?text=${encodeURIComponent(`Hello ${msg.name}, regarding your query: "${msg.subject}"`)}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-semibold text-green-400 hover:bg-green-500/20"
+                                className="rounded-lg border border-[rgba(15,175,184,0.30)] bg-[rgba(15,175,184,0.10)] px-3 py-1.5 text-xs font-semibold text-[#0FAFB8] hover:bg-[rgba(15,175,184,0.20)]"
                               >
                                 WhatsApp
                               </a>

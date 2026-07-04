@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { getBackendRoot } from "../../api/runtimeApi";
 import { getFooterAppLinks, updateFooterAppLink, deleteFooterAppLink } from "../../api/footerApi";
@@ -129,7 +129,7 @@ export default function FooterAppLinkList() {
       </header>
 
       {toast.show && (
-        <div className="fixed right-5 top-5 z-[220] rounded-xl border border-green-400/30 bg-green-500/90 px-4 py-2 text-sm font-medium text-white shadow-lg">
+        <div className="fixed right-5 top-5 z-[220] rounded-xl border border-[rgba(15,175,184,0.30)] bg-[#0998A0] px-4 py-2 text-sm font-medium text-white shadow-lg">
           {toast.text}
         </div>
       )}

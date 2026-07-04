@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteProduct, getProducts, updateProduct } from "../../api/productApi";
 import { useAuth } from "../../context/useAuth";
@@ -145,7 +145,7 @@ export default function ProductList() {
                   <td className="px-4 py-3 font-medium">{item.name}</td>
                   <td className="px-4 py-3 text-white/60">{item.category_name || "—"}</td>
                   <td className="px-4 py-3">
-                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${item.product_type === "chemical" ? "bg-amber-500/20 text-amber-300" : "bg-[var(--admin-primary)]/20 text-[var(--admin-primary)]"}`}>
+                    <span className={`rounded-full px-2 py-0.5 text-xs font-medium ${item.product_type === "chemical" ? "bg-[rgba(234,251,252,0.20)] text-[#0FAFB8]" : "bg-[var(--admin-primary)]/20 text-[var(--admin-primary)]"}`}>
                       {item.product_type}
                     </span>
                   </td>
@@ -155,7 +155,7 @@ export default function ProductList() {
                     <button
                       type="button"
                       onClick={() => handleToggleActive(item)}
-                      className={item.is_active ? "rounded-lg bg-green-600 px-3 py-1 text-xs text-white hover:bg-green-700" : "rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700"}
+                      className={item.is_active ? "rounded-lg bg-[#0998A0] px-3 py-1 text-xs text-white hover:bg-[#0785A0]" : "rounded-lg bg-red-600 px-3 py-1 text-xs text-white hover:bg-red-700"}
                     >
                       {item.is_active ? "Active" : "Inactive"}
                     </button>

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+﻿import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Calendar } from "primereact/calendar";
 import { createBlog, getBlog, updateBlog } from "../../api/blogApi";
@@ -221,7 +221,7 @@ export default function BlogForm() {
       <h2 className="mb-4 text-2xl font-bold text-white">{isEditMode ? "Edit Blog" : "Add Blog"}</h2>
 
       {!canSave && (
-        <div className="mb-4 rounded-xl border border-yellow-500/30 bg-yellow-500/10 px-4 py-3 text-sm text-yellow-300">
+        <div className="mb-4 rounded-xl border border-[rgba(234,251,252,0.30)] bg-[rgba(234,251,252,0.10)] px-4 py-3 text-sm text-[#0FAFB8]">
           You do not have permission to {isEditMode ? "edit" : "create"} blog posts. Contact an admin.
         </div>
       )}

@@ -259,7 +259,7 @@ export default function Layout({ children }) {
           <Link
             to="/dashboard"
             onClick={closeSidebar}
-            className="group flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-card)] px-3 py-2.5 transition-all hover:border-[var(--admin-border-amber)] hover:shadow-[0_0_16px_rgba(224,184,92,0.15)]"
+            className="group flex min-w-0 flex-1 items-center gap-3 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-card)] px-3 py-2.5 transition-all hover:border-[var(--admin-border-amber)] hover:shadow-[0_0_16px_rgba(15,175,184,0.15)]"
           >
             <div className="relative flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-gradient-to-br from-[var(--brand-green)] to-[var(--brand-green-deep)] shadow-[0_4px_14px_rgba(73,99,72,0.5)]">
               <img

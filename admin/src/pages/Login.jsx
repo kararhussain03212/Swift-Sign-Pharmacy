@@ -51,7 +51,7 @@ export default function Login() {
         >
           {/* Logo + brand */}
           <div className="flex flex-col items-center gap-3">
-            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#496348] via-[#5a7a5a] to-[#C7A66B] shadow-[0_8px_24px_rgba(73,99,72,0.45)] sm:h-24 sm:w-24">
+            <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br from-[#073B45] via-[#0998A0] to-[#0FAFB8] shadow-[0_8px_24px_rgba(15,175,184,0.25)] sm:h-24 sm:w-24">
               <img src={logo} alt="Swift Sign" className="h-14 w-14 rounded-xl object-cover sm:h-16 sm:w-16" />
             </div>
             <div className="text-center">

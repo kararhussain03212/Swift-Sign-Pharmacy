@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteCoreValue, getCoreValues, updateCoreValue } from "../../api/aboutApi";
 
@@ -87,8 +87,8 @@ export default function CoreValueList() {
                     <div
                       className="flex h-14 w-14 shrink-0 items-center justify-center rounded-xl text-2xl"
                       style={{
-                        background: (item.color || "#496348") + "22",
-                        border: "1px solid " + (item.color || "#496348") + "55",
+                        background: (item.color || "#073B45") + "22",
+                        border: "1px solid " + (item.color || "#073B45") + "55",
                       }}
                     >
                       {item.icon || "●"}
@@ -119,7 +119,7 @@ export default function CoreValueList() {
                       onClick={() => handleToggle(item)}
                       className={
                         item.is_active
-                          ? "rounded-lg bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+                          ? "rounded-lg bg-[#0998A0] px-4 py-2 text-sm text-white hover:bg-[#0785A0]"
                           : "rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
                       }
                     >

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getAboutComparison, updateAboutComparison,
@@ -134,7 +134,7 @@ export default function ComparisonSectionAdmin() {
       </header>
 
       {toast ? (
-        <div className="rounded-xl bg-green-600/80 px-4 py-2.5 text-sm font-medium text-white">{toast}</div>
+        <div className="rounded-xl bg-[#0998A0]/80 px-4 py-2.5 text-sm font-medium text-white">{toast}</div>
       ) : null}
       {error ? (
         <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div>

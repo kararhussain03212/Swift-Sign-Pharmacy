@@ -5,25 +5,25 @@ import axios from "../api/axios";
 import { getSettings } from "../api/settingApi";
 
 const QUICK = [
-  { label: "Add Product",        to: "/products/new",                     icon: "pi-box",         color: "#5cb96a" },
-  { label: "Prescription Orders",to: "/prescription-orders/submissions",  icon: "pi-file-pdf",    color: "#e0b85c" },
-  { label: "Manage Categories",  to: "/main/categories",                  icon: "pi-list",        color: "#5cb96a" },
-  { label: "Store Locations",    to: "/store-locator/branches",           icon: "pi-map",         color: "#e0b85c" },
-  { label: "Site Settings",      to: "/settings/navbar",                  icon: "pi-cog",         color: "#5cb96a" },
+  { label: "Add Product",        to: "/products/new",                     icon: "pi-box",         color: "#0FAFB8" },
+  { label: "Prescription Orders",to: "/prescription-orders/submissions",  icon: "pi-file-pdf",    color: "#0FAFB8" },
+  { label: "Manage Categories",  to: "/main/categories",                  icon: "pi-list",        color: "#0FAFB8" },
+  { label: "Store Locations",    to: "/store-locator/branches",           icon: "pi-map",         color: "#0FAFB8" },
+  { label: "Site Settings",      to: "/settings/navbar",                  icon: "pi-cog",         color: "#0FAFB8" },
 ];
 
 const STAT_META = [
-  { key: "products",           label: "Products",              to: "/products",                        icon: "pi-box",       glow: "rgba(92,185,106,0.18)"  },
-  { key: "prescriptions",      label: "Prescription Orders",   to: "/prescription-orders/submissions", icon: "pi-file-pdf",  glow: "rgba(224,184,92,0.18)"  },
-  { key: "categories",         label: "Categories",           to: "/main/categories",                 icon: "pi-list",      glow: "rgba(92,185,106,0.18)"  },
-  { key: "locations",          label: "Store Locations",      to: "/store-locator/branches",          icon: "pi-map",       glow: "rgba(224,184,92,0.18)"  },
+  { key: "products",           label: "Products",              to: "/products",                        icon: "pi-box",       glow: "rgba(15,175,184,0.18)"  },
+  { key: "prescriptions",      label: "Prescription Orders",   to: "/prescription-orders/submissions", icon: "pi-file-pdf",  glow: "rgba(15,175,184,0.18)"  },
+  { key: "categories",         label: "Categories",           to: "/main/categories",                 icon: "pi-list",      glow: "rgba(15,175,184,0.18)"  },
+  { key: "locations",          label: "Store Locations",      to: "/store-locator/branches",          icon: "pi-map",       glow: "rgba(15,175,184,0.18)"  },
 ];
 
 function StatCard({ meta, value, loading }) {
   return (
     <Link
       to={meta.to}
-      className="group relative overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--admin-border-amber)] hover:shadow-[0_8px_32px_rgba(92,185,106,0.12)]"
+      className="group relative overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[var(--admin-border-amber)] hover:shadow-[0_8px_32px_rgba(15,175,184,0.12)]"
     >
       {/* glow blob */}
       <div
@@ -87,10 +87,10 @@ export default function Dashboard() {
     <div className="space-y-6">
 
       {/* ── HERO BANNER ──────────────────────────────────────── */}
-      <div className="relative overflow-hidden rounded-2xl border border-[var(--admin-border-amber)]/40 bg-gradient-to-br from-[var(--brand-green-deep)] via-[var(--brand-green)] to-[#2a4a32]">
+      <div className="relative overflow-hidden rounded-2xl border border-[var(--admin-border-amber)]/40 bg-gradient-to-br from-[var(--brand-green-deep)] via-[var(--brand-green)] to-[#051F28]">
         {/* decorative circles */}
-        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(224,184,92,0.22)_0%,transparent_65%)]" />
-        <div className="pointer-events-none absolute -bottom-12 left-8 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(92,185,106,0.18)_0%,transparent_70%)]" />
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(15,175,184,0.22)_0%,transparent_65%)]" />
+        <div className="pointer-events-none absolute -bottom-12 left-8 h-40 w-40 rounded-full bg-[radial-gradient(circle,rgba(15,175,184,0.18)_0%,transparent_70%)]" />
         <div className="pointer-events-none absolute right-48 bottom-0 h-64 w-64 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.04)_0%,transparent_70%)]" />
 
         <div className="relative flex flex-col gap-6 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">

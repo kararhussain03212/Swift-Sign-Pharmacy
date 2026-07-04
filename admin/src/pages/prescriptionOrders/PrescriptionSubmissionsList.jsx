@@ -1,12 +1,12 @@
-import { useEffect, useState, useCallback } from "react";
+﻿import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { getPrescriptionOrders } from "../../api/prescriptionOrderApi";
 
 const STATUS_STYLES = {
-  pending:    { bg: "bg-amber-500/15",  text: "text-amber-400",  border: "border-amber-500/30",  label: "Pending" },
+  pending:    { bg: "bg-[rgba(234,251,252,0.15)]",  text: "text-[#0FAFB8]",  border: "border-[rgba(234,251,252,0.30)]",  label: "Pending" },
   contacted:  { bg: "bg-blue-500/15",   text: "text-blue-400",   border: "border-blue-500/30",   label: "Contacted" },
   processing: { bg: "bg-purple-500/15", text: "text-purple-400", border: "border-purple-500/30", label: "Processing" },
-  delivered:  { bg: "bg-green-500/15",  text: "text-green-400",  border: "border-green-500/30",  label: "Delivered" },
+  delivered:  { bg: "bg-[rgba(15,175,184,0.15)]",  text: "text-[#0FAFB8]",  border: "border-[rgba(15,175,184,0.30)]",  label: "Delivered" },
   rejected:   { bg: "bg-red-500/15",    text: "text-red-400",    border: "border-red-500/30",    label: "Rejected" },
 };
 
@@ -78,7 +78,7 @@ export default function PrescriptionSubmissionsList() {
         </div>
       )}
 
-      <div className="overflow-hidden rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)]">
+      <div className="overflow-x-auto rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)]">
         {loading ? (
           <div className="py-16 text-center text-sm text-[var(--admin-muted)]">Loading submissions…</div>
         ) : orders.length === 0 ? (

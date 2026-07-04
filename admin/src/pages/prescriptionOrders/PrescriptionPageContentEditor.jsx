@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import {
   getPrescriptionPageContent,
   updatePrescriptionPageContent,
@@ -79,7 +79,7 @@ function ContentSection() {
     <form onSubmit={handleSubmit} className={cardCls}>
       <h3 className="text-lg font-semibold text-white">Page Copy</h3>
       {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300">{error}</div>}
-      {msg && <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-green-300">{msg}</div>}
+      {msg && <div className="rounded-lg border border-[rgba(15,175,184,0.30)] bg-[rgba(15,175,184,0.10)] px-4 py-3 text-[#0FAFB8]">{msg}</div>}
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         {fields.map(([key, label, type]) => (

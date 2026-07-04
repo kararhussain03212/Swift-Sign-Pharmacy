@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { getFooterSocialLinks, createFooterSocialLink, updateFooterSocialLink, deleteFooterSocialLink } from "../../api/footerApi";
 
 const ICON_OPTIONS = ["facebook", "instagram", "x", "linkedin"];
@@ -110,7 +110,7 @@ export default function FooterSocialLinkList() {
       </header>
 
       {error ? <div className="rounded-xl border border-red-500/25 bg-red-500/10 px-4 py-3 text-red-300">{error}</div> : null}
-      {success ? <div className="rounded-xl border border-green-500/25 bg-green-500/10 px-4 py-3 text-green-300">{success}</div> : null}
+      {success ? <div className="rounded-xl border border-[rgba(15,175,184,0.25)] bg-[rgba(15,175,184,0.10)] px-4 py-3 text-[#0FAFB8]">{success}</div> : null}
 
       <article className="space-y-4 rounded-2xl border border-[var(--admin-border)] bg-[var(--admin-card)] p-4 shadow-sm md:p-5">
         <div className="space-y-3 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-card-elevated)] p-4">

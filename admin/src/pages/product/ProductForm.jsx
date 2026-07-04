@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageUpload from "../../components/ImageUpload";
 import { uploadImage } from "../../api/uploadApi";
@@ -365,7 +365,7 @@ export default function ProductForm() {
       <h2 className="text-2xl font-bold text-white">{isEditMode ? "Edit Product" : "Add Product"}</h2>
 
       {toast && (
-        <div className="fixed right-5 top-5 z-[220] rounded-xl border border-green-400/30 bg-green-600/90 px-4 py-2 text-sm font-medium text-white shadow-lg">
+        <div className="fixed right-5 top-5 z-[220] rounded-xl border border-[rgba(15,175,184,0.30)] bg-[#0998A0]/90 px-4 py-2 text-sm font-medium text-white shadow-lg">
           {toast}
         </div>
       )}
@@ -623,7 +623,7 @@ export default function ProductForm() {
                             : doc.file_url.split("/").pop()}
                         </p>
                       ) : (
-                        <p className="text-xs text-amber-400">No file attached yet — this document won't be saved until you choose a file.</p>
+                        <p className="text-xs text-[#0FAFB8]">No file attached yet — this document won't be saved until you choose a file.</p>
                       )}
                       {group.key === "certificate" && (
                         <div className="grid grid-cols-2 gap-2">

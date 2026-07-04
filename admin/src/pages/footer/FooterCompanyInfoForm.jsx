@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import api from "../../api/axios";
 import { getBackendRoot } from "../../api/runtimeApi";
 import { getFooterCompanyInfo, updateFooterCompanyInfo } from "../../api/footerApi";
@@ -100,7 +100,7 @@ export default function FooterCompanyInfoForm() {
         <p className="text-sm text-white/65">Manage company details shown in the footer.</p>
       </header>
 
-      {message ? <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-sm text-green-300">{message}</div> : null}
+      {message ? <div className="rounded-lg border border-[rgba(15,175,184,0.30)] bg-[rgba(15,175,184,0.10)] px-4 py-3 text-sm text-[#0FAFB8]">{message}</div> : null}
       {error ? <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div> : null}
 
       <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-white/10 bg-[var(--admin-bg)] p-6">

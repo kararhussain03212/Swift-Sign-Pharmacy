@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteProblem, getProblems, updateProblem } from "../../api/aboutApi";
 
@@ -105,7 +105,7 @@ export default function ProblemCardList() {
                       onClick={() => handleToggle(item)}
                       className={
                         item.is_active
-                          ? "rounded-lg bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+                          ? "rounded-lg bg-[#0998A0] px-4 py-2 text-sm text-white hover:bg-[#0785A0]"
                           : "rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
                       }
                     >

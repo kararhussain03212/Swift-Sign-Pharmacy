@@ -5,7 +5,7 @@ import { createCoreValue, getCoreValues, updateCoreValue } from "../../api/about
 const inputCls = "w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[var(--admin-primary)]";
 const labelCls = "mb-1 block text-sm font-medium text-white/80";
 
-const empty = () => ({ value_number: "", icon: "", title: "", description: "", button_text: "", color: "#496348", sort_order: 1, is_active: true });
+const empty = () => ({ value_number: "", icon: "", title: "", description: "", button_text: "", color: "#073B45", sort_order: 1, is_active: true });
 
 export default function CoreValueForm() {
   const { id }    = useParams();
@@ -21,7 +21,7 @@ export default function CoreValueForm() {
     getCoreValues().then((res) => {
       const d = res?.data?.data;
       const item = Array.isArray(d) ? d.find((x) => String(x.id) === String(id)) : null;
-      if (item) setForm({ value_number: item.value_number || "", icon: item.icon || "", title: item.title || "", description: item.description || "", button_text: item.button_text || "", color: item.color || "#496348", sort_order: item.sort_order ?? 1, is_active: item.is_active === 1 || item.is_active === true });
+      if (item) setForm({ value_number: item.value_number || "", icon: item.icon || "", title: item.title || "", description: item.description || "", button_text: item.button_text || "", color: item.color || "#073B45", sort_order: item.sort_order ?? 1, is_active: item.is_active === 1 || item.is_active === true });
     }).catch(() => setError("Failed to load.")).finally(() => setLoading(false));
   }, [id, isEdit]);
 
@@ -64,7 +64,7 @@ export default function CoreValueForm() {
             <label className={labelCls}>Accent Color</label>
             <div className="flex items-center gap-2">
               <input type="color" value={form.color} onChange={(e) => setField("color", e.target.value)} className="h-9 w-12 cursor-pointer rounded border border-white/20 bg-transparent" />
-              <input className={inputCls} value={form.color} onChange={(e) => setField("color", e.target.value)} placeholder="#496348" />
+              <input className={inputCls} value={form.color} onChange={(e) => setField("color", e.target.value)} placeholder="#073B45" />
             </div>
           </div>
         </div> */}

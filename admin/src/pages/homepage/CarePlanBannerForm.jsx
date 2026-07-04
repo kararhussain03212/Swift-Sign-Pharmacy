@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { getHomepageCarePlanBanner, updateHomepageCarePlanBanner } from "../../api/homepageCarePlanBannerApi";
 
 const inputCls = "w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white placeholder:text-white/30 focus:outline-none focus:ring-1 focus:ring-[var(--admin-primary)]";
@@ -60,7 +60,7 @@ export default function CarePlanBannerForm() {
         <p className="mt-1 text-sm text-white/65">The light-teal "Get Healthier Together" CTA banner on the homepage.</p>
       </header>
 
-      {toast ? <div className="rounded-xl bg-green-600/80 px-4 py-2.5 text-sm font-medium text-white">{toast}</div> : null}
+      {toast ? <div className="rounded-xl bg-[#0998A0]/80 px-4 py-2.5 text-sm font-medium text-white">{toast}</div> : null}
       {error ? <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">{error}</div> : null}
 
       <form onSubmit={handleSubmit} className="space-y-5 rounded-2xl border border-white/10 bg-[var(--admin-bg)] p-6">

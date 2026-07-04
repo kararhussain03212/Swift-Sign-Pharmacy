@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { createCategory, deleteCategory, getCategoriesNested, updateCategory } from "../../api/categoryApi";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
@@ -283,7 +283,7 @@ export default function CategoryList() {
                 disabled={!canEdit || editingId !== null || addingSubcategoryFor !== null}
                 className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${
                   item.is_active
-                    ? "bg-green-600 hover:bg-green-700"
+                    ? "bg-[#0998A0] hover:bg-[#0785A0]"
                     : "bg-gray-600 hover:bg-gray-700"
                 } disabled:opacity-60`}
               >

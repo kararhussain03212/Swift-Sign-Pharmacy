@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+﻿import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { deleteHeroSlide, getHeroSlides, updateHeroSlide } from "../../api/heroSlideApi";
 import { useAuth } from "../../context/useAuth";
@@ -173,7 +173,7 @@ export default function HeroSlideList() {
                         onClick={() => handleToggleActive(item)}
                         className={
                           item.is_active
-                            ? "rounded-lg bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
+                            ? "rounded-lg bg-[#0998A0] px-4 py-2 text-sm text-white hover:bg-[#0785A0]"
                             : "rounded-lg bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
                         }
                       >

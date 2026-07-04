@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+﻿import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   getPrescriptionOrder,
@@ -127,7 +127,7 @@ export default function PrescriptionSubmissionDetail() {
               href={`https://wa.me/${String(order.phone_number || "").replace(/\D/g, "")}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-lg border border-green-500/30 bg-green-500/10 px-3 py-1.5 text-xs font-semibold text-green-400 hover:bg-green-500/20"
+              className="rounded-lg border border-[rgba(15,175,184,0.30)] bg-[rgba(15,175,184,0.10)] px-3 py-1.5 text-xs font-semibold text-[#0FAFB8] hover:bg-[rgba(15,175,184,0.20)]"
             >
               WhatsApp
             </a>

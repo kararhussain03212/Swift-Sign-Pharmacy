@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/useAuth";
 import { hasPermission } from "../../modules/users/constants";
@@ -107,7 +107,7 @@ export default function PromoCardList() {
                     disabled={!canPublish}
                     onClick={() => handleToggleActive(item)}
                     className={`rounded-full px-4 py-1.5 text-sm font-semibold text-white disabled:opacity-40 ${
-                      item.is_active ? "bg-green-600 hover:bg-green-700" : "bg-white/10 hover:bg-white/20"
+                      item.is_active ? "bg-[#0998A0] hover:bg-[#0785A0]" : "bg-white/10 hover:bg-white/20"
                     }`}
                   >
                     {item.is_active ? "Active" : "Inactive"}
