@@ -21,6 +21,8 @@ use Backend\Controllers\HomepagePromoCardController;
 use Backend\Controllers\HomepageProductSliderController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
+use Backend\Controllers\PrescriptionOrderController;
+use Backend\Controllers\PrescriptionPageContentController;
 use Backend\Controllers\ProductController;
 use Backend\Controllers\SettingController;
 use Backend\Controllers\SiteSettingController;
@@ -61,6 +63,8 @@ require_once __DIR__ . '/../controllers/TrustBadgeController.php';
 require_once __DIR__ . '/../controllers/HomepageProductSliderController.php';
 require_once __DIR__ . '/../controllers/FooterController.php';
 require_once __DIR__ . '/../controllers/CertificationPublicController.php';
+require_once __DIR__ . '/../controllers/PrescriptionPageContentController.php';
+require_once __DIR__ . '/../controllers/PrescriptionOrderController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -113,6 +117,10 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/store-locator/stats', [StoreNetworkStatController::class, 'publicIndex']);
     $router->get('/api/public/store-locator/content', [StoreLocatorContentController::class, 'publicIndex']);
     $router->get('/api/public/store-locator/gallery', [StoreGalleryController::class, 'publicIndex']);
+
+    // Prescription upload page
+    $router->get('/api/public/prescription/page-content', [PrescriptionPageContentController::class, 'publicIndex']);
+    $router->post('/api/public/prescription/submit', [PrescriptionOrderController::class, 'store']);
 
     // Homepage promo sections
     $router->get('/api/public/homepage/hero-banner', [HomepageHeroBannerController::class, 'publicIndex']);

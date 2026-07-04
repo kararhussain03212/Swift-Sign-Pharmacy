@@ -55,6 +55,9 @@ import CertificationPageContentForm from "./pages/certifications/CertificationPa
 import CertificationCategoryList from "./pages/certifications/CertificationCategoryList";
 import CertificationList from "./pages/certifications/CertificationList";
 import CertificationTrustBadgeList from "./pages/certifications/CertificationTrustBadgeList";
+import PrescriptionSubmissionsList from "./pages/prescriptionOrders/PrescriptionSubmissionsList";
+import PrescriptionSubmissionDetail from "./pages/prescriptionOrders/PrescriptionSubmissionDetail";
+import PrescriptionPageContentEditor from "./pages/prescriptionOrders/PrescriptionPageContentEditor";
 import { useAuth } from "./context/useAuth";
 
 function Forbidden403() {
@@ -349,6 +352,11 @@ export default function App() {
           <Route path="/certifications/categories"   element={<ProtectedPage><CertificationCategoryList /></ProtectedPage>} />
           <Route path="/certifications/items"        element={<ProtectedPage><CertificationList /></ProtectedPage>} />
           <Route path="/certifications/trust-badges" element={<ProtectedPage><CertificationTrustBadgeList /></ProtectedPage>} />
+
+          {/* Prescription Orders module */}
+          <Route path="/prescription-orders/submissions"     element={<ProtectedPage><PrescriptionSubmissionsList /></ProtectedPage>} />
+          <Route path="/prescription-orders/submissions/:id" element={<ProtectedPage><PrescriptionSubmissionDetail /></ProtectedPage>} />
+          <Route path="/prescription-orders/content"         element={<ProtectedPage><PrescriptionPageContentEditor /></ProtectedPage>} />
 
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

@@ -29,6 +29,11 @@ use Backend\Controllers\HomepagePromoCardController;
 use Backend\Controllers\HomepageProductSliderController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
+use Backend\Controllers\PrescriptionHowtoInstructionController;
+use Backend\Controllers\PrescriptionOrderController;
+use Backend\Controllers\PrescriptionPageContentController;
+use Backend\Controllers\PrescriptionProcessStepController;
+use Backend\Controllers\PrescriptionSampleIllustrationController;
 use Backend\Controllers\ProductController;
 use Backend\Controllers\SettingController;
 use Backend\Controllers\SiteSettingController;
@@ -81,6 +86,11 @@ require_once __DIR__ . '/../controllers/CertificationPageContentController.php';
 require_once __DIR__ . '/../controllers/CertificationCategoryController.php';
 require_once __DIR__ . '/../controllers/CertificationController.php';
 require_once __DIR__ . '/../controllers/CertificationTrustBadgeController.php';
+require_once __DIR__ . '/../controllers/PrescriptionPageContentController.php';
+require_once __DIR__ . '/../controllers/PrescriptionProcessStepController.php';
+require_once __DIR__ . '/../controllers/PrescriptionHowtoInstructionController.php';
+require_once __DIR__ . '/../controllers/PrescriptionSampleIllustrationController.php';
+require_once __DIR__ . '/../controllers/PrescriptionOrderController.php';
 require_once __DIR__ . '/../middleware/auth.php';
 require_once __DIR__ . '/../utils/Router.php';
 
@@ -257,6 +267,36 @@ function registerAdminRoutes(Router $router): void
     $router->post('/api/admin/store-locator/gallery', [StoreGalleryController::class, 'store'], $mw);
     $router->put('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'update'], $mw);
     $router->delete('/api/admin/store-locator/gallery/{id}', [StoreGalleryController::class, 'destroy'], $mw);
+
+    // Prescription Orders — Submissions
+    $router->get('/api/admin/prescription-orders', [PrescriptionOrderController::class, 'index'], $mw);
+    $router->get('/api/admin/prescription-orders/{id}', [PrescriptionOrderController::class, 'show'], $mw);
+    $router->get('/api/admin/prescription-orders/{id}/file', [PrescriptionOrderController::class, 'file'], $mw);
+    $router->put('/api/admin/prescription-orders/{id}', [PrescriptionOrderController::class, 'update'], $mw);
+
+    // Prescription Orders — Page Content (singleton id=1)
+    $router->get('/api/admin/prescription/content', [PrescriptionPageContentController::class, 'index'], $mw);
+    $router->put('/api/admin/prescription/content', [PrescriptionPageContentController::class, 'update'], $mw);
+
+    // Prescription Orders — Process Steps
+    $router->get('/api/admin/prescription/process-steps', [PrescriptionProcessStepController::class, 'index'], $mw);
+    $router->get('/api/admin/prescription/process-steps/{id}', [PrescriptionProcessStepController::class, 'show'], $mw);
+    $router->post('/api/admin/prescription/process-steps', [PrescriptionProcessStepController::class, 'store'], $mw);
+    $router->put('/api/admin/prescription/process-steps/{id}', [PrescriptionProcessStepController::class, 'update'], $mw);
+    $router->delete('/api/admin/prescription/process-steps/{id}', [PrescriptionProcessStepController::class, 'destroy'], $mw);
+    $router->patch('/api/admin/prescription/process-steps/reorder', [PrescriptionProcessStepController::class, 'reorder'], $mw);
+
+    // Prescription Orders — How-To Instructions
+    $router->get('/api/admin/prescription/howto-instructions', [PrescriptionHowtoInstructionController::class, 'index'], $mw);
+    $router->get('/api/admin/prescription/howto-instructions/{id}', [PrescriptionHowtoInstructionController::class, 'show'], $mw);
+    $router->post('/api/admin/prescription/howto-instructions', [PrescriptionHowtoInstructionController::class, 'store'], $mw);
+    $router->put('/api/admin/prescription/howto-instructions/{id}', [PrescriptionHowtoInstructionController::class, 'update'], $mw);
+    $router->delete('/api/admin/prescription/howto-instructions/{id}', [PrescriptionHowtoInstructionController::class, 'destroy'], $mw);
+    $router->patch('/api/admin/prescription/howto-instructions/reorder', [PrescriptionHowtoInstructionController::class, 'reorder'], $mw);
+
+    // Prescription Orders — Sample Illustration (singleton id=1)
+    $router->get('/api/admin/prescription/sample-illustration', [PrescriptionSampleIllustrationController::class, 'index'], $mw);
+    $router->put('/api/admin/prescription/sample-illustration', [PrescriptionSampleIllustrationController::class, 'update'], $mw);
 
     // Homepage — Hero Banner (singleton) + images
     $router->get('/api/admin/homepage/hero-banner', [HomepageHeroBannerController::class, 'index'], $mw);

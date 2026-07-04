@@ -3,6 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import ImageUpload from "../../components/ImageUpload";
 import { uploadImage } from "../../api/uploadApi";
 import { createProduct, getCategoriesWithType, getProduct, updateProduct } from "../../api/productApi";
+import { getBackendRoot } from "../../api/runtimeApi";
+
+const resolveDocUrl = (url) => {
+  if (!url) return "";
+  if (url.startsWith("blob:") || url.startsWith("http") || url === "#") return url === "#" ? "" : url;
+  if (url.startsWith("/uploads/")) return getBackendRoot() + url;
+  return "";
+};
 
 const DOC_GROUPS = [
   { key: "certificate", label: "Certificates" },
@@ -157,7 +165,10 @@ export default function ProductForm() {
               documents: (() => {
                 const grouped = { certificate: [], safety_data_sheet: [], product_information: [], scientific_resource: [] };
                 const docs = Array.isArray(item.chemical?.documents) ? item.chemical.documents : [];
-                docs.forEach((d) => { (grouped[d.doc_group] ??= []).push({ ...d, fileObj: null }); });
+                docs.forEach((d) => {
+                  const documentDate = d.document_date && d.document_date !== "0000-00-00" ? d.document_date : "";
+                  (grouped[d.doc_group] ??= []).push({ ...d, document_date: documentDate, fileObj: null });
+                });
                 return grouped;
               })(),
             },
@@ -252,6 +263,17 @@ export default function ProductForm() {
     if (!form.manufacturer_or_brand.trim()) { setError(`${productType === "chemical" ? "Manufacturer" : "Brand"} is required.`); return; }
     if (!form.base_price) { setError("Base price is required."); return; }
 
+    if (productType === "chemical") {
+      for (const group of DOC_GROUPS) {
+        for (const doc of form.chemical.documents[group.key]) {
+          if (doc.title.trim() && !doc.fileObj && !doc.file_url) {
+            setError(`"${doc.title.trim()}" under ${group.label} has no file attached — choose a file or remove it before saving.`);
+            return;
+          }
+        }
+      }
+    }
+
     try {
       setSaving(true);
 
@@ -329,7 +351,7 @@ export default function ProductForm() {
       setToast(isEditMode ? "Product updated." : "Product created.");
       navigate("/products");
     } catch (err) {
-      setError(err?.response?.data?.error || err?.response?.data?.message || "Save failed.");
+      setError(err?.response?.data?.error || err?.response?.data?.message || err?.message || "Save failed.");
       setFieldErrors(err?.response?.data?.fields || {});
     } finally {
       setSaving(false);
@@ -592,6 +614,17 @@ export default function ProductForm() {
                         onChange={(e) => setDocumentField(group.key, idx, "fileObj", e.target.files?.[0] || null)}
                         className="block w-full text-sm text-white file:mr-3 file:rounded-md file:border-0 file:bg-[var(--admin-primary)] file:px-3 file:py-1.5 file:text-black"
                       />
+                      {doc.fileObj ? (
+                        <p className="text-xs text-[var(--admin-primary)]">New file selected: {doc.fileObj.name} (uploaded on save)</p>
+                      ) : doc.file_url ? (
+                        <p className="text-xs text-white/60">
+                          Attached: {resolveDocUrl(doc.file_url)
+                            ? <a href={resolveDocUrl(doc.file_url)} target="_blank" rel="noreferrer" className="text-[var(--admin-primary)] underline">{doc.file_url.split("/").pop()}</a>
+                            : doc.file_url.split("/").pop()}
+                        </p>
+                      ) : (
+                        <p className="text-xs text-amber-400">No file attached yet — this document won't be saved until you choose a file.</p>
+                      )}
                       {group.key === "certificate" && (
                         <div className="grid grid-cols-2 gap-2">
                           <input value={doc.lot_number} onChange={(e) => setDocumentField(group.key, idx, "lot_number", e.target.value)} className={inputCls} placeholder="Lot Number" />

@@ -1,21 +1,51 @@
+import { useState, useEffect } from 'react'
 import { ShoppingCart } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { products } from '../../data/products'
 import useCartStore from '../../store/cartStore'
 import SectionHeader from '../ui/SectionHeader'
 import StarRating from '../ui/StarRating'
+import { getProducts, resolveUploadUrl } from '../../services/headerApi'
+
+function toDealProduct(row) {
+  const currentPrice = parseFloat(row.base_price)
+  const originalPrice = row.pharmacy_original_price !== null && row.pharmacy_original_price !== undefined
+    ? parseFloat(row.pharmacy_original_price)
+    : null
+  const hasDiscount = originalPrice !== null && !Number.isNaN(originalPrice) && originalPrice > currentPrice
+  const price = hasDiscount ? originalPrice : currentPrice
+  const salePrice = hasDiscount ? currentPrice : null
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    brand: row.manufacturer_or_brand || '',
+    image: resolveUploadUrl(row.first_image) || '',
+    price,
+    salePrice,
+    rating: 0,
+    reviewCount: 0,
+    discountPercent: salePrice ? Math.round(((price - salePrice) / price) * 100) : 0,
+  }
+}
 
 const SuperSavingDeals = () => {
   const { addToCart } = useCartStore()
+  const [dealProducts, setDealProducts] = useState([])
 
-  const dealProducts = products
-    .filter(product => product.salePrice && product.salePrice < product.price)
-    .map(product => ({
-      ...product,
-      discountPercent: Math.round(((product.price - product.salePrice) / product.price) * 100)
-    }))
-    .sort((a, b) => b.discountPercent - a.discountPercent)
-    .slice(0, 4)
+  useEffect(() => {
+    let cancelled = false
+    getProducts({ deals: '1', per_page: 20 })
+      .then(data => {
+        if (cancelled) return
+        const rows = Array.isArray(data?.data) ? data.data.map(toDealProduct) : []
+        setDealProducts(rows.sort((a, b) => b.discountPercent - a.discountPercent).slice(0, 4))
+      })
+      .catch(() => { if (!cancelled) setDealProducts([]) })
+    return () => { cancelled = true }
+  }, [])
+
+  if (dealProducts.length === 0) return null
 
   return (
     <section className="max-w-[1450px] mx-auto px-4 sm:px-5 mt-8 sm:mt-10">

@@ -34,6 +34,7 @@ final class ChemicalProductDetail extends BaseModel
                 }
                 $set[] = "$col = :$col";
             }
+            unset($payload['product_id']);
             $payload['pid'] = $productId;
             $sql = 'UPDATE ' . $this->table . ' SET ' . implode(', ', $set) . ' WHERE product_id = :pid';
             $this->pdo->prepare($sql)->execute($payload);

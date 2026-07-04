@@ -45,6 +45,94 @@ final class ProductController extends BaseCrudController
     // Public
     // ---------------------------------------------------------------
 
+    public function publicIndex(array $params = []): void
+    {
+        $query = $this->query();
+        $page = max(1, (int) ($query['page'] ?? 1));
+        $perPage = max(1, min(100, (int) ($query['per_page'] ?? 60)));
+        $offset = ($page - 1) * $perPage;
+        $type = $query['type'] ?? null;
+        $categorySlug = trim((string) ($query['category'] ?? ''));
+        $search = trim((string) ($query['search'] ?? ''));
+        $dealsOnly = in_array((string) ($query['deals'] ?? ''), ['1', 'true'], true);
+
+        $pdo = Database::connection();
+
+        $where = ['p.is_active = 1'];
+        $bind = [];
+
+        if ($type === 'pharmacy' || $type === 'chemical') {
+            $where[] = 'p.product_type = :type';
+            $bind[':type'] = $type;
+        }
+
+        if ($categorySlug !== '') {
+            $catStmt = $pdo->prepare('SELECT id FROM categories WHERE slug = :slug1 OR parent_id = (SELECT id FROM categories WHERE slug = :slug2 LIMIT 1)');
+            $catStmt->execute([':slug1' => $categorySlug, ':slug2' => $categorySlug]);
+            $categoryIds = array_map(static fn (array $row): int => (int) $row['id'], $catStmt->fetchAll() ?: []);
+            if ($categoryIds === []) {
+                Response::success(['data' => [], 'meta' => ['page' => $page, 'per_page' => $perPage, 'total' => 0, 'total_pages' => 0]], 'Fetched successfully');
+            }
+            $placeholders = [];
+            foreach ($categoryIds as $index => $catId) {
+                $key = ':cat' . $index;
+                $placeholders[] = $key;
+                $bind[$key] = $catId;
+            }
+            $where[] = 'p.category_id IN (' . implode(', ', $placeholders) . ')';
+        }
+
+        if ($search !== '') {
+            $where[] = '(p.name LIKE :search1 OR p.manufacturer_or_brand LIKE :search2)';
+            $bind[':search1'] = '%' . $search . '%';
+            $bind[':search2'] = '%' . $search . '%';
+        }
+
+        if ($dealsOnly) {
+            $where[] = 'ppd.discount_percent IS NOT NULL AND ppd.discount_percent > 0';
+        }
+
+        $whereSql = 'WHERE ' . implode(' AND ', $where);
+
+        $countStmt = $pdo->prepare(
+            "SELECT COUNT(*) AS aggregate FROM products p
+             LEFT JOIN pharmacy_product_details ppd ON ppd.product_id = p.id
+             $whereSql"
+        );
+        $countStmt->execute($bind);
+        $total = (int) ($countStmt->fetch()['aggregate'] ?? 0);
+
+        $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
+                       img.image_url AS first_image,
+                       ppd.original_price AS pharmacy_original_price
+                FROM products p
+                LEFT JOIN categories c ON c.id = p.category_id
+                LEFT JOIN pharmacy_product_details ppd ON ppd.product_id = p.id
+                LEFT JOIN (SELECT product_id, MIN(sort_order) AS min_sort FROM product_images GROUP BY product_id) fi ON fi.product_id = p.id
+                LEFT JOIN product_images img ON img.product_id = fi.product_id AND img.sort_order = fi.min_sort
+                $whereSql
+                ORDER BY p.created_at DESC, p.id DESC
+                LIMIT :limit OFFSET :offset";
+        $stmt = $pdo->prepare($sql);
+        foreach ($bind as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':limit', $perPage, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        $rows = $stmt->fetchAll() ?: [];
+
+        Response::success([
+            'data' => $rows,
+            'meta' => [
+                'page' => $page,
+                'per_page' => $perPage,
+                'total' => $total,
+                'total_pages' => (int) ceil($total / $perPage),
+            ],
+        ], 'Fetched successfully');
+    }
+
     public function publicShowBySlug(array $params): void
     {
         $slug = trim((string) ($params['slug'] ?? ''));
@@ -81,7 +169,7 @@ final class ProductController extends BaseCrudController
             ),
             'youMayAlsoLike' => array_map(
                 [$this, 'mapCardProduct'],
-                $productModel->relatedByManufacturer((string) $product['manufacturer_or_brand'], (int) $product['id'])
+                $productModel->relatedByParentCategory((int) $product['category_id'], (int) $product['id'])
             ),
         ], 'Fetched successfully');
     }

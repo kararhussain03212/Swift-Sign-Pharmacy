@@ -1,9 +1,35 @@
 import { useState, useEffect } from 'react'
 import { useParams, useSearchParams } from 'react-router-dom'
-import { products } from '../data/products'
-import { categories } from '../data/categories'
 import ProductCard from '../components/ui/ProductCard'
 import { Search, SlidersHorizontal, X } from 'lucide-react'
+import { getProducts, getCategories, resolveUploadUrl } from '../services/headerApi'
+
+// Adapts a raw `/api/public/products` row into the plain object ProductCard expects.
+function toCardProduct(row) {
+  const currentPrice = parseFloat(row.base_price)
+  const originalPrice = row.pharmacy_original_price !== null && row.pharmacy_original_price !== undefined
+    ? parseFloat(row.pharmacy_original_price)
+    : null
+  const hasDiscount = originalPrice !== null && !Number.isNaN(originalPrice) && originalPrice > currentPrice
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    brand: row.manufacturer_or_brand || '',
+    image: resolveUploadUrl(row.first_image) || '',
+    price: hasDiscount ? originalPrice : currentPrice,
+    salePrice: hasDiscount ? currentPrice : null,
+    rating: 0,
+    reviewCount: 0,
+  }
+}
+
+// Flattens the nested `/api/public/categories` tree into top-level entries
+// (each carrying its `children`) for the pill filters below.
+function flattenTopLevel(nested) {
+  return Array.isArray(nested) ? nested : []
+}
 
 const Shop = () => {
   const { category: categoryPathParam, subCategory: subCategoryPathParam } = useParams()
@@ -19,11 +45,46 @@ const Shop = () => {
   const [searchQuery, setSearchQuery] = useState('')
   const [sortBy, setSortBy] = useState('default')
   const [showFilters, setShowFilters] = useState(false)
+  const [categories, setCategories] = useState([])
+  const [products, setProducts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
 
   useEffect(() => {
     setSelectedCategory(categoryPathParam || 'all')
     setSearchQuery('')
   }, [categoryPathParam, subCategoryPathParam])
+
+  useEffect(() => {
+    getCategories().then(data => setCategories(flattenTopLevel(data))).catch(() => setCategories([]))
+  }, [])
+
+  useEffect(() => {
+    let cancelled = false
+    setLoading(true)
+    setError('')
+
+    const effectiveCategory = subCategoryParam || (selectedCategory !== 'all' ? selectedCategory : '')
+
+    getProducts({
+      category: effectiveCategory,
+      search: searchQuery,
+      deals: dealsParam ? '1' : '',
+      per_page: 200,
+    })
+      .then(data => {
+        if (cancelled) return
+        setProducts(Array.isArray(data?.data) ? data.data.map(toCardProduct) : [])
+      })
+      .catch(() => {
+        if (!cancelled) setError('Failed to load products.')
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false)
+      })
+
+    return () => { cancelled = true }
+  }, [selectedCategory, subCategoryParam, searchQuery, dealsParam])
 
   const activeLabel = dealsParam
     ? '🔥 Hot Deals'
@@ -33,24 +94,12 @@ const Shop = () => {
     ? `Sub-Category: ${subCategoryParam}`
     : null
 
-  const toSlug = str => str?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || ''
-
-  const filtered = products
-    .filter(p => selectedCategory === 'all' || p.category === selectedCategory)
-    .filter(p => !dealsParam || p.salePrice)
-    .filter(p => !subCategoryParam || toSlug(p.subCategory) === subCategoryParam)
-    .filter(p => !diseaseCategoryParam || toSlug(p.diseaseCategory) === diseaseCategoryParam)
-    .filter(p =>
-      searchQuery === '' ||
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.brand?.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      if (sortBy === 'price-low') return (a.salePrice ?? a.price) - (b.salePrice ?? b.price)
-      if (sortBy === 'price-high') return (b.salePrice ?? b.price) - (a.salePrice ?? a.price)
-      if (sortBy === 'rating') return b.rating - a.rating
-      return 0
-    })
+  const filtered = [...products].sort((a, b) => {
+    if (sortBy === 'price-low') return (a.salePrice ?? a.price) - (b.salePrice ?? b.price)
+    if (sortBy === 'price-high') return (b.salePrice ?? b.price) - (a.salePrice ?? a.price)
+    if (sortBy === 'rating') return b.rating - a.rating
+    return 0
+  })
 
   const activeCat = categories.find(c => c.slug === selectedCategory)
   const pageTitle = dealsParam
@@ -179,12 +228,24 @@ const Shop = () => {
       </div>
 
       {/* Results count */}
-      <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-5">
-        Showing <span className="font-semibold text-gray-700">{filtered.length}</span> products
-      </p>
+      {!loading && (
+        <p className="text-xs sm:text-sm text-gray-400 mb-4 sm:mb-5">
+          Showing <span className="font-semibold text-gray-700">{filtered.length}</span> products
+        </p>
+      )}
 
       {/* Product Grid */}
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-4">
+          {Array.from({ length: 10 }).map((_, i) => (
+            <div key={i} className="rounded-2xl border border-gray-100 bg-gray-50 animate-pulse aspect-[3/4]" />
+          ))}
+        </div>
+      ) : error ? (
+        <div className="text-center py-16 sm:py-20 text-gray-400">
+          <p className="font-medium">{error}</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16 sm:py-20 text-gray-400">
           <Search size={48} className="mx-auto mb-4 opacity-40" />
           <p className="font-medium">No products found</p>

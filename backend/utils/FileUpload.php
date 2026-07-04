@@ -8,7 +8,8 @@ use RuntimeException;
 
 final class FileUpload
 {
-    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg', 'mp4', 'webm', 'mov', 'avi', 'mkv', 'flv', 'm4v'];
+    private const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'webp', 'avif', 'svg', 'mp4', 'webm', 'mov', 'avi', 'mkv', 'flv', 'm4v', 'pdf', 'doc', 'docx'];
+    private const DOCUMENT_EXTENSIONS = ['pdf', 'doc', 'docx'];
     private const ALLOWED_MIME = [
         'image/jpeg',
         'image/pjpeg',
@@ -26,12 +27,17 @@ final class FileUpload
         'video/x-matroska',
         'video/x-flv',
         'video/mp4',
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/zip',
     ];
     private const MAX_SIZE = 104857600;
     private const ALLOWED_FOLDERS = [
         'misc',
         'hero',
         'products',
+        'documents',
         'blogs',
         'testimonials',
         'settings',
@@ -63,7 +69,7 @@ final class FileUpload
         $tmpPath = (string) ($file['tmp_name'] ?? '');
         $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
         if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
-            Response::error('Invalid file extension. Allowed: jpg, jpeg, png, webp, avif, svg, mp4, webm, mov, avi, mkv, flv, m4v', 422);
+            Response::error('Invalid file extension. Allowed: jpg, jpeg, png, webp, avif, svg, mp4, webm, mov, avi, mkv, flv, m4v, pdf, doc, docx', 422);
         }
 
         if ($tmpPath === '' || !is_file($tmpPath)) {
@@ -86,9 +92,11 @@ final class FileUpload
         }
 
         $isVideo = self::isVideoFile($ext);
-        $canConvertToWebp = !$isVideo && self::isWebpAvailable();
+        $isDocument = in_array($ext, self::DOCUMENT_EXTENSIONS, true);
+        $canConvertToWebp = !$isVideo && !$isDocument && self::isWebpAvailable();
         $targetExt = $canConvertToWebp ? 'webp' : $ext;
-        $newName = uniqid($isVideo ? 'vid_' : 'img_', true) . '.' . $targetExt;
+        $namePrefix = $isVideo ? 'vid_' : ($isDocument ? 'doc_' : 'img_');
+        $newName = uniqid($namePrefix, true) . '.' . $targetExt;
         $target = $dir . '/' . $newName;
         $actualMime = $canConvertToWebp ? 'image/webp' : $mime;
 

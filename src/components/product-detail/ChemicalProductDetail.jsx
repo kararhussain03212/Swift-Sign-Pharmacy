@@ -4,15 +4,20 @@ import { Heart, HelpCircle, Maximize2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
-import ProductCard from '../ui/ProductCard'
 import ProductDocuments from '../ProductDocuments'
+import RelatedProductsSlider from './RelatedProductsSlider'
+import { resolveUploadUrl } from '../../services/headerApi'
 
 // Adapts the API's grouped doc_group shape ({certificate, safety_data_sheet,
 // product_information, scientific_resource}) into the field names the
 // existing ProductDocuments component already expects, without touching it.
+// "#" is a seeded placeholder for demo rows with no real file — leave it as
+// a harmless no-op anchor instead of mangling it into a fake /uploads/ URL.
+const resolveDocUrl = (url) => (!url || url === '#') ? '#' : resolveUploadUrl(url)
+
 function toProductDocumentsShape(documents) {
-  const mapCert = (d) => ({ lotNumber: d.lot_number, type: d.certificate_type, date: d.document_date, catalogNumbers: d.catalog_numbers, url: d.file_url })
-  const mapSimple = (d) => ({ title: d.title, lastUpdated: d.document_date, url: d.file_url })
+  const mapCert = (d) => ({ lotNumber: d.lot_number, type: d.certificate_type, date: d.document_date, catalogNumbers: d.catalog_numbers, url: resolveDocUrl(d.file_url) })
+  const mapSimple = (d) => ({ title: d.title, lastUpdated: d.document_date, url: resolveDocUrl(d.file_url) })
 
   return {
     certificates: (documents.certificate || []).map(mapCert),
@@ -186,6 +191,12 @@ const ChemicalProductDetail = ({ product, related, youMayAlsoLike }) => {
                   <span className="font-medium text-gray-600">{product.form}</span>
                 </div>
               )}
+              {product.sku && (
+                <div>
+                  <span className="font-bold text-gray-900">SKU#: </span>
+                  <span className="font-medium text-gray-600">{product.sku}</span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 mb-3">
@@ -276,24 +287,10 @@ const ChemicalProductDetail = ({ product, related, youMayAlsoLike }) => {
         {chemical.documents && <ProductDocuments documents={toProductDocumentsShape(chemical.documents)} />}
 
         {/* You May Also Like */}
-        <div className="mt-12 sm:mt-16 border-t border-gray-100 pt-8 sm:pt-12">
-          <h2 className="font-heading font-extrabold text-gray-900 text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8">
-            You may also like...
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-            {youMayAlsoLike.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </div>
+        <RelatedProductsSlider title="You may also like..." products={youMayAlsoLike} />
 
         {/* Related Products */}
-        <div className="mt-12 sm:mt-16 border-t border-gray-100 pt-8 sm:pt-12">
-          <h2 className="font-heading font-extrabold text-gray-900 text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8">
-            Related products
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-            {related.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </div>
+        <RelatedProductsSlider title="Related products" products={related} />
       </div>
 
       <div className="md:hidden h-16" />

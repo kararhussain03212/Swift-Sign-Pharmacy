@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
-import { getProductBySlug, getRelatedProducts } from '../services/headerApi'
+import { getProductBySlug, getRelatedProducts, resolveUploadUrl } from '../services/headerApi'
 import PharmacyProductDetail from '../components/product-detail/PharmacyProductDetail'
 import ChemicalProductDetail from '../components/product-detail/ChemicalProductDetail'
 
@@ -43,9 +43,22 @@ const ProductDetail = () => {
           setNotFound(true)
           return
         }
-        setProduct(data)
+        const resolved = {
+          ...data,
+          images: (data.images || []).map(resolveUploadUrl),
+          chemical: data.chemical
+            ? { ...data.chemical, molecule_diagram_url: resolveUploadUrl(data.chemical.molecule_diagram_url) }
+            : data.chemical,
+        }
+        setProduct(resolved)
         const related = await getRelatedProducts(slug).catch(() => ({ related: [], youMayAlsoLike: [] }))
-        if (!cancelled) setRelatedData(related)
+        const resolveList = (list) => (list || []).map((p) => ({ ...p, image: resolveUploadUrl(p.image) }))
+        if (!cancelled) {
+          setRelatedData({
+            related: resolveList(related.related),
+            youMayAlsoLike: resolveList(related.youMayAlsoLike),
+          })
+        }
       })
       .catch(() => {
         if (!cancelled) setNotFound(true)

@@ -12,9 +12,7 @@ const NAV = [
   { path: "/header/hero-slides",      label: "Hero Banner" },
   { path: "/blogs",             label: "Blogs" },
   // Product module
-  { path: "/products", label: "Products", group: "products" },
-  { path: "/products",         label: "Product List", child: true, childGroup: "products" },
-  { path: "/settings/product", label: "Product Settings", child: true, childGroup: "products" },
+  { path: "/products",         label: "Product" },
   // Other Settings
   { path: "/settings/blog",     label: "Blog Page" },
   // Home Page module
@@ -55,6 +53,10 @@ const NAV = [
   { path: "/certifications/categories",   label: "Categories",   child: true, childGroup: "certifications" },
   { path: "/certifications/items",        label: "Certificates", child: true, childGroup: "certifications" },
   { path: "/certifications/trust-badges", label: "Trust Badges", child: true, childGroup: "certifications" },
+  // Prescription Orders
+  { path: "/prescription-orders", label: "Prescription Orders", group: "prescriptionOrders" },
+  { path: "/prescription-orders/submissions", label: "Submissions",  child: true, childGroup: "prescriptionOrders" },
+  { path: "/prescription-orders/content",     label: "Page Content", child: true, childGroup: "prescriptionOrders" },
 ];
 
 const PAGE_TITLES = {
@@ -62,7 +64,6 @@ const PAGE_TITLES = {
   "/dashboard":                      "Dashboard",
   "/products":                       "Products",
   "/products/new":                   "Add Product",
-  "/settings/product":               "Product Settings",
   "/commitment":                     "Commitment Items",
   "/commitment/new":                 "Add Commitment Item",
   "/blogs":                          "Blogs",
@@ -111,6 +112,8 @@ const PAGE_TITLES = {
   "/certifications/categories":      "Certifications — Categories",
   "/certifications/items":           "Certifications — Certificates",
   "/certifications/trust-badges":    "Certifications — Trust Badges",
+  "/prescription-orders/submissions": "Prescription Orders — Submissions",
+  "/prescription-orders/content":     "Prescription Orders — Page Content",
 };
 
 /* nav-link class helpers */
@@ -143,6 +146,7 @@ export default function Layout({ children }) {
   const [contactUsManual,   setContactUsManual]     = useState(false);
   const [footerManual,     setFooterManual]      = useState(false);
   const [certificationsManual, setCertificationsManual] = useState(false);
+  const [prescriptionOrdersManual, setPrescriptionOrdersManual] = useState(false);
   const [productsManual,   setProductsManual]    = useState(false);
   const [logoutOpen,       setLogoutOpen]        = useState(false);
   const [siteLogo,         setSiteLogo]          = useState(fallbackLogo);
@@ -169,6 +173,7 @@ export default function Layout({ children }) {
     || location.pathname.startsWith("/contact-messages");
   const footerOpen = footerManual || location.pathname.startsWith("/footer/");
   const certificationsOpen = certificationsManual || location.pathname.startsWith("/certifications/");
+  const prescriptionOrdersOpen = prescriptionOrdersManual || location.pathname.startsWith("/prescription-orders/");
   const productsOpen = productsManual || location.pathname.startsWith("/products") || location.pathname === "/settings/product";
 
   /* ── fetch logo from site settings once ── */
@@ -465,6 +470,33 @@ export default function Layout({ children }) {
                   {certificationsOpen && (
                     <div className="ml-3 mt-0.5 space-y-0.5">
                       {NAV.filter((e) => e.child && e.childGroup === "certifications").map((e) => (
+                        <Link
+                          key={e.path}
+                          to={e.path}
+                          onClick={closeSidebar}
+                          className={cls.child(location.pathname === e.path || location.pathname.startsWith(e.path + "/"))}
+                        >
+                          {e.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            }
+
+            /* Prescription Orders dropdown */
+            if (item.group === "prescriptionOrders") {
+              const active = location.pathname.startsWith("/prescription-orders/");
+              return (
+                <div key="prescription-orders-drop" className="mb-0.5">
+                  <button type="button" onClick={() => setPrescriptionOrdersManual((p) => !p)} className={cls.drop(active)}>
+                    <span>{item.label}</span>
+                    <span className={`pi ${prescriptionOrdersOpen ? "pi-chevron-up" : "pi-chevron-down"} text-[10px] opacity-60`} />
+                  </button>
+                  {prescriptionOrdersOpen && (
+                    <div className="ml-3 mt-0.5 space-y-0.5">
+                      {NAV.filter((e) => e.child && e.childGroup === "prescriptionOrders").map((e) => (
                         <Link
                           key={e.path}
                           to={e.path}

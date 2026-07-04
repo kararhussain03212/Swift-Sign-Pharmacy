@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import toast from 'react-hot-toast'
 import {
   Upload,
@@ -13,43 +13,76 @@ import {
   PhoneCall,
 } from 'lucide-react'
 import { contactInfo } from '../data/contactInfo'
+import { getPrescriptionPageContent, submitPrescriptionOrder } from '../services/headerApi'
 
-/* ── Step data ─────────────────────────────────── */
-const STEPS = [
-  {
-    icon: <Upload size={28} strokeWidth={1.8} />,
-    label: 'Upload a valid prescription',
-  },
-  {
-    icon: <Phone size={28} strokeWidth={1.8} />,
-    label: 'Receive a confirmation call',
-  },
-  {
-    icon: <PackageCheck size={28} strokeWidth={1.8} />,
-    label: 'Get medicines at your doorstep',
-  },
+/* ── Icon lookup for admin-configured process steps ────────────── */
+const STEP_ICONS = {
+  upload: Upload,
+  phone: Phone,
+  package: PackageCheck,
+}
+
+/* ── Fallback copy shown while content loads / on fetch failure ── */
+const FALLBACK_CONTENT = {
+  hero_badge_text: 'ASAAN ORDER',
+  hero_heading: 'Order Medicines Using Prescription',
+  hero_subheading:
+    "Simply upload your doctor's prescription and let our pharmacy team prepare your order — delivered right to your door.",
+  upload_badge_text: 'UPLOAD PRESCRIPTION',
+  upload_heading: 'Upload Prescription',
+  upload_subtext: 'To place an order please upload a picture of your prescription.',
+  dropzone_instruction_text: 'Drag & drop your prescription here',
+  dropzone_hint_text: 'or click to browse — JPG, PNG, PDF · Max 10 MB',
+  howto_heading: 'How to upload your prescription?',
+  sample_section_heading: 'Sample Valid Prescription',
+  help_heading: 'Need help?',
+  help_subtext: 'Call us for prescription assistance',
+  help_phone_number: contactInfo.phone,
+  max_file_size_mb: 10,
+  allowed_file_types: 'jpg,jpeg,png,pdf',
+}
+
+const FALLBACK_STEPS = [
+  { id: 1, icon_key: 'upload', label: 'Upload a valid prescription' },
+  { id: 2, icon_key: 'phone', label: 'Receive a confirmation call' },
+  { id: 3, icon_key: 'package', label: 'Get medicines at your doorstep' },
 ]
 
-/* ── Prescription tips ─────────────────────────── */
-const TIPS = [
-  'Do not crop out any part of the prescription image.',
-  'Avoid unclear or blurred images of your prescription.',
-  'Include details of your doctor, patient, and clinic visit date.',
-  'Medicines will only be dispensed against a valid prescription.',
+const FALLBACK_TIPS = [
+  { id: 1, instruction_text: 'Do not crop out any part of the prescription image.' },
+  { id: 2, instruction_text: 'Avoid unclear or blurred images of your prescription.' },
+  { id: 3, instruction_text: 'Include details of your doctor, patient, and clinic visit date.' },
+  { id: 4, instruction_text: 'Medicines will only be dispensed against a valid prescription.' },
 ]
 
-/* ── Prescription label annotations ────────────── */
-const LABELS = [
-  { label: "Doctor's details", pos: { top: '12%', left: '-10%' } },
-  { label: "Patient's details", pos: { top: '12%', right: '-12%' } },
-  { label: 'Medicine details', pos: { bottom: '6%', left: '-10%' } },
-  { label: "Doctor's sign + stamp", pos: { bottom: '6%', right: '-14%' } },
-]
+const FALLBACK_SAMPLE = {
+  doctor_name_sample: 'Dr. Nowruz, MBBS',
+  clinic_name_label: 'Name of Hospital / Clinic',
+  clinic_address_label: 'Address of Hospital / Clinic',
+  clinic_phone_label: 'Phone No.',
+  consultation_date_label: 'Date of consultation',
+  patient_name_label: 'Name of Patient',
+  patient_age_label: 'Age',
+  sample_medicine_name: 'Sitagliptin',
+  sample_medicine_strength: '10mg',
+  sample_medicine_dose: '1-0-1',
+  sample_medicine_duration: '6 months',
+  signature_sample_name: 'Dr. M. Ali',
+  annotation_doctor_details_label: "Doctor's details",
+  annotation_patient_details_label: "Patient's details",
+  annotation_medicine_details_label: 'Medicine details',
+  annotation_signature_label: "Doctor's sign + stamp",
+}
 
 /* ══════════════════════════════════════════════════
    AsaanOrder page
 ══════════════════════════════════════════════════ */
 const AsaanOrder = () => {
+  const [content, setContent] = useState(FALLBACK_CONTENT)
+  const [steps, setSteps] = useState(FALLBACK_STEPS)
+  const [tips, setTips] = useState(FALLBACK_TIPS)
+  const [sample, setSample] = useState(FALLBACK_SAMPLE)
+
   const [file, setFile]           = useState(null)
   const [preview, setPreview]     = useState(null)
   const [dragging, setDragging]   = useState(false)
@@ -60,19 +93,44 @@ const AsaanOrder = () => {
   const [loading, setLoading]     = useState(false)
   const inputRef = useRef()
 
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const data = await getPrescriptionPageContent()
+        if (cancelled) return
+        if (data?.content) setContent((prev) => ({ ...prev, ...data.content }))
+        if (Array.isArray(data?.process_steps) && data.process_steps.length) setSteps(data.process_steps)
+        if (Array.isArray(data?.howto_instructions) && data.howto_instructions.length) setTips(data.howto_instructions)
+        if (data?.sample_illustration) setSample((prev) => ({ ...prev, ...data.sample_illustration }))
+      } catch {
+        /* fall back to static copy defined above */
+      }
+    })()
+    return () => { cancelled = true }
+  }, [])
+
+  const allowedExtensions = (content.allowed_file_types || 'jpg,jpeg,png,pdf')
+    .split(',')
+    .map((ext) => ext.trim().toLowerCase())
+    .filter(Boolean)
+  const maxSizeMb = Number(content.max_file_size_mb) || 10
+
   /* ── file handling ── */
   const acceptFile = (f) => {
     if (!f) return
-    if (!f.type.startsWith('image/')) {
-      toast.error('Please upload an image file (JPG, PNG, etc.)')
+    const ext = f.name.split('.').pop()?.toLowerCase() || ''
+    if (!allowedExtensions.includes(ext)) {
+      toast.error(`Unsupported file type. Allowed: ${allowedExtensions.join(', ').toUpperCase()}`)
       return
     }
-    if (f.size > 10 * 1024 * 1024) {
-      toast.error('File size must be less than 10 MB.')
+    if (f.size > maxSizeMb * 1024 * 1024) {
+      toast.error(`File size must be less than ${maxSizeMb} MB.`)
       return
     }
     setFile(f)
-    setPreview(URL.createObjectURL(f))
+    setErrors((p) => ({ ...p, file: '' }))
+    setPreview(f.type.startsWith('image/') ? URL.createObjectURL(f) : null)
   }
 
   const handleDrop = (e) => {
@@ -107,24 +165,18 @@ const AsaanOrder = () => {
 
     try {
       const formData = new FormData()
-      formData.append('name',         name.trim())
-      formData.append('phone',        phone.trim())
-      formData.append('prescription', file)
+      formData.append('customer_name', name.trim())
+      formData.append('phone_number',  phone.trim())
+      formData.append('file',          file)
 
-      const res  = await fetch('/api/send-prescription.php', {
-        method: 'POST',
-        body:   formData,
-      })
-      const data = await res.json()
-
-      if (data.success) {
-        setSubmitted(true)
-        toast.success('Prescription sent! Our team will contact you shortly. 🎉', { duration: 5000 })
-      } else {
-        toast.error(data.message || 'Something went wrong. Please try again.')
-      }
+      await submitPrescriptionOrder(formData)
+      setSubmitted(true)
+      toast.success('Prescription sent! Our team will contact you shortly. 🎉', { duration: 5000 })
     } catch (err) {
-      toast.error('Network error. Please check your connection and try again.')
+      if (err.fields) {
+        setErrors(err.fields)
+      }
+      toast.error(err.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -181,19 +233,17 @@ const AsaanOrder = () => {
           <span
             className="inline-flex items-center gap-2 mb-4 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-[12px] font-bold tracking-widest text-white uppercase backdrop-blur-sm"
           >
-            <Upload size={13} /> Asaan Order
+            <Upload size={13} /> {content.hero_badge_text}
           </span>
 
           <h1
             className="font-extrabold text-white mb-3"
             style={{ fontSize: 'clamp(26px, 5vw, 46px)', lineHeight: 1.15 }}
           >
-            Order Medicines Using{' '}
-            <span style={{ color: '#EAFBFC' }}>Prescription</span>
+            {content.hero_heading}
           </h1>
           <p className="text-white/60 max-w-lg mx-auto text-[15px] leading-relaxed">
-            Simply upload your doctor's prescription and let our pharmacy team prepare
-            your order — delivered right to your door.
+            {content.hero_subheading}
           </p>
         </div>
       </section>
@@ -207,23 +257,26 @@ const AsaanOrder = () => {
             {/* Background line for desktop */}
             <div className="hidden sm:block absolute top-8 left-[16.66%] right-[16.66%] h-px bg-gray-200 z-0" />
 
-            {STEPS.map((step, i) => (
-              <div key={i} className="flex flex-col items-center text-center gap-4 group relative z-10">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
-                  style={{
-                    background: 'linear-gradient(135deg,#0FAFB8,#073B45)',
-                    color: '#fff',
-                    boxShadow: '0 4px 16px rgba(26,158,110,0.35)',
-                  }}
-                >
-                  {step.icon}
+            {steps.map((step) => {
+              const StepIcon = STEP_ICONS[step.icon_key] || Upload
+              return (
+                <div key={step.id} className="flex flex-col items-center text-center gap-4 group relative z-10">
+                  <div
+                    className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
+                    style={{
+                      background: 'linear-gradient(135deg,#0FAFB8,#073B45)',
+                      color: '#fff',
+                      boxShadow: '0 4px 16px rgba(26,158,110,0.35)',
+                    }}
+                  >
+                    <StepIcon size={28} strokeWidth={1.8} />
+                  </div>
+                  <p className="text-[14px] font-semibold text-gray-700 max-w-[160px] leading-snug">
+                    {step.label}
+                  </p>
                 </div>
-                <p className="text-[14px] font-semibold text-gray-700 max-w-[160px] leading-snug">
-                  {step.label}
-                </p>
-              </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </div>
@@ -238,13 +291,13 @@ const AsaanOrder = () => {
             {/* header */}
             <div className="mb-6">
               <span className="inline-flex items-center gap-2 text-[12px] font-bold text-primary bg-primary-light px-3 py-1.5 rounded-full mb-3">
-                <FileImage size={13} /> UPLOAD PRESCRIPTION
+                <FileImage size={13} /> {content.upload_badge_text}
               </span>
               <h2 className="font-extrabold text-gray-900 text-[22px] mb-1">
-                Upload Prescription
+                {content.upload_heading}
               </h2>
               <p className="text-gray-500 text-[14px]">
-                To place an order please upload a picture of your prescription.
+                {content.upload_subtext}
               </p>
             </div>
 
@@ -257,8 +310,8 @@ const AsaanOrder = () => {
                 </div>
                 <h3 className="font-bold text-gray-900 text-xl mb-2">Order Received! 🎉</h3>
                 <p className="text-gray-500 text-[14px] max-w-sm">
-                  Your prescription has been sent to our pharmacy team. We will review it and call you on{' '}
-                  <span className="font-semibold text-gray-900">{phone}</span> to confirm your order.
+                  We've received your prescription — expect a confirmation call shortly on{' '}
+                  <span className="font-semibold text-gray-900">{phone}</span>.
                 </p>
 
                 <div className="mt-5 w-full max-w-sm rounded-2xl border border-green-200 bg-green-50 p-4 text-left flex gap-3">
@@ -291,15 +344,22 @@ const AsaanOrder = () => {
                     minHeight: '220px',
                   }}
                 >
-                  {preview ? (
+                  {file ? (
                     /* ── preview ── */
                     <div className="relative w-full h-full">
-                      <img
-                        src={preview}
-                        alt="Prescription preview"
-                        className="w-full object-contain rounded-xl"
-                        style={{ maxHeight: '300px' }}
-                      />
+                      {preview ? (
+                        <img
+                          src={preview}
+                          alt="Prescription preview"
+                          className="w-full object-contain rounded-xl"
+                          style={{ maxHeight: '300px' }}
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center gap-2 py-16">
+                          <FileImage size={40} className="text-primary" />
+                          <p className="text-[13px] text-gray-600">{file.name}</p>
+                        </div>
+                      )}
                       <button
                         onClick={(e) => { e.stopPropagation(); removeFile() }}
                         className="absolute top-2 right-2 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center hover:bg-red-600 transition-colors shadow"
@@ -324,10 +384,10 @@ const AsaanOrder = () => {
                       </div>
                       <div className="text-center">
                         <p className="text-[14px] font-semibold text-gray-700">
-                          Drag & drop your prescription here
+                          {content.dropzone_instruction_text}
                         </p>
                         <p className="text-[12px] text-gray-400 mt-1">
-                          or click to browse — JPG, PNG, PDF · Max 10 MB
+                          {content.dropzone_hint_text}
                         </p>
                       </div>
                       <button
@@ -349,7 +409,7 @@ const AsaanOrder = () => {
                 <input
                   ref={inputRef}
                   type="file"
-                  accept="image/*,.pdf"
+                  accept={allowedExtensions.map((ext) => `.${ext}`).join(',')}
                   className="hidden"
                   onChange={(e) => acceptFile(e.target.files[0])}
                 />
@@ -447,20 +507,20 @@ const AsaanOrder = () => {
             {/* Tips card */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-md p-6">
               <h3 className="font-bold text-gray-900 text-[17px] mb-1">
-                HOW TO UPLOAD YOUR PRESCRIPTION?
+                {(content.howto_heading || '').toUpperCase()}
               </h3>
               <div className="h-0.5 rounded-full mb-4" style={{ background: 'linear-gradient(90deg,#0FAFB8,transparent)' }} />
 
               <ul className="space-y-3">
-                {TIPS.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-3 text-[13px] text-gray-600 leading-relaxed">
+                {tips.map((tip, i) => (
+                  <li key={tip.id ?? i} className="flex items-start gap-3 text-[13px] text-gray-600 leading-relaxed">
                     <div
                       className="w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center mt-0.5 text-white text-[10px] font-bold"
                       style={{ background: '#0FAFB8' }}
                     >
                       {i + 1}
                     </div>
-                    <span>{tip}</span>
+                    <span>{tip.instruction_text}</span>
                   </li>
                 ))}
               </ul>
@@ -469,60 +529,73 @@ const AsaanOrder = () => {
             {/* Sample prescription visual */}
             <div className="bg-white rounded-3xl border border-gray-100 shadow-md p-6">
               <h4 className="font-semibold text-gray-700 text-[13px] mb-4 text-center uppercase tracking-wide">
-                Sample Valid Prescription
+                {content.sample_section_heading}
               </h4>
 
               {/* Mock prescription slip */}
               <div className="relative mx-auto" style={{ maxWidth: 280 }}>
+
+                {/* SAMPLE watermark — this is a fictional teaching graphic, never a real upload */}
+                <div
+                  className="pointer-events-none absolute inset-0 flex items-center justify-center z-10"
+                  style={{ transform: 'rotate(-18deg)' }}
+                >
+                  <span
+                    className="font-extrabold uppercase tracking-widest"
+                    style={{ fontSize: 34, color: 'rgba(15,175,184,0.14)', whiteSpace: 'nowrap' }}
+                  >
+                    Sample
+                  </span>
+                </div>
 
                 {/* Label connectors (desktop) */}
                 <div className="hidden sm:block">
                   {/* top-left */}
                   <div className="absolute text-[10px] font-bold text-red-500 flex items-center gap-1"
                     style={{ top: '8%', left: '-8px', transform: 'translateX(-100%)' }}>
-                    <span style={{ whiteSpace: 'nowrap' }}>Doctor's details</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{sample.annotation_doctor_details_label}</span>
                     <div style={{ width: 24, height: 1, background: '#EF4444' }} />
                   </div>
                   {/* top-right */}
                   <div className="absolute text-[10px] font-bold text-red-500 flex items-center gap-1"
                     style={{ top: '8%', right: '-8px', transform: 'translateX(100%)' }}>
                     <div style={{ width: 24, height: 1, background: '#EF4444' }} />
-                    <span style={{ whiteSpace: 'nowrap' }}>Patient's details</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{sample.annotation_patient_details_label}</span>
                   </div>
                   {/* bottom-left */}
                   <div className="absolute text-[10px] font-bold text-red-500 flex items-center gap-1"
                     style={{ bottom: '8%', left: '-8px', transform: 'translateX(-100%)' }}>
-                    <span style={{ whiteSpace: 'nowrap' }}>Medicine details</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{sample.annotation_medicine_details_label}</span>
                     <div style={{ width: 24, height: 1, background: '#EF4444' }} />
                   </div>
                   {/* bottom-right */}
                   <div className="absolute text-[10px] font-bold text-red-500 flex items-center gap-1"
                     style={{ bottom: '8%', right: '-8px', transform: 'translateX(100%)' }}>
                     <div style={{ width: 24, height: 1, background: '#EF4444' }} />
-                    <span style={{ whiteSpace: 'nowrap' }}>Doctor's sign + stamp</span>
+                    <span style={{ whiteSpace: 'nowrap' }}>{sample.annotation_signature_label}</span>
                   </div>
                 </div>
 
                 {/* The prescription paper */}
                 <div
-                  className="border border-gray-300 rounded-lg p-4 text-[10px] text-gray-700 font-mono"
+                  className="border border-gray-300 rounded-lg p-4 text-[10px] text-gray-700 font-mono opacity-90"
                   style={{ background: '#FFFDF7', boxShadow: '2px 3px 12px rgba(0,0,0,0.08)' }}
                 >
                   {/* Doctor header */}
                   <div className="border-b border-dashed border-gray-300 pb-2 mb-3">
-                    <p className="font-bold text-[11px] text-gray-900">DR. Nowruz , MBBS</p>
-                    <p className="text-gray-500">Name of Hospital / Clinic</p>
-                    <p className="text-gray-500">Address of Hospital / Clinic</p>
-                    <p className="text-gray-500">Phone No.</p>
+                    <p className="font-bold text-[11px] text-gray-900">{sample.doctor_name_sample}</p>
+                    <p className="text-gray-500">{sample.clinic_name_label}</p>
+                    <p className="text-gray-500">{sample.clinic_address_label}</p>
+                    <p className="text-gray-500">{sample.clinic_phone_label}</p>
                   </div>
 
                   {/* Patient info */}
                   <div className="flex justify-between mb-1 text-gray-500">
-                    <span>Date of consultation: ___</span>
+                    <span>{sample.consultation_date_label}: ___</span>
                   </div>
                   <div className="flex gap-6 mb-3 text-gray-500">
-                    <span>Name of Patient: ___</span>
-                    <span>Age: __</span>
+                    <span>{sample.patient_name_label}: ___</span>
+                    <span>{sample.patient_age_label}: __</span>
                   </div>
 
                   {/* Medicine table */}
@@ -536,10 +609,10 @@ const AsaanOrder = () => {
                     </thead>
                     <tbody>
                       <tr>
-                        <td className="border border-gray-300 px-1 py-0.5">Sitagliptin</td>
-                        <td className="border border-gray-300 px-1 py-0.5">10mg</td>
-                        <td className="border border-gray-300 px-1 py-0.5">1-0-1</td>
-                        <td className="border border-gray-300 px-1 py-0.5">6 months</td>
+                        <td className="border border-gray-300 px-1 py-0.5">{sample.sample_medicine_name}</td>
+                        <td className="border border-gray-300 px-1 py-0.5">{sample.sample_medicine_strength}</td>
+                        <td className="border border-gray-300 px-1 py-0.5">{sample.sample_medicine_dose}</td>
+                        <td className="border border-gray-300 px-1 py-0.5">{sample.sample_medicine_duration}</td>
                       </tr>
                       <tr>
                         <td className="border border-gray-300 px-1 py-0.5"></td>
@@ -567,34 +640,34 @@ const AsaanOrder = () => {
                           paddingBottom: 2,
                         }}
                       >
-                        Dr. M. Ali
+                        {sample.signature_sample_name}
                       </div>
                     </div>
                   </div>
 
                   {/* Red corner annotations on mobile */}
                   <div className="flex justify-between mt-3 sm:hidden">
-                    <span className="text-red-500 font-bold text-[8px]">Medicine details</span>
-                    <span className="text-red-500 font-bold text-[8px]">Doctor's sign + stamp</span>
+                    <span className="text-red-500 font-bold text-[8px]">{sample.annotation_medicine_details_label}</span>
+                    <span className="text-red-500 font-bold text-[8px]">{sample.annotation_signature_label}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* WhatsApp / call CTA */}
+            {/* Help / call CTA */}
             <div
               className="rounded-2xl p-5 flex items-center justify-between"
               style={{ background: 'linear-gradient(135deg,#073B45,#0FAFB8)', color: '#fff' }}
             >
               <div>
-                <p className="font-bold text-[15px]">Need help?</p>
-                <p className="text-white/70 text-[12px] mt-0.5">Call us for prescription assistance</p>
+                <p className="font-bold text-[15px]">{content.help_heading}</p>
+                <p className="text-white/70 text-[12px] mt-0.5">{content.help_subtext}</p>
               </div>
               <a
-                href="tel:0518447077"
+                href={`tel:${(content.help_phone_number || '').replace(/[^0-9+]/g, '')}`}
                 className="flex items-center gap-2 bg-white text-primary font-bold text-[13px] px-4 py-2.5 rounded-xl transition-all hover:bg-primary-light hover:shadow"
               >
-                <Phone size={15} /> 051-8447077
+                <Phone size={15} /> {content.help_phone_number}
               </a>
             </div>
 

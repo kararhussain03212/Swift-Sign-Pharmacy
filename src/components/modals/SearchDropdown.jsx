@@ -1,15 +1,45 @@
-import { products } from '../../data/products'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Search } from 'lucide-react'
+import { getProducts, resolveUploadUrl } from '../../services/headerApi'
+
+function toResultProduct(row) {
+  const currentPrice = parseFloat(row.base_price)
+  const originalPrice = row.pharmacy_original_price !== null && row.pharmacy_original_price !== undefined
+    ? parseFloat(row.pharmacy_original_price)
+    : null
+  const hasDiscount = originalPrice !== null && !Number.isNaN(originalPrice) && originalPrice > currentPrice
+
+  return {
+    id: row.id,
+    slug: row.slug,
+    name: row.name,
+    brand: row.manufacturer_or_brand || '',
+    image: resolveUploadUrl(row.first_image) || '',
+    price: hasDiscount ? originalPrice : currentPrice,
+    salePrice: hasDiscount ? currentPrice : null,
+  }
+}
 
 const SearchDropdown = ({ query }) => {
-  const results = products
-    .filter(p =>
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.brand.toLowerCase().includes(query.toLowerCase()) ||
-      p.category.toLowerCase().includes(query.toLowerCase())
-    )
-    .slice(0, 6)
+  const [results, setResults] = useState([])
+
+  useEffect(() => {
+    if (!query || query.trim() === '') {
+      setResults([])
+      return
+    }
+    let cancelled = false
+    const timer = setTimeout(() => {
+      getProducts({ search: query, per_page: 6 })
+        .then(data => {
+          if (cancelled) return
+          setResults(Array.isArray(data?.data) ? data.data.map(toResultProduct) : [])
+        })
+        .catch(() => { if (!cancelled) setResults([]) })
+    }, 250)
+    return () => { cancelled = true; clearTimeout(timer) }
+  }, [query])
 
   if (results.length === 0) {
     return (

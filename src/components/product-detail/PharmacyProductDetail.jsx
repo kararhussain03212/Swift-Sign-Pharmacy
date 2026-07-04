@@ -4,7 +4,7 @@ import { Heart, Star, HelpCircle, Maximize2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import useCartStore from '../../store/cartStore'
 import useWishlistStore from '../../store/wishlistStore'
-import ProductCard from '../ui/ProductCard'
+import RelatedProductsSlider from './RelatedProductsSlider'
 
 const PharmacyProductDetail = ({ product, related, youMayAlsoLike }) => {
   const navigate = useNavigate()
@@ -226,24 +226,10 @@ const PharmacyProductDetail = ({ product, related, youMayAlsoLike }) => {
         </div>
 
         {/* You May Also Like */}
-        <div className="mt-12 sm:mt-16 border-t border-gray-100 pt-8 sm:pt-12">
-          <h2 className="font-heading font-extrabold text-gray-900 text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8">
-            You may also like...
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-            {youMayAlsoLike.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </div>
+        <RelatedProductsSlider title="You may also like..." products={youMayAlsoLike} />
 
         {/* Related Products */}
-        <div className="mt-12 sm:mt-16 border-t border-gray-100 pt-8 sm:pt-12">
-          <h2 className="font-heading font-extrabold text-gray-900 text-xl sm:text-2xl md:text-3xl mb-6 sm:mb-8">
-            Related products
-          </h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-6">
-            {related.map(p => <ProductCard key={p.id} product={p} />)}
-          </div>
-        </div>
+        <RelatedProductsSlider title="Related products" products={related} />
       </div>
 
       <div className="md:hidden h-16" />

@@ -63,6 +63,14 @@ export const getHomepageProductSliders = () => getJson('/public/homepage/product
 
 export const getFooterData = () => getJson('/public/footer')
 
+export async function getProducts(params = {}) {
+  const cleaned = Object.fromEntries(
+    Object.entries(params).filter(([, v]) => v !== undefined && v !== null && v !== '')
+  )
+  const search = new URLSearchParams(cleaned).toString()
+  return getJson(`/public/products${search ? `?${search}` : ''}`)
+}
+
 export async function getProductBySlug(slug) {
   const res = await fetch(`${getApiBase()}/public/products/${encodeURIComponent(slug)}`)
   if (res.status === 404) return null
@@ -84,6 +92,22 @@ export const getStoreBranches = (area) => getJson(`/public/store-locator/branche
 export const getStoreNetworkStats = () => getJson('/public/store-locator/stats')
 export const getStoreLocatorContent = () => getJson('/public/store-locator/content')
 export const getStoreGallery = () => getJson('/public/store-locator/gallery')
+
+export const getPrescriptionPageContent = () => getJson('/public/prescription/page-content')
+
+export async function submitPrescriptionOrder(formData) {
+  const res = await fetch(`${getApiBase()}/public/prescription/submit`, {
+    method: 'POST',
+    body: formData,
+  })
+  const json = await res.json().catch(() => ({}))
+  if (!res.ok || !json.success) {
+    const error = new Error(json.error || `Request failed: ${res.status}`)
+    error.fields = json.fields
+    throw error
+  }
+  return json.data
+}
 
 export async function getStoreBranchBySlug(slug) {
   const res = await fetch(`${getApiBase()}/public/store-locator/branches/${encodeURIComponent(slug)}`)
@@ -109,5 +133,10 @@ export const resolveUploadUrl = (path) => {
   if (!path) return ''
   if (/^https?:\/\//i.test(path)) return path
   const root = getApiBase().replace(/\/api$/i, '')
-  return path.startsWith('/') ? `${root}${path}` : `${root}/uploads/${path}`
+  // Only rewrite paths that actually live in the backend's uploads folder.
+  // Everything else (e.g. static demo assets like /jellybee_gummies.png)
+  // is served by the frontend itself and must stay relative to it.
+  if (path.startsWith('/uploads/')) return `${root}${path}`
+  if (!path.startsWith('/') && !path.includes('/')) return `${root}/uploads/${path}`
+  return path
 }

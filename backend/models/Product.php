@@ -103,24 +103,48 @@ final class Product extends BaseModel
         return $stmt->fetchAll() ?: [];
     }
 
-    /** Other active products from the same manufacturer/brand, excluding the given product. */
-    public function relatedByManufacturer(string $manufacturer, int $excludeProductId, int $limit = 8): array
+    /**
+     * Other active products from the same parent category (e.g. other Vitamins
+     * products in general, not just the same subcategory), excluding the given
+     * product and its own exact subcategory so this doesn't just duplicate
+     * relatedByCategory()'s results.
+     */
+    public function relatedByParentCategory(int $categoryId, int $excludeProductId, int $limit = 8): array
     {
-        if (trim($manufacturer) === '') {
+        $parentStmt = $this->pdo->prepare('SELECT COALESCE(parent_id, id) AS pid FROM categories WHERE id = :cat LIMIT 1');
+        $parentStmt->execute([':cat' => $categoryId]);
+        $parentRow = $parentStmt->fetch();
+        if (!$parentRow) {
             return [];
         }
+        $parentId = (int) $parentRow['pid'];
 
-        $stmt = $this->pdo->prepare(
-            'SELECT p.*, img.image_url AS first_image
+        // Only dedupe against the product's own subcategory when that subcategory
+        // is a distinct leaf under the parent — if the product sits directly in the
+        // parent category itself, excluding "its own category" would wrongly drop
+        // every other direct sibling too.
+        $excludeOwnCategory = $categoryId !== $parentId;
+
+        $sql = 'SELECT p.*, img.image_url AS first_image
              FROM ' . $this->table . ' p
              LEFT JOIN (SELECT product_id, MIN(sort_order) AS min_sort FROM product_images GROUP BY product_id) fi ON fi.product_id = p.id
              LEFT JOIN product_images img ON img.product_id = fi.product_id AND img.sort_order = fi.min_sort
-             WHERE p.is_active = 1 AND p.manufacturer_or_brand = :brand AND p.id != :exclude
+             WHERE p.is_active = 1
+               AND p.id != :exclude'
+            . ($excludeOwnCategory ? ' AND p.category_id != :own_cat' : '') . '
+               AND p.category_id IN (
+                   SELECT id FROM categories WHERE id = :parent1 OR parent_id = :parent2
+               )
              ORDER BY p.created_at DESC, p.id DESC
-             LIMIT :limit'
-        );
-        $stmt->bindValue(':brand', $manufacturer);
+             LIMIT :limit';
+
+        $stmt = $this->pdo->prepare($sql);
         $stmt->bindValue(':exclude', $excludeProductId, \PDO::PARAM_INT);
+        if ($excludeOwnCategory) {
+            $stmt->bindValue(':own_cat', $categoryId, \PDO::PARAM_INT);
+        }
+        $stmt->bindValue(':parent1', $parentId, \PDO::PARAM_INT);
+        $stmt->bindValue(':parent2', $parentId, \PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
 
