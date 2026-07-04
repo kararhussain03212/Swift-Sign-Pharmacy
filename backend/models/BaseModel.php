@@ -119,8 +119,13 @@ abstract class BaseModel
     public function create(array $data): int
     {
         $payload = $this->sanitizeFillable($data);
-        $payload['created_at'] = date('Y-m-d H:i:s');
-        $payload['updated_at'] = date('Y-m-d H:i:s');
+        $existingColumns = $this->getExistingColumns();
+        if (in_array('created_at', $existingColumns, true)) {
+            $payload['created_at'] = date('Y-m-d H:i:s');
+        }
+        if (in_array('updated_at', $existingColumns, true)) {
+            $payload['updated_at'] = date('Y-m-d H:i:s');
+        }
 
         $columns = array_keys($payload);
         $placeholders = array_map(static fn (string $k): string => ':' . $k, $columns);
@@ -145,7 +150,9 @@ abstract class BaseModel
             return false;
         }
 
-        $payload['updated_at'] = date('Y-m-d H:i:s');
+        if (in_array('updated_at', $this->getExistingColumns(), true)) {
+            $payload['updated_at'] = date('Y-m-d H:i:s');
+        }
 
         $set = [];
         foreach ($payload as $column => $value) {

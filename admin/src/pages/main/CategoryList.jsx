@@ -26,13 +26,13 @@ export default function CategoryList() {
   const [error, setError] = useState("");
   const [expandedIds, setExpandedIds] = useState(new Set());
   const [editingId, setEditingId] = useState(null);
+  const [addingSubcategoryFor, setAddingSubcategoryFor] = useState(null);
   const [draft, setDraft] = useState(blankDraft());
   const [saving, setSaving] = useState(false);
 
   const canAdd = hasPermission(user, "create_content");
   const canEdit = hasPermission(user, "edit_content");
   const canDelete = hasPermission(user, "delete_content");
-  const canPublish = hasPermission(user, "publish_content");
 
   const load = async () => {
     try {
@@ -70,7 +70,11 @@ export default function CategoryList() {
 
   const startAdd = (parentId = null) => {
     setError("");
-    setEditingId("new");
+    if (parentId) {
+      setAddingSubcategoryFor(parentId);
+    } else {
+      setEditingId("new");
+    }
     setDraft({ ...blankDraft(), parent_id: parentId || "" });
   };
 
@@ -89,6 +93,7 @@ export default function CategoryList() {
 
   const cancelEdit = () => {
     setEditingId(null);
+    setAddingSubcategoryFor(null);
     setDraft(blankDraft());
   };
 
@@ -107,7 +112,7 @@ export default function CategoryList() {
         is_active: draft.is_active ? 1 : 0,
       };
 
-      if (editingId === "new") {
+      if (editingId === "new" || addingSubcategoryFor) {
         await createCategory(payload);
       } else {
         await updateCategory(editingId, payload);
@@ -123,12 +128,12 @@ export default function CategoryList() {
   };
 
   const handleToggleActive = async (item) => {
-    if (!canPublish) return;
+    if (!canEdit) return;
     try {
       await updateCategory(item.id, { is_active: item.is_active ? 0 : 1 });
       load();
-    } catch {
-      setError("Failed to update status.");
+    } catch (err) {
+      setError(extractErrorMessage(err, "Failed to update status."));
     }
   };
 
@@ -152,7 +157,7 @@ export default function CategoryList() {
     "w-full rounded-lg border border-[var(--arion-border)] bg-[var(--arion-card-solid)] px-3 py-2 text-sm text-[var(--arion-ink)] focus:border-[var(--arion-cyan)] focus:outline-none";
 
   const renderCategory = (item, isNew = false) => {
-    const isEditing = editingId === item.id;
+    const isEditing = editingId === item.id || isNew;
     const hasChildren = item.children && item.children.length > 0;
     const isExpanded = expandedIds.has(item.id);
 
@@ -251,31 +256,43 @@ export default function CategoryList() {
                     onClick={() => toggleExpand(item.id)}
                     className="text-[var(--arion-muted)] hover:text-[var(--arion-cyan)]"
                   >
-                    <ChevronDown size={18} style={{ transform: isExpanded ? "rotate(0)" : "rotate(-90deg)", transition: "transform 200ms" }} />
+                    <ChevronDown
+                      size={18}
+                      style={{
+                        transform: isExpanded ? "rotate(0)" : "rotate(-90deg)",
+                        transition: "transform 200ms",
+                      }}
+                    />
                   </button>
                 )}
                 {!hasChildren && <div className="w-6" />}
                 <div className="min-w-0">
-                  <div className="font-semibold text-[var(--arion-ink)]">{item.name}</div>
-                  <div className="text-xs text-[var(--arion-muted)]">{item.slug}</div>
+                  <div className="font-semibold text-[var(--arion-ink)]">
+                    {item.name}
+                  </div>
+                  <div className="text-xs text-[var(--arion-muted)]">
+                    {item.slug}
+                  </div>
                 </div>
               </div>
             </div>
 
             <div className="flex items-center gap-2 flex-shrink-0">
-              {item.is_active && (
-                <button
-                  onClick={() => handleToggleActive(item)}
-                  disabled={!canPublish || editingId !== null}
-                  className="rounded-lg bg-green-600 px-4 py-2 text-sm font-semibold text-white hover:bg-green-700 disabled:opacity-60"
-                >
-                  Published
-                </button>
-              )}
+              <button
+                onClick={() => handleToggleActive(item)}
+                disabled={!canEdit || editingId !== null || addingSubcategoryFor !== null}
+                className={`rounded-lg px-4 py-2 text-sm font-semibold text-white ${
+                  item.is_active
+                    ? "bg-green-600 hover:bg-green-700"
+                    : "bg-gray-600 hover:bg-gray-700"
+                } disabled:opacity-60`}
+              >
+                {item.is_active ? "Active" : "Inactive"}
+              </button>
 
               <button
                 onClick={() => startEdit(item)}
-                disabled={!canEdit || editingId !== null}
+                disabled={!canEdit || editingId !== null || addingSubcategoryFor !== null}
                 className="rounded-lg bg-[var(--arion-cyan)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--arion-cyan-strong)] disabled:opacity-60"
               >
                 Edit
@@ -296,10 +313,11 @@ export default function CategoryList() {
         {hasChildren && isExpanded && (
           <div className="ml-6 space-y-2 border-l-2 border-[var(--arion-border)] pl-4">
             {item.children.map((child) => renderCategory(child))}
-            {canAdd && (
+            {addingSubcategoryFor === item.id && renderCategory({ id: "new", name: "", slug: "", sort_order: 1, is_active: true }, true)}
+            {canAdd && addingSubcategoryFor !== item.id && (
               <button
                 onClick={() => startAdd(item.id)}
-                disabled={editingId !== null}
+                disabled={editingId !== null || addingSubcategoryFor !== null}
                 className="w-full rounded-lg border border-dashed border-[var(--arion-border)] py-2 text-sm font-semibold text-[var(--arion-muted)] hover:border-[var(--arion-cyan)] hover:text-[var(--arion-cyan)] disabled:opacity-40"
               >
                 <Plus size={16} className="inline mr-1" /> Add Subcategory

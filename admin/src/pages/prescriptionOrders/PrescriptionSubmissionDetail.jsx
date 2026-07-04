@@ -21,7 +21,9 @@ export default function PrescriptionSubmissionDetail() {
   const [fileUrl, setFileUrl] = useState("");
   const [fileMime, setFileMime] = useState("");
   const [fileError, setFileError] = useState("");
+  const [showFullscreen, setShowFullscreen] = useState(false);
   const objectUrlRef = useRef(null);
+  const fileBlobRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -46,6 +48,7 @@ export default function PrescriptionSubmissionDetail() {
         const blob = res.data;
         const url = URL.createObjectURL(blob);
         objectUrlRef.current = url;
+        fileBlobRef.current = blob;
         setFileUrl(url);
         setFileMime(blob.type || "");
       } catch {
@@ -69,6 +72,18 @@ export default function PrescriptionSubmissionDetail() {
     } finally {
       setSaving(false);
     }
+  };
+
+  const handleDownload = () => {
+    if (!fileBlobRef.current || !order) return;
+    const url = URL.createObjectURL(fileBlobRef.current);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = order.original_file_name || `prescription-${order.id}`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   if (loading) return <div className="text-white/70">Loading…</div>;
@@ -120,7 +135,17 @@ export default function PrescriptionSubmissionDetail() {
         </div>
 
         <div className="rounded-2xl border border-white/10 bg-[var(--admin-bg)] p-6">
-          <h3 className="mb-3 font-semibold text-white">Prescription File</h3>
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="font-semibold text-white">Prescription File</h3>
+            {!fileError && fileUrl && (
+              <button
+                onClick={handleDownload}
+                className="rounded-lg bg-[var(--admin-primary)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[var(--admin-primary-strong)]"
+              >
+                ↓ Download
+              </button>
+            )}
+          </div>
           {fileError ? (
             <div className="text-sm text-red-400">{fileError}</div>
           ) : !fileUrl ? (
@@ -128,7 +153,12 @@ export default function PrescriptionSubmissionDetail() {
           ) : fileMime === "application/pdf" ? (
             <iframe src={fileUrl} title="Prescription file" className="h-96 w-full rounded-lg border border-white/10" />
           ) : (
-            <img src={fileUrl} alt="Uploaded prescription" className="max-h-96 w-full rounded-lg object-contain" />
+            <button
+              onClick={() => setShowFullscreen(true)}
+              className="block w-full cursor-pointer rounded-lg border border-white/10 hover:border-white/30 transition"
+            >
+              <img src={fileUrl} alt="Uploaded prescription" className="max-h-96 w-full rounded-lg object-contain" />
+            </button>
           )}
         </div>
       </div>
@@ -160,6 +190,23 @@ export default function PrescriptionSubmissionDetail() {
           {saving ? "Saving…" : "Save Changes"}
         </button>
       </form>
+
+      {showFullscreen && fileMime !== "application/pdf" && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4"
+          onClick={() => setShowFullscreen(false)}
+        >
+          <div className="relative max-h-[90vh] max-w-4xl" onClick={(e) => e.stopPropagation()}>
+            <button
+              onClick={() => setShowFullscreen(false)}
+              className="absolute -top-10 right-0 text-white text-xl font-semibold hover:text-white/70"
+            >
+              ✕ Close
+            </button>
+            <img src={fileUrl} alt="Prescription fullscreen" className="max-h-[90vh] max-w-4xl rounded-lg object-contain" />
+          </div>
+        </div>
+      )}
     </section>
   );
 }

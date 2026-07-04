@@ -5,20 +5,18 @@ import axios from "../api/axios";
 import { getSettings } from "../api/settingApi";
 
 const QUICK = [
-  { label: "Add Product",      to: "/products/new",      icon: "pi-box",         color: "#5cb96a" },
-  { label: "New Hero Slide",   to: "/sliders/new",       icon: "pi-images",      color: "#e0b85c" },
-  { label: "New Blog Post",    to: "/blogs/new",         icon: "pi-file-edit",   color: "#5cb96a" },
-  { label: "New Testimonial",  to: "/testimonials/new",  icon: "pi-comments",    color: "#e0b85c" },
-  // { label: "Contact Messages", to: "/contact-messages",  icon: "pi-envelope",    color: "#5cb96a" },
-  { label: "Site Settings",    to: "/settings/navbar",   icon: "pi-cog",         color: "#e0b85c" },
+  { label: "Add Product",        to: "/products/new",                     icon: "pi-box",         color: "#5cb96a" },
+  { label: "Prescription Orders",to: "/prescription-orders/submissions",  icon: "pi-file-pdf",    color: "#e0b85c" },
+  { label: "Manage Categories",  to: "/main/categories",                  icon: "pi-list",        color: "#5cb96a" },
+  { label: "Store Locations",    to: "/store-locator/branches",           icon: "pi-map",         color: "#e0b85c" },
+  { label: "Site Settings",      to: "/settings/navbar",                  icon: "pi-cog",         color: "#5cb96a" },
 ];
 
 const STAT_META = [
-  { key: "hero",           label: "Hero Slides",   to: "/sliders",         icon: "pi-images",   glow: "rgba(92,185,106,0.18)"  },
-  { key: "products",       label: "Products",      to: "/products",        icon: "pi-box",      glow: "rgba(224,184,92,0.18)"  },
-  { key: "testimonials",   label: "Testimonials",  to: "/testimonials",    icon: "pi-comments", glow: "rgba(92,185,106,0.18)"  },
-  { key: "blog",           label: "Blog Posts",    to: "/blogs",           icon: "pi-file-edit",glow: "rgba(224,184,92,0.18)"  },
-  // { key: "contact_unread", label: "Unread Msgs",   to: "/contact-messages",icon: "pi-envelope", glow: "rgba(92,185,106,0.18)"  },
+  { key: "products",           label: "Products",              to: "/products",                        icon: "pi-box",       glow: "rgba(92,185,106,0.18)"  },
+  { key: "prescriptions",      label: "Prescription Orders",   to: "/prescription-orders/submissions", icon: "pi-file-pdf",  glow: "rgba(224,184,92,0.18)"  },
+  { key: "categories",         label: "Categories",           to: "/main/categories",                 icon: "pi-list",      glow: "rgba(92,185,106,0.18)"  },
+  { key: "locations",          label: "Store Locations",      to: "/store-locator/branches",          icon: "pi-map",       glow: "rgba(224,184,92,0.18)"  },
 ];
 
 function StatCard({ meta, value, loading }) {
@@ -57,19 +55,18 @@ export default function Dashboard() {
   const { user } = useAuth();
   const [loading,  setLoading]  = useState(true);
   const [error,    setError]    = useState("");
-  const [counts,   setCounts]   = useState({ hero: 0, products: 0, testimonials: 0, blog: 0, contact_unread: 0 });
-  const [siteName, setSiteName] = useState("Arion Organic");
+  const [counts,   setCounts]   = useState({ products: 0, prescriptions: 0, categories: 0, locations: 0 });
+  const [siteName, setSiteName] = useState("Pharmacy");
 
   useEffect(() => {
     axios.get("/admin/dashboard")
       .then((res) => {
         const c = res?.data?.data?.counts ?? res?.data?.counts ?? {};
         setCounts({
-          hero:           Number(c.hero            ?? 0),
-          products:       Number(c.products        ?? 0),
-          testimonials:   Number(c.testimonials    ?? 0),
-          blog:           Number(c.blog            ?? 0),
-          contact_unread: Number(c.contact_unread  ?? 0),
+          products:      Number(c.products     ?? 0),
+          prescriptions: Number(c.prescriptions ?? 0),
+          categories:    Number(c.categories   ?? 0),
+          locations:     Number(c.locations    ?? 0),
         });
       })
       .catch(() => setError("Failed to load dashboard stats."))
@@ -117,9 +114,8 @@ export default function Dashboard() {
             {/* Mini stats row */}
             <div className="mt-5 flex flex-wrap gap-3">
               {[
-                { label: "Products",     val: counts.products,     icon: "pi-box"      },
-                { label: "Blog Posts",   val: counts.blog,         icon: "pi-file-edit" },
-                // { label: "Unread",       val: counts.contact_unread, icon: "pi-envelope" },
+                { label: "Products",              val: counts.products,      icon: "pi-box"      },
+                { label: "Prescription Orders",   val: counts.prescriptions, icon: "pi-file-pdf" },
               ].map(({ label, val, icon }) => (
                 <div key={label} className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3.5 py-2 backdrop-blur-sm">
                   <span className={`pi ${icon} text-sm text-[var(--admin-accent)]`} />

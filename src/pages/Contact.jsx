@@ -220,13 +220,18 @@ const Contact = () => {
     || c.google_map_url
     || (c.address ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}` : null)
 
+  const handleCopyToClipboard = (text, label) => {
+    navigator.clipboard.writeText(text)
+    toast.success(`${label} copied!`, { duration: 2000 })
+  }
+
   const quickActions = [
-    { label: c.call_action_label,     icon: <Phone size={20} fill="currentColor" />, href: callHref },
-    { label: c.sms_action_label,      icon: <MessageSquare size={20} fill="currentColor" />, href: smsHref },
-    { label: c.email_action_label,    icon: <Mail size={20} />, href: emailHref },
-    { label: c.whatsapp_action_label, icon: <FaWhatsapp size={22} />, href: whatsappHref, external: true },
-    { label: c.website_action_label,  icon: <Globe size={20} />, href: websiteHref, external: true },
-    { label: c.location_action_label, icon: <MapPin size={20} />, href: locationHref, external: true },
+    { label: c.call_action_label,     icon: <Phone size={20} fill="currentColor" />, value: c.call_action_link || c.phone_number },
+    { label: c.sms_action_label,      icon: <MessageSquare size={20} fill="currentColor" />, value: c.sms_action_link || c.phone_number },
+    { label: c.email_action_label,    icon: <Mail size={20} />, value: c.email_action_link || c.email },
+    { label: c.whatsapp_action_label, icon: <FaWhatsapp size={22} />, value: c.whatsapp_action_link || c.whatsapp_number },
+    { label: c.website_action_label,  icon: <Globe size={20} />, value: websiteHref },
+    { label: c.location_action_label, icon: <MapPin size={20} />, value: c.location_action_link || c.google_map_url },
   ]
 
   const socialLinks = [
@@ -682,15 +687,14 @@ const Contact = () => {
               <div className="grid grid-cols-3 gap-y-8 w-full text-center">
                 {quickActions.map(action => (
                   <div key={action.label} className="flex flex-col items-center gap-2">
-                    {action.href ? (
-                      <a
-                        href={action.href}
-                        target={action.external ? '_blank' : undefined}
-                        rel={action.external ? 'noopener noreferrer' : undefined}
+                    {action.value ? (
+                      <button
+                        onClick={() => handleCopyToClipboard(action.value, action.label)}
                         className="w-[50px] h-[50px] bg-[#0FAFB8] rounded-full flex items-center justify-center text-white cursor-pointer hover:bg-[#073B45] transition-colors shadow-sm"
+                        title={`Copy ${action.label}`}
                       >
                         {action.icon}
-                      </a>
+                      </button>
                     ) : (
                       <div className="w-[50px] h-[50px] bg-gray-200 rounded-full flex items-center justify-center text-gray-400 shadow-sm">
                         {action.icon}

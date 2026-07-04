@@ -10,8 +10,6 @@ import {
   createPrescriptionHowtoInstruction,
   updatePrescriptionHowtoInstruction,
   deletePrescriptionHowtoInstruction,
-  getPrescriptionSampleIllustration,
-  updatePrescriptionSampleIllustration,
 } from "../../api/prescriptionContentApi";
 
 const inputCls = "w-full rounded-lg border border-white/20 bg-[var(--admin-card)] px-3 py-2 text-white";
@@ -66,15 +64,15 @@ function ContentSection() {
     ["upload_badge_text", "Upload Badge Text", "text"],
     ["upload_heading", "Upload Heading", "text"],
     ["upload_subtext", "Upload Subtext", "textarea"],
-    ["dropzone_instruction_text", "Dropzone Instruction Text", "text"],
-    ["dropzone_hint_text", "Dropzone Hint Text", "text"],
+    // ["dropzone_instruction_text", "Dropzone Instruction Text", "text"],
+    // ["dropzone_hint_text", "Dropzone Hint Text", "text"],
     ["howto_heading", "How-To Section Heading", "text"],
     ["sample_section_heading", "Sample Section Heading", "text"],
     ["help_heading", "Help Bar Heading", "text"],
     ["help_subtext", "Help Bar Subtext", "text"],
     ["help_phone_number", "Help Phone Number", "text"],
-    ["max_file_size_mb", "Max File Size (MB)", "number"],
-    ["allowed_file_types", "Allowed File Types (comma-separated)", "text"],
+    // ["max_file_size_mb", "Max File Size (MB)", "number"],
+    // ["allowed_file_types", "Allowed File Types (comma-separated)", "text"],
   ];
 
   return (
@@ -228,91 +226,12 @@ function ListSection({ title, fetchAll, onCreate, onUpdate, onDelete, itemFields
   );
 }
 
-/* ── Sample illustration singleton form ──────────────────────────── */
-function SampleIllustrationSection() {
-  const [form, setForm] = useState(null);
-  const [saving, setSaving] = useState(false);
-  const [msg, setMsg] = useState("");
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await getPrescriptionSampleIllustration();
-        setForm(res.data?.data ?? {});
-      } catch {
-        setError("Failed to load sample illustration.");
-      }
-    })();
-  }, []);
-
-  const setField = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError(""); setMsg("");
-    try {
-      setSaving(true);
-      const res = await updatePrescriptionSampleIllustration(form);
-      setForm(res.data?.data ?? form);
-      setMsg("Saved.");
-    } catch (err) {
-      setError(extractError(err, "Failed to save sample illustration."));
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  if (!form) return <div className={cardCls}>Loading sample illustration…</div>;
-
-  const fields = [
-    ["doctor_name_sample", "Doctor Name (sample)"],
-    ["clinic_name_label", "Clinic Name Label"],
-    ["clinic_address_label", "Clinic Address Label"],
-    ["clinic_phone_label", "Clinic Phone Label"],
-    ["consultation_date_label", "Consultation Date Label"],
-    ["patient_name_label", "Patient Name Label"],
-    ["patient_age_label", "Patient Age Label"],
-    ["sample_medicine_name", "Sample Medicine Name"],
-    ["sample_medicine_strength", "Sample Medicine Strength"],
-    ["sample_medicine_dose", "Sample Medicine Dose"],
-    ["sample_medicine_duration", "Sample Medicine Duration"],
-    ["signature_sample_name", "Signature Sample Name"],
-    ["annotation_doctor_details_label", "Annotation: Doctor Details"],
-    ["annotation_patient_details_label", "Annotation: Patient Details"],
-    ["annotation_medicine_details_label", "Annotation: Medicine Details"],
-    ["annotation_signature_label", "Annotation: Signature"],
-  ];
-
-  return (
-    <form onSubmit={handleSubmit} className={cardCls}>
-      <h3 className="text-lg font-semibold text-white">Sample Prescription Illustration</h3>
-      <p className="text-sm text-[var(--admin-muted)]">Fictional teaching sample only — never populated from real patient submissions.</p>
-      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-red-300">{error}</div>}
-      {msg && <div className="rounded-lg border border-green-500/30 bg-green-500/10 px-4 py-3 text-green-300">{msg}</div>}
-
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {fields.map(([key, label]) => (
-          <div key={key}>
-            <label className={labelCls}>{label}</label>
-            <input value={form[key] ?? ""} onChange={(e) => setField(key, e.target.value)} className={inputCls} />
-          </div>
-        ))}
-      </div>
-
-      <button type="submit" disabled={saving} className="rounded-xl bg-[var(--admin-primary)] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[var(--admin-primary-strong)] disabled:opacity-60">
-        {saving ? "Saving…" : "Save Sample Illustration"}
-      </button>
-    </form>
-  );
-}
-
 export default function PrescriptionPageContentEditor() {
   return (
     <section className="space-y-6">
       <header>
         <h2 className="text-2xl font-bold text-white">Prescription Page — Content</h2>
-        <p className="mt-0.5 text-sm text-[var(--admin-muted)]">Edit the copy, process steps, how-to list, and sample illustration.</p>
+        <p className="mt-0.5 text-sm text-[var(--admin-muted)]">Edit the copy, process steps, and how-to list.</p>
       </header>
 
       <ContentSection />
@@ -337,8 +256,6 @@ export default function PrescriptionPageContentEditor() {
         onDelete={deletePrescriptionHowtoInstruction}
         itemFields={[{ key: "instruction_text", label: "Instruction Text" }]}
       />
-
-      <SampleIllustrationSection />
     </section>
   );
 }

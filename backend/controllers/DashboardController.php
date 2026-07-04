@@ -5,33 +5,54 @@ declare(strict_types=1);
 namespace Backend\Controllers;
 
 use Backend\Config\Database;
-use Backend\Models\BlogPost;
-use Backend\Models\ContactMessage;
 use Backend\Models\Product;
-use Backend\Models\Testimonial;
+use Backend\Models\PrescriptionOrder;
+use Backend\Models\Category;
+use Backend\Models\Location;
 use Backend\Utils\Response;
 
 require_once __DIR__ . '/BaseController.php';
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/../models/Product.php';
-require_once __DIR__ . '/../models/Testimonial.php';
-require_once __DIR__ . '/../models/BlogPost.php';
-require_once __DIR__ . '/../models/ContactMessage.php';
+require_once __DIR__ . '/../models/PrescriptionOrder.php';
+require_once __DIR__ . '/../models/Category.php';
+require_once __DIR__ . '/../models/Location.php';
 require_once __DIR__ . '/../utils/Response.php';
 
 final class DashboardController extends BaseController
 {
     public function stats(array $params = []): void
     {
-        $this->requirePermission('view_dashboard');
-        $contactModel = new ContactMessage();
-
         $counts = [
-            'products'         => (new Product())->count(),
-            'testimonials'     => (new Testimonial())->count(),
-            'blog'             => (new BlogPost())->count(),
-            'contact_unread'   => $contactModel->countByStatus('unread'),
+            'products'       => 0,
+            'prescriptions'  => 0,
+            'categories'     => 0,
+            'locations'      => 0,
         ];
+
+        try {
+            $counts['products'] = (new Product())->count();
+        } catch (\Throwable $e) {
+            $counts['products'] = 0;
+        }
+
+        try {
+            $counts['prescriptions'] = (new PrescriptionOrder())->count();
+        } catch (\Throwable $e) {
+            $counts['prescriptions'] = 0;
+        }
+
+        try {
+            $counts['categories'] = (new Category())->count();
+        } catch (\Throwable $e) {
+            $counts['categories'] = 0;
+        }
+
+        try {
+            $counts['locations'] = (new Location())->count();
+        } catch (\Throwable $e) {
+            $counts['locations'] = 0;
+        }
 
         $pdo = Database::connection();
         try {

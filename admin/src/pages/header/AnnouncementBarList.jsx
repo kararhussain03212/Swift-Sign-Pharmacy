@@ -132,13 +132,13 @@ export default function AnnouncementBarList() {
                 onChange={(e) => updateRow(index, "text", e.target.value)}
                 className={inputCls}
               />
-              <input
+              {/* <input
                 type="text"
                 placeholder="🌿 (optional)"
                 value={row.icon}
                 onChange={(e) => updateRow(index, "icon", e.target.value)}
                 className={inputCls}
-              />
+              /> */}
               <label className="flex items-center gap-2 text-sm text-[var(--admin-muted)]">
                 <input
                   type="checkbox"

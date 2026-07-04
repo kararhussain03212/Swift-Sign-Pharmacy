@@ -11,7 +11,6 @@ const INITIAL = {
   password: "",
   role: "editor",
   status: "active",
-  is_super_admin: false,
   permissions: getDefaultPermissions("editor"),
 };
 
@@ -46,7 +45,6 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
         password:    "",
         role:        initialData.role || "editor",
         status:      initialData.status || "active",
-        is_super_admin: Boolean(initialData.is_super_admin),
         permissions: Array.isArray(initialData.permissions) ? initialData.permissions : getDefaultPermissions(initialData.role),
       });
       setError("");
@@ -87,7 +85,6 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
       email:       form.email,
       role:        form.role,
       status:      form.status,
-      is_super_admin: form.is_super_admin,
       designation: form.designation,
       phone:       form.phone,
       location:    form.location,
@@ -234,23 +231,6 @@ export default function UserFormModal({ open, mode, initialData, onClose, onSubm
               </p>
             </div>
           </div>
-
-          {/* Super Admin toggle */}
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/5 p-3">
-            <input
-              type="checkbox"
-              checked={form.is_super_admin}
-              onChange={(e) => setForm((p) => ({ ...p, is_super_admin: e.target.checked }))}
-              className="mt-0.5 h-4 w-4 flex-shrink-0 accent-amber-500"
-            />
-            <div>
-              <p className="text-sm font-semibold text-amber-200">Super Admin</p>
-              <p className="mt-0.5 text-xs text-white/50">
-                Grants full access to User Management (view, create, edit, delete other users)
-                and bypasses the permissions panel below. At least one super admin must always exist.
-              </p>
-            </div>
-          </label>
 
           {/* Permissions */}
           <div className="space-y-3 rounded-xl border border-[var(--admin-border)] bg-[var(--admin-bg)] p-4">

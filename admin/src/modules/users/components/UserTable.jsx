@@ -80,9 +80,6 @@ export default function UserTable({
                 <td className="px-4 py-3 text-white/85">{user.email}</td>
                 <td className="px-4 py-3 text-white/85">
                   <span className="rounded-lg border border-[var(--admin-border)] bg-white/5 px-2.5 py-1 text-xs font-semibold capitalize">{user.role}</span>
-                  {user.is_super_admin ? (
-                    <span className="ml-2 rounded-lg border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 text-xs font-semibold text-amber-200">Super Admin</span>
-                  ) : null}
                 </td>
                 <td className="px-4 py-3 text-white/85">
                   <span className={String(user.status || "").toLowerCase() === "inactive" ? "rounded-full border border-red-500/40 bg-red-500/10 px-3 py-1 text-xs font-semibold text-red-300 capitalize" : "rounded-full border border-emerald-500/40 bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-300 capitalize"}>{user.status}</span>
@@ -103,7 +100,6 @@ export default function UserTable({
                       type="button"
                       onClick={() => onDelete(user)}
                       disabled={!canDeleteUsers}
-                      title={user.is_super_admin ? "Server will reject deleting the last remaining super admin" : ""}
                       className="rounded-lg border border-red-500/40 bg-red-500/20 px-3 py-1.5 text-red-200 disabled:opacity-50"
                     >
                       Delete
@@ -137,7 +133,6 @@ export default function UserTable({
             <div className="mt-3 flex flex-wrap gap-2 text-xs">
               <span className="rounded-lg border border-[var(--admin-border)] bg-white/5 px-2.5 py-1 font-semibold capitalize">{user.role}</span>
               <span className={String(user.status || "").toLowerCase() === "inactive" ? "rounded-full border border-red-500/40 bg-red-500/10 px-2.5 py-1 font-semibold text-red-300 capitalize" : "rounded-full border border-emerald-500/40 bg-emerald-500/10 px-2.5 py-1 font-semibold text-emerald-300 capitalize"}>{user.status}</span>
-              {user.is_super_admin ? <span className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-2.5 py-1 font-semibold text-amber-200">Super Admin</span> : null}
             </div>
             <div className="mt-3 grid grid-cols-3 gap-2">
               <button type="button" onClick={() => onView(user)} className="rounded-lg border border-[var(--admin-border)] bg-[var(--admin-bg)] px-3 py-2 text-xs text-white/90">View</button>

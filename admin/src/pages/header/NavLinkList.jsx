@@ -108,17 +108,17 @@ export default function NavLinkList() {
             <span className="text-xs text-[var(--admin-muted)]">Set Label, Path/URL and active state</span>
           </div>
 
-          <div className="hidden grid-cols-[1fr_1fr_120px_auto] gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--admin-muted)] md:grid">
+          <div className="grid grid-cols-[1fr_1fr_100px_50px] gap-2 text-xs font-semibold uppercase tracking-wide text-[var(--admin-muted)]">
             <span>Label</span>
             <span>Path / URL</span>
             <span>Active</span>
-            <span>Action</span>
+            <span>Delete</span>
           </div>
 
           {rows.map((row, index) => (
             <div
               key={row.id ?? `new-${index}`}
-              className="grid grid-cols-1 gap-2 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-bg)] p-2 md:grid-cols-[1fr_1fr_120px_auto] md:items-center"
+              className="grid grid-cols-[1fr_1fr_100px_50px] gap-2 rounded-lg border border-[var(--admin-border)] bg-[var(--admin-bg)] p-2 items-center"
             >
               <input
                 type="text"
@@ -146,9 +146,9 @@ export default function NavLinkList() {
               <button
                 type="button"
                 onClick={() => removeRow(index)}
-                className="rounded-lg border border-red-500 bg-red-500/10 px-3 py-2 font-medium text-red-400 hover:bg-red-500/20"
+                className="rounded-lg border border-red-500 bg-red-500/10 px-2 py-2 font-medium text-red-400 hover:bg-red-500/20 text-xs"
               >
-                Remove
+                Delete
               </button>
             </div>
           ))}
