@@ -2,12 +2,12 @@
 $conn = new mysqli('localhost', 'root', '', 'organic_food');
 if ($conn->connect_error) die('Connection failed: ' . $conn->connect_error);
 
-// Wipe existing products
-$conn->query('DELETE FROM products');
-$conn->query('ALTER TABLE products AUTO_INCREMENT = 1');
-echo "Cleared existing products.\n";
+// Wipe existing catalog_products
+$conn->query('DELETE FROM catalog_products');
+$conn->query('ALTER TABLE catalog_products AUTO_INCREMENT = 1');
+echo "Cleared existing catalog_products.\n";
 
-$products = [
+$catalog_products = [
     [
         'name'                    => 'Pure Himalayan Shilajit 5GM',
         'slug'                    => 'pure-himalayan-shilajit-5gm',
@@ -199,7 +199,7 @@ $products = [
             'It contains anti-bacterial properties that can be used to fight a range of pathogens. It can soothe a sore throat and treat a cough.',
             'It can help to regulate blood sugar levels, as it is low on the glycemic index.',
             'It can help athletes improve their recovery time due to its ability to help the body maintain its glycogen levels.',
-            'It can be paired with other ingredients to make organic beauty products to help moisturise the skin and hair.',
+            'It can be paired with other ingredients to make organic beauty catalog_products to help moisturise the skin and hair.',
         ],
         'ingredients'             => '100% Raw, Unfiltered Honey.',
         'how_to_use'              => [
@@ -240,7 +240,7 @@ $products = [
             'Contains antibacterial properties that can help fight a range of pathogens, soothe sore throat, and treat cough.',
             'Can help regulate blood sugar levels due to a low glycemic index profile.',
             'Can help athletes improve recovery time by supporting the body glycogen levels.',
-            'Can be paired with other ingredients to create organic beauty products that help moisturize skin and hair.',
+            'Can be paired with other ingredients to create organic beauty catalog_products that help moisturize skin and hair.',
         ],
         'ingredients'             => '100% Raw, Unfiltered Honey.',
         'how_to_use'              => [
@@ -407,7 +407,7 @@ $products = [
 
 $inserted = 0;
 
-foreach ($products as $p) {
+foreach ($catalog_products as $p) {
     $e = fn($v) => $conn->real_escape_string($v);
 
     $name    = $e($p['name']);
@@ -437,7 +437,7 @@ foreach ($products as $p) {
     $order   = (int) $p['sort_order'];
     $active  = (int) $p['is_active'];
 
-    $sql = "INSERT INTO products
+    $sql = "INSERT INTO catalog_products
         (name, slug, subtitle, category, size, price, original_price, discount, rating, reviews,
          stock, featured, variants, variant_prices, variant_original_prices, images, badges,
          short_desc, description, benefits, ingredients, how_to_use, faqs, tags, sort_order, is_active)
@@ -454,5 +454,5 @@ foreach ($products as $p) {
     }
 }
 
-echo "\nDone. Inserted $inserted / " . count($products) . " products.\n";
+echo "\nDone. Inserted $inserted / " . count($catalog_products) . " catalog_products.\n";
 $conn->close();

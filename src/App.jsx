@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
 import { GoogleReCaptchaProvider } from 'react-google-recaptcha-v3'
 import TopBar from './components/layout/TopBar'
@@ -24,6 +24,9 @@ import StoreLocator from './pages/StoreLocator'
 import StoreBranchDetail from './pages/StoreBranchDetail'
 import Checkout     from './pages/Checkout'
 import Certification from './pages/Certification'
+import Auth from './pages/Auth'
+import Profile from './pages/Profile'
+import RequireAuth from './components/routing/RequireAuth'
 
 function App() {
   return (
@@ -52,8 +55,12 @@ function App() {
             <Route path="/asaan-order"       element={<AsaanOrder />}    />
             <Route path="/store-locator"     element={<StoreLocator />}  />
             <Route path="/store-locator/:slug" element={<StoreBranchDetail />}  />
-            <Route path="/checkout"          element={<Checkout />}      />
+            <Route path="/checkout"          element={<RequireAuth><Checkout /></RequireAuth>}      />
             <Route path="/certification"     element={<Certification />} />
+            <Route path="/auth"              element={<Auth />}          />
+            <Route path="/login"             element={<Navigate to="/auth" replace />}          />
+            <Route path="/register"          element={<Navigate to="/auth" replace />}          />
+            <Route path="/profile"           element={<RequireAuth><Profile /></RequireAuth>}       />
             <Route path="*"                  element={<Home />}          />
           </Routes>
         </div>

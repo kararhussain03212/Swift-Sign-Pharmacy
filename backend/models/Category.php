@@ -8,7 +8,7 @@ require_once __DIR__ . '/ArionBaseModel.php';
 
 final class Category extends ArionBaseModel
 {
-    protected string $table = 'categories';
+    protected string $table = 'catalog_categories';
     protected array $fillable = ['name', 'slug', 'parent_id', 'sort_order', 'is_active', 'product_type'];
 
     protected function defaultOrderBy(): string
@@ -17,7 +17,7 @@ final class Category extends ArionBaseModel
     }
 
     /**
-     * Returns top-level categories with their subcategories nested under `children`.
+     * Returns top-level catalog_categories with their subcatalog_categories nested under `children`.
      */
     public function allNested(bool $onlyActive = false): array
     {
@@ -47,7 +47,7 @@ final class Category extends ArionBaseModel
         return $build(0);
     }
 
-    /** Flat, active, top-level categories for simple list displays (e.g. the footer). */
+    /** Flat, active, top-level catalog_categories for simple list displays (e.g. the footer). */
     public function topLevelActive(): array
     {
         $stmt = $this->pdo->query(

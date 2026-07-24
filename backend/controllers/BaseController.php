@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Backend\Controllers;
 
 use Backend\Middleware\AuthMiddleware;
+use Backend\Middleware\CustomerAuthMiddleware;
 
 require_once __DIR__ . '/../middleware/auth.php';
+require_once __DIR__ . '/../middleware/customerAuth.php';
 
 abstract class BaseController
 {
@@ -15,6 +17,17 @@ abstract class BaseController
         if (!AuthMiddleware::can($permission)) {
             Response::error('You do not have permission to perform this action.', 403);
         }
+    }
+
+    protected function currentAuth(): ?array
+    {
+        return CustomerAuthMiddleware::user();
+    }
+
+    protected function currentCustomerId(): ?int
+    {
+        $user = CustomerAuthMiddleware::user();
+        return $user['id'] ?? null;
     }
 
     protected function body(): array

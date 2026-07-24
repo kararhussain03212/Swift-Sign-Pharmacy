@@ -6,14 +6,17 @@ use Backend\Controllers\AboutController;
 use Backend\Controllers\AddressController;
 use Backend\Controllers\AnnouncementBarController;
 use Backend\Controllers\BlogController;
+use Backend\Controllers\CartController;
 use Backend\Controllers\CategoryController;
 use Backend\Controllers\CertificationPublicController;
 use Backend\Controllers\CommitmentItemController;
 use Backend\Controllers\ContactController;
 use Backend\Controllers\ContactFaqController;
 use Backend\Controllers\ContactInfoCardController;
+use Backend\Controllers\CustomerAuthController;
 use Backend\Controllers\FeaturedBrandController;
 use Backend\Controllers\FooterController;
+use Backend\Controllers\InvoiceController;
 use Backend\Controllers\HeroBannerController;
 use Backend\Controllers\HomepageCarePlanBannerController;
 use Backend\Controllers\HomepageHeroBannerController;
@@ -21,6 +24,7 @@ use Backend\Controllers\HomepagePromoCardController;
 use Backend\Controllers\HomepageProductSliderController;
 use Backend\Controllers\LocationController;
 use Backend\Controllers\NavLinkController;
+use Backend\Controllers\OrderController;
 use Backend\Controllers\PrescriptionOrderController;
 use Backend\Controllers\PrescriptionPageContentController;
 use Backend\Controllers\ProductController;
@@ -32,7 +36,8 @@ use Backend\Controllers\StoreLocatorContentController;
 use Backend\Controllers\StoreNetworkStatController;
 use Backend\Controllers\TestimonialController;
 use Backend\Controllers\TrustBadgeController;
-use Backend\Middleware\AuthMiddleware;
+use Backend\Controllers\WishlistController;
+use Backend\Middleware\CustomerAuthMiddleware;
 use Backend\Utils\Router;
 
 require_once __DIR__ . '/../controllers/HeroBannerController.php';
@@ -46,6 +51,12 @@ require_once __DIR__ . '/../controllers/ContactFaqController.php';
 require_once __DIR__ . '/../controllers/CommitmentItemController.php';
 require_once __DIR__ . '/../controllers/AboutController.php';
 require_once __DIR__ . '/../controllers/AddressController.php';
+require_once __DIR__ . '/../controllers/CustomerAuthController.php';
+require_once __DIR__ . '/../controllers/CartController.php';
+require_once __DIR__ . '/../controllers/WishlistController.php';
+require_once __DIR__ . '/../controllers/OrderController.php';
+require_once __DIR__ . '/../controllers/InvoiceController.php';
+require_once __DIR__ . '/../middleware/customerAuth.php';
 require_once __DIR__ . '/../controllers/AnnouncementBarController.php';
 require_once __DIR__ . '/../controllers/SiteSettingController.php';
 require_once __DIR__ . '/../controllers/NavLinkController.php';
@@ -96,12 +107,43 @@ function registerPublicRoutes(Router $router): void
     $router->get('/api/public/about/comparison',   [AboutController::class, 'publicComparison']);
     $router->get('/api/public/about/cta',          [AboutController::class, 'publicCta']);
 
-    // User Addresses (authenticated)
-    $router->get('/api/addresses', [AddressController::class, 'index'], [[AuthMiddleware::class, 'requireAuth']]);
-    $router->post('/api/addresses', [AddressController::class, 'store'], [[AuthMiddleware::class, 'requireAuth']]);
-    $router->get('/api/addresses/{id}', [AddressController::class, 'show'], [[AuthMiddleware::class, 'requireAuth']]);
-    $router->put('/api/addresses/{id}', [AddressController::class, 'update'], [[AuthMiddleware::class, 'requireAuth']]);
-    $router->delete('/api/addresses/{id}', [AddressController::class, 'destroy'], [[AuthMiddleware::class, 'requireAuth']]);
+    // Customer account (register/login)
+    $router->post('/api/customer/register', [CustomerAuthController::class, 'register']);
+    $router->post('/api/customer/login', [CustomerAuthController::class, 'login']);
+    $router->post('/api/customer/logout', [CustomerAuthController::class, 'logout'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->get('/api/customer/me', [CustomerAuthController::class, 'me'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->put('/api/customer/profile', [CustomerAuthController::class, 'updateProfile'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->put('/api/customer/password', [CustomerAuthController::class, 'changePassword'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+
+    // User Addresses (authenticated, customer-scoped)
+    $router->get('/api/addresses', [AddressController::class, 'index'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->post('/api/addresses', [AddressController::class, 'store'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->get('/api/addresses/{id}', [AddressController::class, 'show'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->put('/api/addresses/{id}', [AddressController::class, 'update'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/addresses/{id}', [AddressController::class, 'destroy'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+
+    // Cart (authenticated)
+    $router->get('/api/cart', [CartController::class, 'index'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->post('/api/cart', [CartController::class, 'store'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->put('/api/cart/by-product/{productId}', [CartController::class, 'updateByProduct'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/cart/by-product/{productId}', [CartController::class, 'destroyByProduct'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->put('/api/cart/{id}', [CartController::class, 'update'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/cart/{id}', [CartController::class, 'destroy'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/cart', [CartController::class, 'clear'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+
+    // Wishlist (authenticated)
+    $router->get('/api/wishlist', [WishlistController::class, 'index'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->post('/api/wishlist', [WishlistController::class, 'store'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/wishlist/by-product/{productId}', [WishlistController::class, 'destroyByProduct'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->delete('/api/wishlist/{id}', [WishlistController::class, 'destroy'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+
+    // Orders (authenticated)
+    $router->post('/api/orders', [OrderController::class, 'store'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->get('/api/orders', [OrderController::class, 'history'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+    $router->get('/api/orders/{id}', [OrderController::class, 'details'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
+
+    // Invoice (authenticated)
+    $router->get('/api/orders/{id}/invoice', [InvoiceController::class, 'download'], [[CustomerAuthMiddleware::class, 'requireAuth']]);
 
     // Arion Pharmacy — Header module (separate arion_pharmacy database)
     $router->get('/api/public/announcement-bar', [AnnouncementBarController::class, 'publicIndex']);

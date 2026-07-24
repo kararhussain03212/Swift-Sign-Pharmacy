@@ -15,7 +15,7 @@ final class CustomerAddressController extends BaseController
 {
     public function index(array $params = []): void
     {
-        $this->requirePermission('manage_users');
+        $this->requirePermission('manage_customer_users');
 
         try {
             $pdo = \Backend\Config\Database::connection();
@@ -41,9 +41,9 @@ final class CustomerAddressController extends BaseController
                             "is_default", a.is_default,
                             "created_at", a.created_at
                         )
-                    ) as addresses_json
-                FROM users u
-                LEFT JOIN addresses a ON u.id = a.user_id
+                    ) as customer_addresses_json
+                FROM customer_users u
+                LEFT JOIN customer_addresses a ON u.id = a.user_id
                 GROUP BY u.id
                 ORDER BY u.created_at DESC
             ');
@@ -52,10 +52,10 @@ final class CustomerAddressController extends BaseController
             $rows = $stmt->fetchAll() ?: [];
 
             $customers = array_map(function ($row) {
-                $addresses = [];
-                if (!empty($row['addresses_json'])) {
-                    $addressesArray = json_decode('[' . $row['addresses_json'] . ']', true);
-                    $addresses = is_array($addressesArray) ? $addressesArray : [];
+                $customer_addresses = [];
+                if (!empty($row['customer_addresses_json'])) {
+                    $customer_addressesArray = json_decode('[' . $row['customer_addresses_json'] . ']', true);
+                    $customer_addresses = is_array($customer_addressesArray) ? $customer_addressesArray : [];
                 }
 
                 return [
@@ -63,19 +63,19 @@ final class CustomerAddressController extends BaseController
                     'name' => (string) ($row['name'] ?? ''),
                     'email' => (string) ($row['email'] ?? ''),
                     'address_count' => (int) ($row['address_count'] ?? 0),
-                    'addresses' => $addresses,
+                    'customer_addresses' => $customer_addresses,
                 ];
             }, $rows);
 
-            Response::success($customers, 'Customers with addresses fetched successfully');
+            Response::success($customers, 'Customers with customer_addresses fetched successfully');
         } catch (\Throwable $e) {
-            Response::error('Failed to fetch customer addresses: ' . $e->getMessage(), 500);
+            Response::error('Failed to fetch customer customer_addresses: ' . $e->getMessage(), 500);
         }
     }
 
     public function show(array $params): void
     {
-        $this->requirePermission('manage_users');
+        $this->requirePermission('manage_customer_users');
         $customerId = (int) ($params['id'] ?? 0);
 
         if ($customerId <= 0) {
@@ -85,7 +85,7 @@ final class CustomerAddressController extends BaseController
         try {
             $pdo = \Backend\Config\Database::connection();
 
-            $stmt = $pdo->prepare('SELECT * FROM users WHERE id = :id LIMIT 1');
+            $stmt = $pdo->prepare('SELECT * FROM customer_users WHERE id = :id LIMIT 1');
             $stmt->execute([':id' => $customerId]);
             $customer = $stmt->fetch();
 
@@ -94,14 +94,14 @@ final class CustomerAddressController extends BaseController
             }
 
             $model = new Address();
-            $addresses = $model->findByUserId($customerId);
+            $customer_addresses = $model->findByUserId($customerId);
 
             Response::success([
                 'id' => (int) $customer['id'],
                 'name' => (string) ($customer['name'] ?? ''),
                 'email' => (string) ($customer['email'] ?? ''),
-                'addresses' => array_map(fn ($addr) => $this->serializeAddress($addr), $addresses),
-            ], 'Customer addresses fetched successfully');
+                'customer_addresses' => array_map(fn ($addr) => $this->serializeAddress($addr), $customer_addresses),
+            ], 'Customer customer_addresses fetched successfully');
         } catch (\Throwable $e) {
             Response::error('Failed to fetch customer: ' . $e->getMessage(), 500);
         }
@@ -109,7 +109,7 @@ final class CustomerAddressController extends BaseController
 
     public function deleteAddress(array $params): void
     {
-        $this->requirePermission('manage_users');
+        $this->requirePermission('manage_customer_users');
         $addressId = (int) ($params['id'] ?? 0);
 
         if ($addressId <= 0) {

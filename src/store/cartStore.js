@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
+import { isCustomerAuthenticated } from '../api/axios'
+import { addToCartApi, updateCartItemByProduct, removeCartItemByProduct, clearCartApi } from '../services/customerApi'
 
 const useCartStore = create(
   persist(
@@ -20,10 +22,17 @@ const useCartStore = create(
         } else {
           set({ items: [...items, { ...product, quantity }] })
         }
+        if (isCustomerAuthenticated()) {
+          addToCartApi(product.id, quantity).catch(() => {})
+        }
       },
 
-      removeFromCart: (id) =>
-        set({ items: get().items.filter(i => i.id !== id) }),
+      removeFromCart: (id) => {
+        set({ items: get().items.filter(i => i.id !== id) })
+        if (isCustomerAuthenticated()) {
+          removeCartItemByProduct(id).catch(() => {})
+        }
+      },
 
       updateQuantity: (id, quantity) => {
         if (quantity < 1) return get().removeFromCart(id)
@@ -32,20 +41,19 @@ const useCartStore = create(
             i.id === id ? { ...i, quantity } : i
           ),
         })
+        if (isCustomerAuthenticated()) {
+          updateCartItemByProduct(id, quantity).catch(() => {})
+        }
       },
 
-      clearCart: () => set({ items: [] }),
-
-      get cartCount() {
-        return get().items.reduce((sum, i) => sum + i.quantity, 0)
+      clearCart: () => {
+        set({ items: [] })
+        if (isCustomerAuthenticated()) {
+          clearCartApi().catch(() => {})
+        }
       },
 
-      get cartTotal() {
-        return get().items.reduce(
-          (sum, i) => sum + (i.salePrice ?? i.price) * i.quantity,
-          0
-        )
-      },
+      replaceCart: (items) => set({ items }),
     }),
     { name: 'dcare-cart' }
   )

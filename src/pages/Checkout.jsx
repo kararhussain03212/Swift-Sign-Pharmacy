@@ -9,6 +9,8 @@ import toast from 'react-hot-toast'
 import useCartStore from '../store/cartStore'
 import useLocationStore from '../store/locationStore'
 import { getProvinces, getCitiesByProvince } from '../data/locations'
+import { useAuth } from '../context/AuthContext'
+import { createOrder } from '../services/customerApi'
 
 const PAYMENT_METHODS = [
   { id: 'cod',        label: 'Cash on Delivery',      icon: Wallet,     desc: 'Pay when your order arrives' },
@@ -168,6 +170,7 @@ export default function Checkout() {
   const navigate            = useNavigate()
   const { items, clearCart } = useCartStore()
   const { location }        = useLocationStore()
+  const { user }            = useAuth()
 
   const provinces = getProvinces()
 
@@ -180,11 +183,12 @@ export default function Checkout() {
   const [payment, setPayment]   = useState('cod')
   const [coupon, setCoupon]     = useState('')
   const [showSuccess, setShowSuccess] = useState(false)
-  const [orderNum] = useState(() => 'DCR-' + Math.random().toString(36).toUpperCase().slice(2, 8))
+  const [placing, setPlacing]   = useState(false)
+  const [orderId, setOrderId]   = useState(null)
 
-  // Pre-fill from location store
+  // Pre-fill from location store / logged-in user
   const [form, setForm] = useState({
-    fullName: '', email: '', phone: '',
+    fullName: user?.name || '', email: user?.email || '', phone: user?.phone || '',
     address: location.area || '', city: location.city || '',
     province: location.province || '', postalCode: '', notes: '',
   })
@@ -237,10 +241,32 @@ export default function Checkout() {
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
-  function handlePlaceOrder() {
-    toast.success('Order placed successfully!')
-    clearCart()
-    setShowSuccess(true)
+  async function handlePlaceOrder() {
+    setPlacing(true)
+    try {
+      const order = await createOrder({
+        shipping_address: {
+          first_name: form.fullName,
+          phone: form.phone,
+          email: form.email,
+          street_address: form.address,
+          city: form.city,
+          state: form.province,
+          postal_code: form.postalCode,
+          country: 'Pakistan',
+          notes: form.notes,
+        },
+        payment_method: payment,
+      })
+      setOrderId(order.id)
+      toast.success('Order placed successfully!')
+      clearCart()
+      setShowSuccess(true)
+    } catch (err) {
+      toast.error(err?.response?.data?.error || 'Failed to place order. Please try again.')
+    } finally {
+      setPlacing(false)
+    }
   }
 
   const deliveryLabel = [form.address, form.city, form.province].filter(Boolean).join(', ')
@@ -481,12 +507,12 @@ export default function Checkout() {
                                    rounded-full py-3 text-sm hover:border-primary/50 transition-all">
                         ← Back
                       </button>
-                      <button onClick={handlePlaceOrder}
-                        className="flex-2 flex-grow-[2] bg-primary hover:bg-primary-dark text-white font-bold
-                                   rounded-full py-3 text-sm transition-all 
+                      <button onClick={handlePlaceOrder} disabled={placing}
+                        className="flex-2 flex-grow-[2] bg-primary hover:bg-primary-dark disabled:opacity-60 text-white font-bold
+                                   rounded-full py-3 text-sm transition-all
                                    hover:-translate-y-0.5 flex items-center justify-center gap-2">
                         <CheckCircle2 size={16} />
-                        Place Order · Rs. {total.toFixed(0)}
+                        {placing ? 'Placing Order…' : `Place Order · Rs. ${total.toFixed(0)}`}
                       </button>
                     </div>
                   </div>
@@ -583,7 +609,7 @@ export default function Checkout() {
       {/* ── Success Modal ────────────────────────────── */}
       {showSuccess && (
         <SuccessModal
-          orderNum={orderNum}
+          orderNum={orderId ? `#${orderId}` : ''}
           address={deliveryLabel}
           onClose={() => { setShowSuccess(false); navigate('/') }}
         />

@@ -8,7 +8,7 @@ require_once __DIR__ . '/BaseModel.php';
 
 final class ProductImage extends BaseModel
 {
-    protected string $table = 'product_images';
+    protected string $table = 'catalog_product_images';
     protected array $fillable = ['product_id', 'image_url', 'sort_order'];
 
     public function forProduct(int $productId): array

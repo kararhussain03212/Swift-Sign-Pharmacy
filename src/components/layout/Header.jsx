@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import { Search, User, ShoppingCart, X, Menu, ChevronRight, MapPin, Heart } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
+import { Search, User, ShoppingCart, X, Menu, ChevronRight, MapPin, Heart, LogOut, Package } from 'lucide-react'
 import useCartStore from '../../store/cartStore'
 import useLocationStore from '../../store/locationStore'
 import useWishlistStore from '../../store/wishlistStore'
+import { useAuth } from '../../context/AuthContext'
 import CartDrawer from '../modals/CartDrawer'
 import SearchDropdown from '../modals/SearchDropdown'
 import LocationSelector from '../modals/LocationSelector'
@@ -31,6 +32,8 @@ const FALLBACK_SITE_SETTINGS = {
 }
 
 const Header = () => {
+  const navigate = useNavigate()
+  const { isAuthenticated, user, logout } = useAuth()
   const [searchQuery, setSearchQuery] = useState('')
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isSearchFocused, setIsSearchFocused] = useState(false)
@@ -38,6 +41,7 @@ const Header = () => {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [isLocationSelectorOpen, setIsLocationSelectorOpen] = useState(false)
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false)
 
   const { items: cartItems } = useCartStore()
   const { location } = useLocationStore()
@@ -217,9 +221,45 @@ const Header = () => {
             <div className="hidden lg:block w-px h-8" style={{ backgroundColor: '#e5e5e5' }} />
 
             {/* Account (md+) */}
-            <button className="hidden md:flex text-gray-500 hover:text-primary transition-colors duration-[150ms]" aria-label="Account">
-              <User size={24} strokeWidth={1.75} />
-            </button>
+            <div
+              className="relative hidden md:block"
+              onMouseLeave={() => setIsAccountMenuOpen(false)}
+            >
+              <button
+                onClick={() => isAuthenticated ? setIsAccountMenuOpen(!isAccountMenuOpen) : navigate('/auth')}
+                className="text-gray-500 hover:text-primary transition-colors duration-[150ms] p-1"
+                aria-label="Account"
+              >
+                <User size={24} strokeWidth={1.75} />
+              </button>
+
+              {isAuthenticated && isAccountMenuOpen && (
+                <div className="absolute top-full right-0 bg-white shadow-xl border border-gray-100 rounded-lg min-w-[180px] z-[999] flex flex-col py-2">
+                  <div className="px-4 py-2.5 border-b border-gray-100">
+                    <p className="text-sm font-semibold text-gray-900">{user?.name || 'Account'}</p>
+                    <p className="text-xs text-gray-500">{user?.email}</p>
+                  </div>
+                  <button
+                    onClick={() => { setIsAccountMenuOpen(false); navigate('/profile') }}
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors text-left"
+                  >
+                    <User size={14} /> Profile
+                  </button>
+                  <button
+                    onClick={() => { setIsAccountMenuOpen(false); navigate('/profile') }}
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary transition-colors text-left"
+                  >
+                    <Package size={14} /> Orders
+                  </button>
+                  <button
+                    onClick={() => { setIsAccountMenuOpen(false); logout(); navigate('/') }}
+                    className="flex items-center gap-2 px-4 py-2.5 text-sm text-red-500 hover:bg-gray-50 transition-colors text-left"
+                  >
+                    <LogOut size={14} /> Logout
+                  </button>
+                </div>
+              )}
+            </div>
 
             {/* Wishlist (lg+) */}
             <Link

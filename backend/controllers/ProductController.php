@@ -38,7 +38,7 @@ require_once __DIR__ . '/../utils/Validator.php';
 final class ProductController extends BaseCrudController
 {
     protected string $modelClass = Product::class;
-    protected string $resourceName = 'products';
+    protected string $resourceName = 'catalog_products';
     protected array $requiredCreateFields = ['name', 'category_id', 'manufacturer_or_brand', 'base_price'];
 
     // ---------------------------------------------------------------
@@ -67,7 +67,7 @@ final class ProductController extends BaseCrudController
         }
 
         if ($categorySlug !== '') {
-            $catStmt = $pdo->prepare('SELECT id FROM categories WHERE slug = :slug1 OR parent_id = (SELECT id FROM categories WHERE slug = :slug2 LIMIT 1)');
+            $catStmt = $pdo->prepare('SELECT id FROM catalog_categories WHERE slug = :slug1 OR parent_id = (SELECT id FROM catalog_categories WHERE slug = :slug2 LIMIT 1)');
             $catStmt->execute([':slug1' => $categorySlug, ':slug2' => $categorySlug]);
             $categoryIds = array_map(static fn (array $row): int => (int) $row['id'], $catStmt->fetchAll() ?: []);
             if ($categoryIds === []) {
@@ -95,7 +95,7 @@ final class ProductController extends BaseCrudController
         $whereSql = 'WHERE ' . implode(' AND ', $where);
 
         $countStmt = $pdo->prepare(
-            "SELECT COUNT(*) AS aggregate FROM products p
+            "SELECT COUNT(*) AS aggregate FROM catalog_products p
              LEFT JOIN pharmacy_product_details ppd ON ppd.product_id = p.id
              $whereSql"
         );
@@ -105,11 +105,11 @@ final class ProductController extends BaseCrudController
         $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug,
                        img.image_url AS first_image,
                        ppd.original_price AS pharmacy_original_price
-                FROM products p
-                LEFT JOIN categories c ON c.id = p.category_id
+                FROM catalog_products p
+                LEFT JOIN catalog_categories c ON c.id = p.category_id
                 LEFT JOIN pharmacy_product_details ppd ON ppd.product_id = p.id
-                LEFT JOIN (SELECT product_id, MIN(sort_order) AS min_sort FROM product_images GROUP BY product_id) fi ON fi.product_id = p.id
-                LEFT JOIN product_images img ON img.product_id = fi.product_id AND img.sort_order = fi.min_sort
+                LEFT JOIN (SELECT product_id, MIN(sort_order) AS min_sort FROM catalog_product_images GROUP BY product_id) fi ON fi.product_id = p.id
+                LEFT JOIN catalog_product_images img ON img.product_id = fi.product_id AND img.sort_order = fi.min_sort
                 $whereSql
                 ORDER BY p.created_at DESC, p.id DESC
                 LIMIT :limit OFFSET :offset";
@@ -201,13 +201,13 @@ final class ProductController extends BaseCrudController
 
         $pdo = Database::connection();
 
-        $countStmt = $pdo->prepare("SELECT COUNT(*) AS aggregate FROM products p $whereSql");
+        $countStmt = $pdo->prepare("SELECT COUNT(*) AS aggregate FROM catalog_products p $whereSql");
         $countStmt->execute($bind);
         $total = (int) ($countStmt->fetch()['aggregate'] ?? 0);
 
         $sql = "SELECT p.*, c.name AS category_name, c.slug AS category_slug
-                FROM products p
-                LEFT JOIN categories c ON c.id = p.category_id
+                FROM catalog_products p
+                LEFT JOIN catalog_categories c ON c.id = p.category_id
                 $whereSql
                 ORDER BY p.created_at DESC, p.id DESC
                 LIMIT :limit OFFSET :offset";
@@ -372,7 +372,7 @@ final class ProductController extends BaseCrudController
     private function resolveCategoryProductType(int $categoryId): ?string
     {
         $pdo = Database::connection();
-        $stmt = $pdo->prepare('SELECT product_type FROM categories WHERE id = :id LIMIT 1');
+        $stmt = $pdo->prepare('SELECT product_type FROM catalog_categories WHERE id = :id LIMIT 1');
         $stmt->execute([':id' => $categoryId]);
         $row = $stmt->fetch();
 
@@ -428,7 +428,7 @@ final class ProductController extends BaseCrudController
         $productType = (string) $product['product_type'];
 
         $pdo = Database::connection();
-        $catStmt = $pdo->prepare('SELECT id, name, slug FROM categories WHERE id = :id LIMIT 1');
+        $catStmt = $pdo->prepare('SELECT id, name, slug FROM catalog_categories WHERE id = :id LIMIT 1');
         $catStmt->execute([':id' => (int) $product['category_id']]);
         $category = $catStmt->fetch() ?: null;
 

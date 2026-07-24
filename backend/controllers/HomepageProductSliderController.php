@@ -35,17 +35,17 @@ final class HomepageProductSliderController extends BaseCrudController
         $sliderModel = new HomepageProductSlider();
         $sliders = $sliderModel->all();
 
-        $categoriesById = $this->allArionCategoriesById();
+        $catalog_categoriesById = $this->allArionCategoriesById();
         $linkModel = new HomepageSliderCategory();
         $productModel = new Product();
 
-        $data = array_map(function (array $slider) use ($categoriesById, $linkModel, $productModel): array {
+        $data = array_map(function (array $slider) use ($catalog_categoriesById, $linkModel, $productModel): array {
             $links = $linkModel->forSlider((int) $slider['id']);
             $categoryIds = array_column($links, 'category_id');
 
-            $slider['categories'] = array_values(array_filter(array_map(
-                static function (array $link) use ($categoriesById): ?array {
-                    $cat = $categoriesById[(int) $link['category_id']] ?? null;
+            $slider['catalog_categories'] = array_values(array_filter(array_map(
+                static function (array $link) use ($catalog_categoriesById): ?array {
+                    $cat = $catalog_categoriesById[(int) $link['category_id']] ?? null;
                     if ($cat === null) {
                         return null;
                     }
@@ -268,12 +268,12 @@ final class HomepageProductSliderController extends BaseCrudController
             return [];
         }
 
-        $categoriesById = $this->allArionCategoriesById();
+        $catalog_categoriesById = $this->allArionCategoriesById();
 
         $result = [];
         foreach ($categoryIds as $id) {
-            if (isset($categoriesById[$id])) {
-                $result[$id] = $categoriesById[$id]['slug'];
+            if (isset($catalog_categoriesById[$id])) {
+                $result[$id] = $catalog_categoriesById[$id]['slug'];
             }
         }
 
@@ -284,7 +284,7 @@ final class HomepageProductSliderController extends BaseCrudController
     private function allArionCategoriesById(): array
     {
         $pdo = ArionDatabase::connection();
-        $stmt = $pdo->query('SELECT id, name, slug FROM categories');
+        $stmt = $pdo->query('SELECT id, name, slug FROM catalog_categories');
         $rows = $stmt ? ($stmt->fetchAll() ?: []) : [];
 
         $byId = [];

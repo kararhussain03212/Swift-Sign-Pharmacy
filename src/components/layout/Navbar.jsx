@@ -6,6 +6,10 @@ import { categories } from '../../data/categories'
 import { licenseInfo } from '../../data/contactInfo'
 import { getCategories, getNavLinks, getSiteSettings } from '../../services/headerApi'
 
+function AccountMenu() {
+  return null
+}
+
 const FALLBACK_NAV_LINKS = [
   { label: 'Home', labelShort: 'Home',  to: '/',                },
   { label: 'Blog', labelShort: 'Blog',  to: '/blog',            },
@@ -252,6 +256,7 @@ const Navbar = () => {
               <span className="sm:hidden">Rx</span>
             </Link>
           )}
+          <AccountMenu />
         </div>
       </div>
     </nav>

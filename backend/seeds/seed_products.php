@@ -2,19 +2,19 @@
 $conn = new mysqli('localhost', 'root', '', 'organic_food');
 if ($conn->connect_error) die('Connection failed: ' . $conn->connect_error);
 
-// Check if products exist
-$result = $conn->query('SELECT COUNT(*) as count FROM products');
+// Check if catalog_products exist
+$result = $conn->query('SELECT COUNT(*) as count FROM catalog_products');
 $row = $result->fetch_assoc();
 $count = $row['count'];
 
 if ($count > 0) {
-    echo "Products already exist in database ($count products found). Skipping insert.";
+    echo "Products already exist in database ($count catalog_products found). Skipping insert.";
     $conn->close();
     exit;
 }
 
-// Insert all products from productsData.js
-$products = [
+// Insert all catalog_products from catalog_productsData.js
+$catalog_products = [
     [
         'name' => 'Pure Himalayan Shilajit 5GM',
         'slug' => 'pure-himalayan-shilajit-5gm',
@@ -143,7 +143,7 @@ $products = [
         'badges' => json_encode(['Best Seller', 'Pure']),
         'short_desc' => 'Cold-extracted, unfiltered raw honey taken directly from natural hives.',
         'description' => 'This honey is extracted by honeybees that collect nectar from flowers, making it naturally rich in vitamins, especially Vitamin C. It is recommended for healing ulcers, antispasmodic support, sedative effect, and works against insomnia and nervous excitement. Use it to sweeten your tea or coffee. The honey is extracted straight from the hives without applying any heat (cold-extracted). Once extracted, we do not filter the honey and bottle it in raw form.',
-        'benefits' => json_encode(['This variety of honey is loaded with natural antioxidants that have anti-inflammatory, anti-allergy, anti-carcinogenic and immune boosting properties.', 'Zinc, boron, manganese, magnesium, calcium, selenium, copper, potassium and sodium are all healthy minerals found in this honey.', 'It has healing properties, and is an easy and safe choice for a minor wound and burn treatment.', 'It contains anti-bacterial properties that can be used to fight a range of pathogens. It can soothe a sore throat and treat a cough.', 'It can help to regulate blood sugar levels, as it is low on the glycemic index.', 'It can help athletes improve their recovery time due to its ability to help the body maintain its glycogen levels.', 'It can be paired with other ingredients to make organic beauty products to help moisturise the skin and hair.']),
+        'benefits' => json_encode(['This variety of honey is loaded with natural antioxidants that have anti-inflammatory, anti-allergy, anti-carcinogenic and immune boosting properties.', 'Zinc, boron, manganese, magnesium, calcium, selenium, copper, potassium and sodium are all healthy minerals found in this honey.', 'It has healing properties, and is an easy and safe choice for a minor wound and burn treatment.', 'It contains anti-bacterial properties that can be used to fight a range of pathogens. It can soothe a sore throat and treat a cough.', 'It can help to regulate blood sugar levels, as it is low on the glycemic index.', 'It can help athletes improve their recovery time due to its ability to help the body maintain its glycogen levels.', 'It can be paired with other ingredients to make organic beauty catalog_products to help moisturise the skin and hair.']),
         'ingredients' => '100% Raw, Unfiltered Honey.',
         'how_to_use' => json_encode([['step' => '01', 'text' => 'Use in warm water, tea, or daily spoonful.'], ['step' => '02', 'text' => 'Store in a cool dry place.']]),
         'faqs' => json_encode([['q' => 'Why does honey crystallize?', 'a' => 'Crystallization is natural and a sign of purity.']]),
@@ -170,7 +170,7 @@ $products = [
         'badges' => json_encode(['Organic']),
         'short_desc' => 'Cold-extracted, unfiltered raw honey taken directly from natural hives.',
         'description' => 'This honey is extracted by honeybees that collect nectar from flowers, making it naturally rich in vitamins, especially Vitamin C. It is recommended for healing ulcers, antispasmodic support, sedative effect, and works against insomnia and nervous excitement. Use it to sweeten your tea or coffee. The honey is extracted straight from the hives without applying any heat (cold-extracted). Once extracted, we do not filter the honey and bottle it in raw form.',
-        'benefits' => json_encode(['Loaded with natural antioxidants with anti-inflammatory, anti-allergy, anti-carcinogenic, and immune-boosting properties.', 'Contains healthy minerals including zinc, boron, manganese, magnesium, calcium, selenium, copper, potassium, and sodium.', 'Has healing properties and is an easy and safe choice for minor wound and burn support.', 'Contains antibacterial properties that can help fight a range of pathogens, soothe sore throat, and treat cough.', 'Can help regulate blood sugar levels due to a low glycemic index profile.', 'Can help athletes improve recovery time by supporting the body\'s glycogen levels.', 'Can be paired with other ingredients to create organic beauty products that help moisturize skin and hair.']),
+        'benefits' => json_encode(['Loaded with natural antioxidants with anti-inflammatory, anti-allergy, anti-carcinogenic, and immune-boosting properties.', 'Contains healthy minerals including zinc, boron, manganese, magnesium, calcium, selenium, copper, potassium, and sodium.', 'Has healing properties and is an easy and safe choice for minor wound and burn support.', 'Contains antibacterial properties that can help fight a range of pathogens, soothe sore throat, and treat cough.', 'Can help regulate blood sugar levels due to a low glycemic index profile.', 'Can help athletes improve recovery time by supporting the body\'s glycogen levels.', 'Can be paired with other ingredients to create organic beauty catalog_products that help moisturize skin and hair.']),
         'ingredients' => '100% Raw, Unfiltered Honey.',
         'how_to_use' => json_encode([['step' => '01', 'text' => 'Use as a natural sweetener in meals and drinks.'], ['step' => '02', 'text' => 'Keep in dry place away from heat.']]),
         'faqs' => json_encode([['q' => 'Is this filtered?', 'a' => 'Lightly strained only, no heat processing.']]),
@@ -288,8 +288,8 @@ $products = [
 ];
 
 $inserted = 0;
-foreach ($products as $p) {
-    $stmt = $conn->prepare('INSERT INTO products (name, slug, subtitle, category, size, price, original_price, discount, rating, reviews, stock, featured, variants, variant_prices, variant_original_prices, images, badges, short_desc, description, benefits, ingredients, how_to_use, faqs, tags, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+foreach ($catalog_products as $p) {
+    $stmt = $conn->prepare('INSERT INTO catalog_products (name, slug, subtitle, category, size, price, original_price, discount, rating, reviews, stock, featured, variants, variant_prices, variant_original_prices, images, badges, short_desc, description, benefits, ingredients, how_to_use, faqs, tags, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
 
     $stmt->bind_param(
         'ssssissdddiiisssssssssi',
@@ -307,5 +307,5 @@ foreach ($products as $p) {
     }
 }
 
-echo "Successfully inserted $inserted products from productsData.js";
+echo "Successfully inserted $inserted catalog_products from catalog_productsData.js";
 $conn->close();
